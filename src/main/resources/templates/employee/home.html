@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ticket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Righteous&display=swap"
+	rel="stylesheet">
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+
+<link th:href="@{/css/standard.css}" rel="stylesheet" />
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/c634b3cef4.js"
+	crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"
+	type="text/javascript"></script>
+<script
+	src="https://cdn.datatables.net/2.1.0/js/dataTables.bootstrap5.js"
+	type="text/javascript"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+	type="text/javascript"></script>
+<link
+	href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap5.css"
+	rel="stylesheet">
+
+
+</head>
+
+<body>
+	<nav
+		class="navbar navbar-expand-lg bg-dark border-bottom border-body  py-3"
+		data-bs-theme="dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">Regional Science Centre</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link active"
+						aria-current="page" href="#">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Reports</a>
+					</li>
+					<li class="nav-item dropdown d-none"><a
+						class="nav-link dropdown-toggle" href="#" role="button"
+						data-bs-toggle="dropdown" aria-expanded="false"> Dropdown </a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="#">Action</a></li>
+							<li><a class="dropdown-item" href="#">Another action</a></li>
+							<li>
+								<hr class="dropdown-divider">
+							</li>
+							<li><a class="dropdown-item" href="#">Something else
+									here</a></li>
+						</ul></li>
+				</ul>
+				<form action="/logout" method="get" class="d-flex" role="search">
+					<button class="btn btn-danger" type="submit">Logout</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<!--<form   action="#" enctype="application/x-www-form-urlencoded">-->
+			 <form   th:action="@{/bill/calculate}" enctype="application/x-www-form-urlencoded"> 
+			<div class="row">
+				<div class="col-8 ">
+					<div class="box">
+						<div class="form-container">
+							<h5>
+								Choose Seperate Tickets & Combos <small>(click to
+									select)</small>
+							</h5>
+							
+							
+							
+							<div class="btn-group" role="group"
+								aria-label="Basic checkbox toggle button group">
+								
+								<th:block th:each="ticket,index : ${tickets}">
+									<input type="checkbox" name="tickets" th:value="${ticket.id}" class="btn-check" th:id="${'ticket'+index}" autocomplete="off">
+									<label class="btn btn-outline-primary" th:for="${'ticket'+index}" th:text="${ticket.name}">NA</label>
+								</th:block>
+							</div>
+						</div>
+
+						<div class="form-container">
+							<h5>Select From Groups</h5>
+							<div class="btn-group" role="group"
+								aria-label="Basic checkbox toggle button group">
+								
+								<th:block th:each="group,index : ${groups}">									
+									   <input type="radio" name="group" th:value="${group.id}" class="btn-check"  th:id="${'group'+index}"  autocomplete="off">
+								       <label class="btn btn-outline-primary"  th:for="${'group'+index}"  th:text="${group.name}">NA</label> 
+								</th:block>
+								<input type="radio" name="group" th:value="${generalVistor.id}" class="btn-check" id="generalVistor" autocomplete="off" checked>
+								<label class="btn btn-outline-primary" for="generalVistor" th:text="${generalVistor.name}"></label>
+							</div>
+						</div>
+
+						<div class="form-container">
+							<h5>Select Persons</h5>
+							<div class="d-flex align-items-center counter">
+								<button class="btn btn-outline-danger count minus" type="button">
+									<i class="fa-solid fa-angles-down"></i>
+								</button>
+								<input class="input-count" name="persons" value="0" type="number">
+								<button class="btn btn-outline-success count plus" type="button">
+									<i class="fa-solid fa-angles-up"></i>
+								</button>
+
+							</div>
+						</div>
+						<div class="form-container">
+							<h5>Choose By Family Groups</h5>
+							<div class="btn-group" role="group"
+								aria-label="Basic checkbox toggle button group">
+							
+								<th:block th:each="familyGroup,index : ${familyGroups}">									
+									   <input type="radio" name="familyGroup" th:value="${familyGroup.id}" class="btn-check"  th:id="${'familyGroup'+index}"  autocomplete="off">
+								       <label class="btn btn-outline-primary"  th:for="${'familyGroup'+index}"  th:text="${familyGroup.name}">NA</label> 
+								</th:block>
+									
+								<input type="radio" name="familyGroup" value="0" class="btn-check" id="familyGroupNone" autocomplete="off" checked>
+								<label class="btn btn-outline-primary" for="familyGroupNone">None</label>
+								
+								
+							</div>
+						</div>
+						<div class="form-container">
+							<h5>Choose Parking Vehicle Type</h5>
+							<h6 class="m-0 mb-1">Select Bikes</h6>
+							<div class="d-flex align-items-center mb-2 counter">
+								<button class="btn btn-outline-danger minus count" type="button">
+									<i class="fa-solid fa-angles-down"></i>
+								</button>
+								<input class="input-count" name="bikes" value="0" type="number">
+								<button class="btn btn-outline-success plus count" type="button">
+									<i class="fa-solid fa-angles-up"></i>
+								</button>
+							</div>
+
+							<h6 class="m-0 mb-1">Select 3 or 4 Wheelers</h6>
+							<div class="d-flex align-items-center counter">
+								<button class="btn btn-outline-danger minus count" type="button">
+									<i class="fa-solid fa-angles-down"></i>
+								</button>
+								<input class="input-count" name="threeFourWheeler"  value="0" type="number">
+								<button class="btn btn-outline-success plus count" type="button">
+									<i class="fa-solid fa-angles-up"></i>
+								</button>
+							</div>
+
+						</div>
+						<div class="form-container d-flex justify-content-center">
+							<button class="btn btn-success p-3">Calculate Bill</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 bill-container-parent">
+					<div class="box right-box">
+						<div class="bill-container ">
+							<table class="table table-striped" id="billSummary">
+								<thead class="bg-gray sticky-thead">
+									<tr>
+										<th scope="col" colspan="4">
+											<h5 class="m-0 ">bill summary</h5>
+										</th>
+									</tr>
+									<tr>
+										<th scope="col">Description</th>
+										<th scope="col">Number</th>
+										<th scope="col">Price / Person</th>
+										<th scope="col">Price</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Tickets / Shows</td>
+										<td>4</td>
+										<td>x50<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
+										<td class="text-end">150<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
+										</td>
+									</tr>
+									<tr>
+										<td>Family Group</td>
+										<td>4</td>
+										<td>x50<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
+										<td class="text-end">150<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
+										</td>
+									</tr>
+									<tr>
+										<td>Members</td>
+										<td>4</td>
+										<td>x50<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
+										<td class="text-end">150<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
+										</td>
+									</tr>
+									<tr>
+										<td>Bikes</td>
+										<td>4</td>
+										<td>x50<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
+										<td class="text-end">150<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
+										</td>
+									</tr>
+									<tr>
+										<td>3 or 4 Wheelers</td>
+										<td>4</td>
+										<td>x50<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
+										<td class="text-end">150<i
+											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<hr>
+							<div class="d-flex justify-content-between">
+								<h4 class="font-weight-bold">Grand Total</h4>
+								<h6></h6>
+								<h1 class="float-right righteous-regular"
+									style="font-size: 45px;">
+									365<i class="ms-1 fa-solid fa-indian-rupee-sign"></i>
+								</h1>
+							</div>
+							<div class="d-flex justify-content-center mb-5">
+								<button class="btn btn-primary p-3 mx-2">Save and
+									Print Ticket</button>
+								<button class="btn btn-secondary mx-2">Save only</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+
+	<script type="text/javascript" th:src="@{/js/counter.js}"></script>
+	<script type="text/javascript" th:src="@{/js/tables.js}"></script>
+
+</body>
+</html>
