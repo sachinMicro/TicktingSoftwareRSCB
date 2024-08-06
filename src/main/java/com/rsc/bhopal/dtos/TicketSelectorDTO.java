@@ -11,6 +11,7 @@ public class TicketSelectorDTO {
 	private List<Long> tickets;
 	
 	private long group;
+	
 	private long familyGroup;
 	
 	

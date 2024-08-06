@@ -1,6 +1,7 @@
 package com.rsc.bhopal.security.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,9 +26,10 @@ public class WebSecurityConfig {
             	  form
             	    .loginPage("/login")
             	    .defaultSuccessUrl("/home")
-            	    .failureUrl("/login?error=true")
+            	    .failureUrl("/login?error=true")                  
             	    .permitAll();            	
               })
+              .rememberMe(Customizer.withDefaults())
               .logout(logout->{
             	  logout
             	  .logoutSuccessUrl("/login")

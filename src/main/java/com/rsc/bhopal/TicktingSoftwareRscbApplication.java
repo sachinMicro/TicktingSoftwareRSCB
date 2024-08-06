@@ -29,7 +29,7 @@ public class TicktingSoftwareRscbApplication {
 	CommandLineRunner runner() {
 		return runner->{
 			//ticketDetails.addTickets();
-			//visitorDetails.addVisitorType();			
+			///visitorDetails.addVisitorType();			
 			//ticketsRatesService.getAllTicketRates();
 		};
 	}
