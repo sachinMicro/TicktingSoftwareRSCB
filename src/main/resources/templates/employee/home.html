@@ -36,6 +36,9 @@
 	href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap5.css"
 	rel="stylesheet">
 
+		<!-- <script type="text/javascript" th:src="@{/js/request_bill_update.js}"></script> -->
+		<script type="text/javascript" th:src="@{/js/bill_summary.js}"></script>
+		<script type="text/javascript" th:src="@{/js/Summary Table.js}"></script>
 
 </head>
 
@@ -79,7 +82,7 @@
 
 	<div class="container-fluid">
 		<!--<form   action="#" enctype="application/x-www-form-urlencoded">-->
-			 <form   th:action="@{/bill/calculate}" enctype="application/x-www-form-urlencoded"> 
+			 <form   th:action="@{/bill/calculate}" id="form" enctype="application/x-www-form-urlencoded"> 
 			<div class="row">
 				<div class="col-8 ">
 					<div class="box">
@@ -267,5 +270,14 @@
 	<script type="text/javascript" th:src="@{/js/counter.js}"></script>
 	<script type="text/javascript" th:src="@{/js/tables.js}"></script>
 
+	<script>
+		$(document).ready(function(){
+			$('#form').on("submit",function(){
+				alert("FORM SUBMITTED");
+
+				return false;
+			});
+		});
+	</script>
 </body>
 </html>
