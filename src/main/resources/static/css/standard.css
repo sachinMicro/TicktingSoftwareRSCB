@@ -21,9 +21,11 @@ body,*{
     font-weight: 600 !important; 
 }
 .box{
- margin-top: 10px;
+/*  margin-top: 10px; */
   padding: 10px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  
+ /*  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+  
 }
 .table,th,td{
     vertical-align: middle;
@@ -47,7 +49,7 @@ th{
   vertical-align: middle;
 }
 .form-container h5{
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 .form-container{
     margin-bottom: 20px;
@@ -104,10 +106,13 @@ thead{
 #billSummary td ,#billSummary th{
  padding: 13px
 }
-
 .righteous-regular {
     font-family: "Righteous", sans-serif;
     font-weight: 400;
     font-style: normal;
+  }
+  
+  .badge{
+  letter-spacing:0.025cm;
   }
   

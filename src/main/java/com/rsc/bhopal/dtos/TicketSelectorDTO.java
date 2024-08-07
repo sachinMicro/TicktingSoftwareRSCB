@@ -21,6 +21,7 @@ public class TicketSelectorDTO {
 	
 	private int threeFourWheeler;
 		
+	
 	public TicketSelectorDTO(){
 		this.tickets=new ArrayList<>();
 	}

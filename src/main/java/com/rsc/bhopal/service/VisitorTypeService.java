@@ -3,6 +3,7 @@ package com.rsc.bhopal.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,21 @@ public class VisitorTypeService {
 	private VisitorTypeRepository visitorTypeRepo;
 
 	
-	public VisitorsTypeDTO getGeneralVisitorId() {
+	public VisitorsTypeDTO getGeneralVisitorId(long visitorid) {
 		VisitorsTypeDTO visitorDTO = new VisitorsTypeDTO();
-		VisitorsType visitorsType = visitorTypeRepo.findByType(VisitorsTypeEnum.GENERAL);
-		BeanUtils.copyProperties(visitorsType, visitorDTO);
+		Optional<VisitorsType> visitorsType = visitorTypeRepo.findById(visitorid);
+		BeanUtils.copyProperties(visitorsType.get(), visitorDTO);
 		return visitorDTO;
+	}
+	public List<VisitorsTypeDTO> getFamilyVisitorTypes(VisitorsTypeEnum typeEnum) {
+		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
+		List<VisitorsType> visitors = visitorTypeRepo.findByType(typeEnum);
+		for (VisitorsType visitor : visitors) {
+			VisitorsTypeDTO visitorDTO = new VisitorsTypeDTO();
+			BeanUtils.copyProperties(visitor, visitorDTO);
+			visitorsDTOs.add(visitorDTO);
+		}
+		return visitorsDTOs;
 	}
 	
 	public List<VisitorsTypeDTO> getAllVisitorTypes() {

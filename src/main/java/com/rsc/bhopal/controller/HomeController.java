@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.enums.VisitorsTypeEnum;
+import com.rsc.bhopal.service.ParkingService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.VisitorTypeService;
 
@@ -25,6 +26,9 @@ public class HomeController {
 	@Autowired
 	private VisitorTypeService visitorDetails;
 	
+	@Autowired
+	private ParkingService parkingService;
+	
 	@GetMapping(path = {"","/{variable}"} )
 	public String hello(Map<String, Object> attributes) {
 		
@@ -32,16 +36,22 @@ public class HomeController {
 		List<VisitorsTypeDTO> visitors = visitorDetails.getAllVisitorTypes();
 		
 		attributes.put("tickets", tickets);
+		
 		attributes.put("groups", visitors.stream().filter(visitorType->
 		VisitorsTypeEnum.GROUP.equals(visitorType.getType())||VisitorsTypeEnum.SCHOOL.equals(visitorType.getType())
 		).collect(Collectors.toList()));
+		
 		attributes.put("familyGroups", visitors.stream().filter(visitorType->
 		VisitorsTypeEnum.FAMILY.equals(visitorType.getType())
 		).collect(Collectors.toList()));
 		
+
 		attributes.put("generalVistor", visitors.stream().filter(visitorType->
 		VisitorsTypeEnum.GENERAL.equals(visitorType.getType())
 		).findFirst().get());
+		
+		attributes.put("parkingDetails",parkingService.getParkingDetails());
+		
 		
 		
 		return "employee/home";

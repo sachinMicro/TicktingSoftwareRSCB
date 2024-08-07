@@ -28,6 +28,11 @@ public class TicketsRatesService {
 	@Autowired
 	private VisitorTypeRepository vistorsTypeRepo;
 
+	public List<Long> getTicketsByGroup(long familyGroupId){
+		return ticketRateRepo.getTicketsByGroup(familyGroupId);
+	}
+	
+	
 	public TicketsRatesMasterDTO getTicketRateByGroup(long ticketId, long groupId) {
 		TicketsRatesMaster ticketRate = ticketRateRepo.findByGroupAndTicketIds(ticketId, groupId);
 		TicketsRatesMasterDTO ticketRatesDTO = new TicketsRatesMasterDTO();

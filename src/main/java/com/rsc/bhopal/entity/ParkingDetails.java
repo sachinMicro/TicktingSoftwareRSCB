@@ -2,6 +2,9 @@ package com.rsc.bhopal.entity;
 
 import java.util.Date;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,12 +28,17 @@ public class ParkingDetails {
 	@Column(name = "NAME")
 	private String name;
 	
+	@Column(name = "ID_DSEC")
+	private String idDsec;
+	
 	@Column(name = "ADDED_AT")	
 	private Date addedAt;
 	
 	@Column(name="IS_ACTIVE")
 	private Boolean isActive;
 	
+
 	@OneToOne(fetch = FetchType.EAGER,mappedBy = "parkingDetails")
+	@Cascade(CascadeType.ALL)
 	private TicketsRatesMaster rateMaster;
 }

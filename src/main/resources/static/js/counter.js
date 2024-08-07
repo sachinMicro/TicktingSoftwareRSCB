@@ -1,8 +1,3 @@
-//counter
-//minus
-//input-count
-//plus
-
 $(document).ready(function () {
 
     $('.counter .minus').on("click", function () {
@@ -27,7 +22,7 @@ $(document).ready(function () {
         } else {
             count = parseInt(count);
         }
-
+        
         count = count + 1;
 
         inputElement.val(count);

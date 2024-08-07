@@ -10,7 +10,6 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Righteous&display=swap"
 	rel="stylesheet">
-
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -35,10 +34,19 @@
 <link
 	href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap5.css"
 	rel="stylesheet">
+<script type="text/javascript" th:src="@{/js/billSummary.js}"></script>
+<style>
 
-		<!-- <script type="text/javascript" th:src="@{/js/request_bill_update.js}"></script> -->
-		<script type="text/javascript" th:src="@{/js/bill_summary.js}"></script>
-		<script type="text/javascript" th:src="@{/js/Summary Table.js}"></script>
+#billSummary{
+    width: 100%;
+    max-height: 62vh;
+    display: block;
+    overflow-y: auto;
+}
+td small{
+ font-size:10px
+}
+</style>
 
 </head>
 
@@ -82,7 +90,8 @@
 
 	<div class="container-fluid">
 		<!--<form   action="#" enctype="application/x-www-form-urlencoded">-->
-			 <form   th:action="@{/bill/calculate}" id="form" enctype="application/x-www-form-urlencoded"> 
+		<form th:action="@{/bill/calculate}" id="form"
+			enctype="application/x-www-form-urlencoded">
 			<div class="row">
 				<div class="col-8 ">
 					<div class="box">
@@ -91,15 +100,17 @@
 								Choose Seperate Tickets & Combos <small>(click to
 									select)</small>
 							</h5>
-							
-							
-							
+
+
+
 							<div class="btn-group" role="group"
 								aria-label="Basic checkbox toggle button group">
-								
+
 								<th:block th:each="ticket,index : ${tickets}">
-									<input type="checkbox" name="tickets" th:value="${ticket.id}" class="btn-check" th:id="${'ticket'+index}" autocomplete="off">
-									<label class="btn btn-outline-primary" th:for="${'ticket'+index}" th:text="${ticket.name}">NA</label>
+									<input type="checkbox" name="tickets" th:value="${ticket.id}"
+										class="btn-check" th:id="${'ticket'+index}" autocomplete="off">
+									<label class="btn btn-outline-primary"
+										th:for="${'ticket'+index}" th:text="${ticket.name}">NA</label>
 								</th:block>
 							</div>
 						</div>
@@ -108,13 +119,17 @@
 							<h5>Select From Groups</h5>
 							<div class="btn-group" role="group"
 								aria-label="Basic checkbox toggle button group">
-								
-								<th:block th:each="group,index : ${groups}">									
-									   <input type="radio" name="group" th:value="${group.id}" class="btn-check"  th:id="${'group'+index}"  autocomplete="off">
-								       <label class="btn btn-outline-primary"  th:for="${'group'+index}"  th:text="${group.name}">NA</label> 
+
+								<th:block th:each="group,index : ${groups}">
+									<input type="radio" name="group" th:value="${group.id}"
+										class="btn-check" th:id="${'group'+index}" autocomplete="off">
+									<label class="btn btn-outline-primary"
+										th:for="${'group'+index}" th:text="${group.name}">NA</label>
 								</th:block>
-								<input type="radio" name="group" th:value="${generalVistor.id}" class="btn-check" id="generalVistor" autocomplete="off" checked>
-								<label class="btn btn-outline-primary" for="generalVistor" th:text="${generalVistor.name}"></label>
+								<input type="radio" name="group" th:value="${generalVistor.id}"
+									class="btn-check" id="generalVistor" autocomplete="off" checked>
+								<label class="btn btn-outline-primary" for="generalVistor"
+									th:text="${generalVistor.name}"></label>
 							</div>
 						</div>
 
@@ -124,7 +139,8 @@
 								<button class="btn btn-outline-danger count minus" type="button">
 									<i class="fa-solid fa-angles-down"></i>
 								</button>
-								<input class="input-count" name="persons" value="0" type="number">
+								<input class="input-count" name="persons" value="0"
+									type="number">
 								<button class="btn btn-outline-success count plus" type="button">
 									<i class="fa-solid fa-angles-up"></i>
 								</button>
@@ -135,41 +151,41 @@
 							<h5>Choose By Family Groups</h5>
 							<div class="btn-group" role="group"
 								aria-label="Basic checkbox toggle button group">
-							
-								<th:block th:each="familyGroup,index : ${familyGroups}">									
-									   <input type="radio" name="familyGroup" th:value="${familyGroup.id}" class="btn-check"  th:id="${'familyGroup'+index}"  autocomplete="off">
-								       <label class="btn btn-outline-primary"  th:for="${'familyGroup'+index}"  th:text="${familyGroup.name}">NA</label> 
+
+								<th:block th:each="familyGroup,index : ${familyGroups}">
+									<input type="radio" name="familyGroup"
+										th:value="${familyGroup.id}" class="btn-check"
+										th:id="${'familyGroup'+index}" autocomplete="off">
+									<label class="btn btn-outline-primary"
+										th:for="${'familyGroup'+index}" th:text="${familyGroup.name}">NA</label>
 								</th:block>
-									
-								<input type="radio" name="familyGroup" value="0" class="btn-check" id="familyGroupNone" autocomplete="off" checked>
-								<label class="btn btn-outline-primary" for="familyGroupNone">None</label>
-								
-								
+
+								<input type="radio" name="familyGroup" value="0"
+									class="btn-check" id="familyGroupNone" autocomplete="off"
+									checked> <label class="btn btn-outline-primary"
+									for="familyGroupNone">None</label>
+
+
 							</div>
 						</div>
 						<div class="form-container">
-							<h5>Choose Parking Vehicle Type</h5>
-							<h6 class="m-0 mb-1">Select Bikes</h6>
-							<div class="d-flex align-items-center mb-2 counter">
-								<button class="btn btn-outline-danger minus count" type="button">
-									<i class="fa-solid fa-angles-down"></i>
-								</button>
-								<input class="input-count" name="bikes" value="0" type="number">
-								<button class="btn btn-outline-success plus count" type="button">
-									<i class="fa-solid fa-angles-up"></i>
-								</button>
-							</div>
-
-							<h6 class="m-0 mb-1">Select 3 or 4 Wheelers</h6>
-							<div class="d-flex align-items-center counter">
-								<button class="btn btn-outline-danger minus count" type="button">
-									<i class="fa-solid fa-angles-down"></i>
-								</button>
-								<input class="input-count" name="threeFourWheeler"  value="0" type="number">
-								<button class="btn btn-outline-success plus count" type="button">
-									<i class="fa-solid fa-angles-up"></i>
-								</button>
-							</div>
+						
+							<h5>Choose Parking Vehicle Type</h5>							
+							
+							<th:block th:each="parkingDetail ,index : ${parkingDetails}">
+								<h6 class="m-0 mb-1" th:text="${parkingDetail.name}" ></h6>
+								<div class="d-flex align-items-center mb-2 counter">
+									<button class="btn btn-outline-danger minus count"
+										type="button">
+										<i class="fa-solid fa-angles-down"></i>
+									</button>
+									<input class="input-count" th:name="${parkingDetail.idDsec}" value="0" type="number">
+									<button class="btn btn-outline-success plus count"
+										type="button">
+										<i class="fa-solid fa-angles-up"></i>
+									</button>
+								</div>
+							</th:block>
 
 						</div>
 						<div class="form-container d-flex justify-content-center">
@@ -178,9 +194,9 @@
 					</div>
 				</div>
 				<div class="col-4 bill-container-parent">
-					<div class="box right-box">
-						<div class="bill-container ">
-							<table class="table table-striped" id="billSummary">
+					<div class="box right-box  ">
+						<div class="bill-container  ">
+							<table class="table table-striped border" id="billSummary">
 								<thead class="bg-gray sticky-thead">
 									<tr>
 										<th scope="col" colspan="4">
@@ -189,71 +205,28 @@
 									</tr>
 									<tr>
 										<th scope="col">Description</th>
-										<th scope="col">Number</th>
-										<th scope="col">Price / Person</th>
-										<th scope="col">Price</th>
+										<th scope="col">Group</th>
+										<th scope="col">Price</th> 
+										<th scope="col">Total</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>Tickets / Shows</td>
-										<td>4</td>
-										<td>x50<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
-										<td class="text-end">150<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
-										</td>
-									</tr>
-									<tr>
-										<td>Family Group</td>
-										<td>4</td>
-										<td>x50<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
-										<td class="text-end">150<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
-										</td>
-									</tr>
-									<tr>
-										<td>Members</td>
-										<td>4</td>
-										<td>x50<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
-										<td class="text-end">150<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
-										</td>
-									</tr>
-									<tr>
-										<td>Bikes</td>
-										<td>4</td>
-										<td>x50<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
-										<td class="text-end">150<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
-										</td>
-									</tr>
-									<tr>
-										<td>3 or 4 Wheelers</td>
-										<td>4</td>
-										<td>x50<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i></td>
-										<td class="text-end">150<i
-											class="small ms-1 fa-solid fa-indian-rupee-sign"></i>
-										</td>
-									</tr>
+
 								</tbody>
 							</table>
 							<hr>
 							<div class="d-flex justify-content-between">
 								<h4 class="font-weight-bold">Grand Total</h4>
 								<h6></h6>
-								<h1 class="float-right righteous-regular"
-									style="font-size: 45px;">
-									365<i class="ms-1 fa-solid fa-indian-rupee-sign"></i>
+								<h1>
+									<span class="float-right righteous-regular"
+										style="font-size: 45px;" id="grandTotal">00</span><i
+										class="ms-1 fa-solid fa-indian-rupee-sign"></i>
 								</h1>
 							</div>
 							<div class="d-flex justify-content-center mb-5">
-								<button class="btn btn-primary p-3 mx-2">Save and
-									Print Ticket</button>
+								<button class="btn btn-primary p-3 mx-2">Save and Print
+									Ticket</button>
 								<button class="btn btn-secondary mx-2">Save only</button>
 							</div>
 						</div>
@@ -268,16 +241,5 @@
 		crossorigin="anonymous"></script>
 
 	<script type="text/javascript" th:src="@{/js/counter.js}"></script>
-	<script type="text/javascript" th:src="@{/js/tables.js}"></script>
-
-	<script>
-		$(document).ready(function(){
-			$('#form').on("submit",function(){
-				alert("FORM SUBMITTED");
-
-				return false;
-			});
-		});
-	</script>
 </body>
 </html>
