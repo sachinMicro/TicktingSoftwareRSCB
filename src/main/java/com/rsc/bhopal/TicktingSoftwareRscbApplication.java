@@ -9,10 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.rsc.bhopal.entity.ParkingDetails;
-import com.rsc.bhopal.entity.TicketsRatesMaster;
-import com.rsc.bhopal.entity.VisitorsType;
-import com.rsc.bhopal.enums.BillType;
 import com.rsc.bhopal.repos.ParkingDetailsRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
 import com.rsc.bhopal.service.TicketDetailsService;
