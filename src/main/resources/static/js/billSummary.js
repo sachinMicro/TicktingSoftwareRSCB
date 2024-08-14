@@ -64,6 +64,7 @@ function getFormFields($form) {
 	});
 }
 
+/*
 $(document).ready(function() {
 	$('.form-container .btn-group').eq(0).on("click", function() {
 		$(this).find(".btn-check");
@@ -99,3 +100,4 @@ $(document).ready(function() {
 		$('.form-container .counter .input-count').eq(0).val(0);
 	});
 });
+*/
