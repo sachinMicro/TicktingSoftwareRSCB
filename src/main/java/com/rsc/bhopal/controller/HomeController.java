@@ -38,7 +38,10 @@ public class HomeController {
 		attributes.put("tickets", tickets);
 		
 		attributes.put("groups", visitors.stream().filter(visitorType->
-		VisitorsTypeEnum.GROUP.equals(visitorType.getType())||VisitorsTypeEnum.SCHOOL.equals(visitorType.getType())
+		VisitorsTypeEnum.GROUP.equals(visitorType.getType())|| 
+		VisitorsTypeEnum.SCHOOL.equals(visitorType.getType())||
+		VisitorsTypeEnum.FREE.equals(visitorType.getType())||
+		VisitorsTypeEnum.SPECIAL.equals(visitorType.getType())	
 		).collect(Collectors.toList()));
 		
 		attributes.put("familyGroups", visitors.stream().filter(visitorType->

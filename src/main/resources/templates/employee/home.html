@@ -42,6 +42,7 @@
     max-height: 62vh;
     display: block;
     overflow-y: auto;
+    overflow-x: none;
 }
 td small{
  font-size:10px
@@ -70,15 +71,12 @@ td small{
 					</li>
 					<li class="nav-item dropdown d-none"><a
 						class="nav-link dropdown-toggle" href="#" role="button"
-						data-bs-toggle="dropdown" aria-expanded="false"> Dropdown </a>
+						data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="#">Action</a></li>
 							<li><a class="dropdown-item" href="#">Another action</a></li>
-							<li>
-								<hr class="dropdown-divider">
-							</li>
-							<li><a class="dropdown-item" href="#">Something else
-									here</a></li>
+							<li ><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="#">Something else here</a></li>
 						</ul></li>
 				</ul>
 				<form action="/logout" method="get" class="d-flex" role="search">
@@ -112,6 +110,11 @@ td small{
 									<label class="btn btn-outline-primary"
 										th:for="${'ticket'+index}" th:text="${ticket.name}">NA</label>
 								</th:block>
+								
+								<!-- <input type="checkbox" name="tickets" value="0"
+									class="btn-check" id="ticketsNone" autocomplete="off"
+									checked> <label class="btn btn-outline-primary"
+									for="ticketsNone">None</label> -->
 							</div>
 						</div>
 
@@ -199,13 +202,12 @@ td small{
 							<table class="table table-striped border" id="billSummary">
 								<thead class="bg-gray sticky-thead">
 									<tr>
-										<th scope="col" colspan="4">
+										<th scope="col" colspan="3">
 											<h5 class="m-0 ">bill summary</h5>
 										</th>
 									</tr>
 									<tr>
-										<th scope="col">Description</th>
-										<th scope="col">Group</th>
+										<th scope="col">Description & Group</th>
 										<th scope="col">Price</th> 
 										<th scope="col">Total</th>
 									</tr>
@@ -227,7 +229,7 @@ td small{
 							<div class="d-flex justify-content-center mb-5">
 								<button class="btn btn-primary p-3 mx-2">Save and Print
 									Ticket</button>
-								<button class="btn btn-secondary mx-2">Save only</button>
+								<button class="d-none btn btn-secondary mx-2">Save only</button>
 							</div>
 						</div>
 					</div>

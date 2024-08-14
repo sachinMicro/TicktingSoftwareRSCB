@@ -62,7 +62,7 @@ public class BillCalculatorService {
 	public BillSummarize summarizeBill(TicketSelectorDTO ticketSelectorDTO) {
 		
 		BillSummarize billSummarize = new BillSummarize();
-		
+		boolean nullfyParkingCharges=false;
 		if(ticketSelectorDTO.getFamilyGroup()==0) {
 			billSummarize.setBillDescription(summarizeTicketBill(ticketSelectorDTO));
 		}else {
