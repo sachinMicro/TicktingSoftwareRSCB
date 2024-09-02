@@ -18,7 +18,7 @@ $(document).ready(function () {
 			$(this).prop("checked", false)
 		});
 
-		$('#form').find('input[type=number][name=persons]').attr({'min': 1});
+		//$('#form').find('input[type=number][name=persons]').attr({'min': 1});
 	});
 
 	// Set minimum 25 limit on Persons otherwise 0 limit with min attributes

@@ -23,9 +23,7 @@ body,*{
 .box{
 /*  margin-top: 10px; */
   padding: 10px;
-  
  /*  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
-  
 }
 .table,th,td{
     vertical-align: middle;
@@ -104,7 +102,8 @@ thead{
     padding: .6rem .6rem;
 }
 #billSummary td ,#billSummary th{
- padding: 13px
+ padding: 13px;
+  font-weight: 600;
 }
 .righteous-regular {
     font-family: "Righteous", sans-serif;
