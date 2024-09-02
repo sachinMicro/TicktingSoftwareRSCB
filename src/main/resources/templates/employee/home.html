@@ -34,59 +34,26 @@
 <link
 	href="https://cdn.datatables.net/2.1.0/css/dataTables.bootstrap5.css"
 	rel="stylesheet">
- <script type="text/javascript" th:src="@{/js/billSummary.js}"></script>
- <script type="text/javascript" th:src="@{/js/validations.js}"></script>
+<script type="text/javascript" th:src="@{/js/billSummary.js}"></script>
+<script type="text/javascript" th:src="@{/js/validations.js}"></script>
 <style>
-
-#billSummary{
-    width: 100%;
-    max-height: 62vh;
-    display: block;
-    overflow-y: auto;
-    overflow-x: none;
+#billSummary {
+	width: 100%;
+	max-height: 62vh;
+	display: block;
+	overflow-y: auto;
+	overflow-x: none;
 }
-td small{
- font-size:10px
+
+td small {
+	font-size: 10px
 }
 </style>
 
 </head>
 
 <body>
-	<nav
-		class="navbar navbar-expand-lg bg-dark border-bottom border-body  py-3"
-		data-bs-theme="dark">
-		<div class="container-fluid">
-			<a class="navbar-brand" href="#">Regional Science Centre</a>
-			<button class="navbar-toggler" type="button"
-				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a class="nav-link active"
-						aria-current="page" href="#">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Reports</a>
-					</li>
-					<li class="nav-item dropdown d-none"><a
-						class="nav-link dropdown-toggle" href="#" role="button"
-						data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">Action</a></li>
-							<li><a class="dropdown-item" href="#">Another action</a></li>
-							<li ><hr class="dropdown-divider"></li>
-							<li><a class="dropdown-item" href="#">Something else here</a></li>
-						</ul></li>
-				</ul>
-				<form action="/logout" method="get" class="d-flex" role="search">
-					<button class="btn btn-danger" type="submit">Logout</button>
-				</form>
-			</div>
-		</div>
-	</nav>
-
+	<div th:replace="fragments/navbar::navbar"></div>
 	<div class="container-fluid">
 		<!--<form   action="#" enctype="application/x-www-form-urlencoded">-->
 		<form th:action="@{/bill/calculate}" id="form" method="POST"
@@ -111,7 +78,7 @@ td small{
 									<label class="btn btn-outline-primary"
 										th:for="${'ticket'+index}" th:text="${ticket.name}">NA</label>
 								</th:block>
-								
+
 								<!-- <input type="checkbox" name="tickets" value="0"
 									class="btn-check" id="ticketsNone" autocomplete="off"
 									checked> <label class="btn btn-outline-primary"
@@ -173,17 +140,18 @@ td small{
 							</div>
 						</div>
 						<div class="form-container">
-						
-							<h5>Choose Parking Vehicle Type</h5>							
-							
+
+							<h5>Choose Parking Vehicle Type</h5>
+
 							<th:block th:each="parkingDetail ,index : ${parkingDetails}">
-								<h6 class="m-0 mb-1" th:text="${parkingDetail.name}" ></h6>
+								<h6 class="m-0 mb-1" th:text="${parkingDetail.name}"></h6>
 								<div class="d-flex align-items-center mb-2 counter">
 									<button class="btn btn-outline-danger minus count"
 										type="button">
 										<i class="fa-solid fa-angles-down"></i>
 									</button>
-									<input class="input-count" th:name="${parkingDetail.idDsec}" value="0" type="number">
+									<input class="input-count" th:name="${parkingDetail.idDsec}"
+										value="0" type="number">
 									<button class="btn btn-outline-success plus count"
 										type="button">
 										<i class="fa-solid fa-angles-up"></i>
@@ -209,7 +177,7 @@ td small{
 									</tr>
 									<tr>
 										<th scope="col">Description & Group</th>
-										<th scope="col">Price</th> 
+										<th scope="col">Price</th>
 										<th scope="col">Total</th>
 									</tr>
 								</thead>
