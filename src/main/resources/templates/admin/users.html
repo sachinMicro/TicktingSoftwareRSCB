@@ -71,21 +71,21 @@ max-width: 250px;
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating">
 								<input type="text" name="name" class="form-control"
-									id="name" placeholder="Name" value=""> <label
+									id="name" placeholder="Name" value="" required> <label
 									for="name">Name</label>
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating">
 								<input type="text" name="username" class="form-control"
-									id="username" placeholder="Username" value=""> <label
+									id="username" placeholder="Username" value="" required> <label
 									for="username">Username</label>
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating d-flex">
 								<input type="text" name="password" class="form-control"
-									id="password" placeholder="Password" value=""> <label
+									id="password" placeholder="Password" value="" required> <label
 									for="password">Password</label>
 								<button class="btn d-none btn-danger ms-2  w-23">Show</button>
 							</div>
@@ -95,7 +95,7 @@ max-width: 250px;
 								aria-label="Basic checkbox toggle button group">
 								<th:block th:each="role : ${roles}">
 									<input type="checkbox" name="roles" class="btn-check"
-										th:value="${role.id}" th:id="${role.role}" autocomplete="off">
+										th:value="${role.id}" th:id="${role.role}" autocomplete="off" >
 									<label class="btn btn-outline-primary" th:for="${role.role}"
 										th:text="${role.role}"></label>
 								</th:block>
@@ -106,15 +106,12 @@ max-width: 250px;
 								<button type="submit" class="btn btn-success">Save User</button>
 							</div>
 						</div>
-
 					</div>
 				</form>
- <!-- ROLES -->
-
+             <!-- ROLES -->
 			</div>
-
 			<div class="col-12 mt-3">
-			<h2>All Users <small style="font-size:12px" class="text-danger">(Root User can not be deleted)</small></h2>
+			<h2>All Users <small style="font-size:12px" class="text-danger">(Root User can not be altered)</small></h2>
 				<table class="table table-striped border w-100" id="users">
 					<thead class="bg-gray">
 						<tr>

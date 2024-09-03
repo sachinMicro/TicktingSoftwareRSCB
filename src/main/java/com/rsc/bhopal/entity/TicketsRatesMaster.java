@@ -40,10 +40,10 @@ public class TicketsRatesMaster {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARKING_DET_ID",referencedColumnName = "ID")
 	private ParkingDetails  parkingDetails;
-	
-	
+		
 	@Column(name = "PRICE")
 	private Float price;
+	
 	
 	@Column(name = "IS_ACTIVE")
 	private Boolean isActive;
@@ -58,11 +58,10 @@ public class TicketsRatesMaster {
 	@Column(name = "BILL_TYPE")
 	private BillType billType;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "REVISED_BY",referencedColumnName = "ID")
     private RSCUser user;
 
-	
 	@Override
 	public String toString(){
 		return String.format("TicketsRatesMaster{ %s || %s || %d }", ticketType.getName(),visitorsType.getName(),Math.round(price));

@@ -1,11 +1,13 @@
 package com.rsc.bhopal.service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.BillDescription;
 import com.rsc.bhopal.dtos.BillSummarize;
 import com.rsc.bhopal.dtos.ParkingBillDescription;
@@ -13,11 +15,11 @@ import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.entity.TicketsRatesMaster;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@Slf4j
 public class BillCalculatorService {
 
 	@Autowired
@@ -28,6 +30,16 @@ public class BillCalculatorService {
 	
 	@Autowired
 	private ParkingService parkingService;
+	
+	@Autowired
+	private GeneratedTicketService generatedTicketService;
+	
+	
+	public void saveAndPrintTicket(TicketSelectorDTO dto,Principal user) throws JsonProcessingException {
+		generatedTicketService.saveAndPrintTicket(dto, user);
+	}
+	
+	
 	
 	public  List<ParkingBillDescription> getParkingBillDescription(int bikes , int threeFourWheeler){
 		
@@ -74,6 +86,7 @@ public class BillCalculatorService {
 		}
 		return billSummarize;
 	}
+
 	
 	public List<BillDescription> summarizeFamilyBill(long familyGroupId){
 		
@@ -132,12 +145,11 @@ public class BillCalculatorService {
         	totalAmount +=(ticketRate.getPrice()*ticketSelectorDTO.getPersons());
       
         }
-
-
-
 		return totalAmount;
 	}
 	
+	
+
 	
 	
 	

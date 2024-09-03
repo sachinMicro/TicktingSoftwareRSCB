@@ -30,7 +30,6 @@ public class TicketDetails {
 	@Column(name = "TICKET_NAME")
 	private String name;
 
-	
 	@OneToMany(mappedBy = "ticketType",fetch = FetchType.LAZY)
 	@JsonIgnore
 	@Transient

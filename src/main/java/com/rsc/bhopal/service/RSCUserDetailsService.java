@@ -35,6 +35,11 @@ public class RSCUserDetailsService {
 	@Autowired
 	private UserRoleRepository roleRepo;
 	
+	public RSCUser getUserByUsername(String username) {
+		return userRepo.findByUsername(username).get();		
+	}
+
+	
 	public List<UserRoleDTO> getAllRoles(){
 		List<UserRoleDTO> roleDTOs = new ArrayList<>();       
 		List<UserRole> roles = roleRepo.findAll();		

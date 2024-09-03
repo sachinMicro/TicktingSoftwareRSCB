@@ -6,6 +6,8 @@ import java.util.Set;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -53,5 +55,7 @@ public class RSCUser {
 	        joinColumns = {@JoinColumn(name = "user_id")},
 	        inverseJoinColumns = {@JoinColumn(name = "role_id")})
 	private Set<UserRole> roles;
+	
+	
 	
 }

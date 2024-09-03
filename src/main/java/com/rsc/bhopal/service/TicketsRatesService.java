@@ -25,13 +25,23 @@ public class TicketsRatesService {
 
 	@Autowired
 	private TicketsRatesMasterRepository ticketRateRepo;
+	
 	@Autowired
 	private VisitorTypeRepository vistorsTypeRepo;
 
+	
+	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId){
+		 List<TicketsRatesMaster> rates = new ArrayList<>();
+		 tickets.forEach(ticket->{
+			 rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
+		 });		 
+		 return rates;
+    }
+	
+	
 	public List<Long> getTicketsByGroup(long familyGroupId){
 		return ticketRateRepo.getTicketsByGroup(familyGroupId);
 	}
-	
 	
 	public TicketsRatesMasterDTO getTicketRateByGroup(long ticketId, long groupId) {
 		TicketsRatesMaster ticketRate = ticketRateRepo.findByGroupAndTicketIds(ticketId, groupId);
