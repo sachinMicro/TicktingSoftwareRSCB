@@ -3,13 +3,13 @@ package com.rsc.bhopal.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rsc.bhopal.repos.BillSummaryRepository;
+import com.rsc.bhopal.repos.TicketBillRowRepository;
 
 @Service
-public class BillSummaryService {
+public class TicketBillRowService {
 
 	@Autowired
-	BillSummaryRepository billSummRepo;
+	TicketBillRowRepository billSummRepo;
 	
 	
 	

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.BillSummarize;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
 import com.rsc.bhopal.service.BillCalculatorService;
+import com.rsc.bhopal.service.TicketBillService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,9 @@ public class BillController {
 	@Autowired
 	private BillCalculatorService billCalculator;
 	
+	@Autowired	
+	private TicketBillService ticketBillService;
+	
 	@PostMapping("/calculate")	
 	public @ResponseBody BillSummarize calculateBill(@ModelAttribute TicketSelectorDTO ticketSelector) {
 		log.debug("Ticket Selector "+ticketSelector);		
@@ -34,7 +38,7 @@ public class BillController {
 	@PostMapping("/print")	
 	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector,Principal user) throws JsonProcessingException {
 		log.debug("Ticket Selector "+ticketSelector);		
-		billCalculator.saveAndPrintTicket(ticketSelector,user);	
+		ticketBillService.saveAndPrintTicket(ticketSelector,user);	
 		return "redirect:/home";
 		
 	}

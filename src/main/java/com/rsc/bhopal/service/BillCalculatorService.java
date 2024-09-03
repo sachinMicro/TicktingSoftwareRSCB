@@ -31,15 +31,7 @@ public class BillCalculatorService {
 	@Autowired
 	private ParkingService parkingService;
 	
-	@Autowired
-	private GeneratedTicketService generatedTicketService;
-	
-	
-	public void saveAndPrintTicket(TicketSelectorDTO dto,Principal user) throws JsonProcessingException {
-		generatedTicketService.saveAndPrintTicket(dto, user);
-	}
-	
-	
+
 	
 	public  List<ParkingBillDescription> getParkingBillDescription(int bikes , int threeFourWheeler){
 		

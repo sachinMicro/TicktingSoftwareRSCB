@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class GeneratedTicketDTO {
+public class TicketBillDTO {
 	
 	private Long id;	
 	
@@ -14,7 +14,8 @@ public class GeneratedTicketDTO {
 	private Double price;
 	
     private String generatedBy;
-
+    
+    private BillSummarize billSummarize;
    // List<BillSummary> billSummary;
 	
 }

@@ -23,8 +23,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_TICKET_SUMMARY")
-public class GeneratedTicket {
+@Table(name = "RCS_TS_TICKET_BILL")
+public class TicketBill {
 	
 	@Id
 	@Column(name = "ID")
@@ -34,9 +34,15 @@ public class GeneratedTicket {
 	@Column(name = "GENERATED_AT")
 	private Date generatedAt;
 	
-	@Column(name = "TOTAL_SUM")
+	@Column(name = "TOTAL_BILL")
 	private Double price;
 	
+	@Column(name = "PERSONS")
+	private int persons;
+	
+	@Column(name = "TICKET_PAYLOAD")
+	private String ticketPayload;
+		
 	@ManyToOne
 	@JoinColumn(name = "GENERATED_BY",referencedColumnName = "ID")
     private RSCUser generatedBy;
@@ -44,7 +50,7 @@ public class GeneratedTicket {
 	@JsonIgnore
 	@OneToMany(mappedBy = "generatedTicket",fetch = FetchType.LAZY)	
 	@Cascade(CascadeType.ALL)
-    List<BillSummary> billSummary;
+    List<TicketBillRow> billSummary;
 
 	@Override
 	public String toString() {

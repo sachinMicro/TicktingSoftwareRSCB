@@ -28,6 +28,7 @@ body,*{
 .table,th,td{
     vertical-align: middle;
     font-size: 12px  !important; 
+    font-weight: 600 !important; 
 }
 .bg-gray {
     background-color: #ededed !important;

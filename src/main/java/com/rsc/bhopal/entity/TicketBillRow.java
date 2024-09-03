@@ -15,18 +15,15 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_TICKET_BILL_SUMMARY")
-public class BillSummary {
+@Table(name = "RCS_TS_TICKET_BILL_ROWS")
+public class TicketBillRow {
 	
 	@Id
 	@Column(name = "ID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "PERSONS")
-	private int persons;
-	
-	@Column(name = "SUM")
+	@Column(name = "TIKCET_PRICE")
 	private Float price;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +33,6 @@ public class BillSummary {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TICKET_ID",referencedColumnName = "ID")
-	private GeneratedTicket generatedTicket;
+	private TicketBill generatedTicket;
 	
 }

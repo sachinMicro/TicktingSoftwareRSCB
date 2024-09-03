@@ -2,6 +2,7 @@ package com.rsc.bhopal.service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,12 +15,13 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.rsc.bhopal.dtos.GeneratedTicketDTO;
+import com.rsc.bhopal.dtos.BillSummarize;
+import com.rsc.bhopal.dtos.TicketBillDTO;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
-import com.rsc.bhopal.entity.BillSummary;
-import com.rsc.bhopal.entity.GeneratedTicket;
+import com.rsc.bhopal.entity.TicketBill;
+import com.rsc.bhopal.entity.TicketBillRow;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
-import com.rsc.bhopal.repos.GeneratedTicketRepository;
+import com.rsc.bhopal.repos.TicketBillRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class GeneratedTicketService {
+public class TicketBillService {
 	
 	@Autowired
-	GeneratedTicketRepository generatedTicketRepo;
+	TicketBillRepository generatedTicketRepo;
 	
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
@@ -38,18 +40,26 @@ public class GeneratedTicketService {
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
 	
+	@Autowired
+	private BillCalculatorService billCalculator;
 	
-	public List<GeneratedTicketDTO> getRecentTickets(int rows){
-		List<GeneratedTicketDTO> ticketDTOs = new ArrayList();
+	
+	public List<TicketBillDTO> getRecentTickets(int rows){
+		List<TicketBillDTO> ticketDTOs = new ArrayList();
 		Pageable page=PageRequest.of(0, rows, Sort.by(Direction.DESC, "id"));		
-		List<GeneratedTicket> tickets=generatedTicketRepo.recentRecords(page);		
+		List<TicketBill> tickets=generatedTicketRepo.recentRecords(page);	
+		
 		tickets.forEach(ticket->{
-			log.debug(ticket.toString());
-			GeneratedTicketDTO ticketDTO = new GeneratedTicketDTO();
+			TicketBillDTO ticketDTO = new TicketBillDTO();
 			BeanUtils.copyProperties(ticket, ticketDTO);
-			ticketDTO.setGeneratedBy(ticket.getGeneratedBy().getName());		
+			ticketDTO.setGeneratedBy(ticket.getGeneratedBy().getName());
+			ticketDTO.setBillSummarize( CommonUtills.convertJSONToObject(ticket.getTicketPayload(),BillSummarize.class));
+			log.debug(ticket.toString());
 			ticketDTOs.add(ticketDTO);
 		});		
+			
+		
+		
 		return ticketDTOs;
 	}
 	
@@ -57,26 +67,27 @@ public class GeneratedTicketService {
 	public void saveAndPrintTicket(TicketSelectorDTO dto,Principal user) throws JsonProcessingException {
 	     //GeneratedTicket	
 		 List<TicketsRatesMaster> rates = ticketsRatesService.getTicketRateByGroup(dto.getTickets(), dto.getGroup());
-         List<BillSummary> billRows = new ArrayList<>();
+         List<TicketBillRow> billRows = new ArrayList<>();
          Double totalPrice = 0d;
          
-         GeneratedTicket generatedTicket=new GeneratedTicket(); 
+         TicketBill generatedTicket=new TicketBill(); 
          
          generatedTicket.setGeneratedAt(new Date());
          generatedTicket.setGeneratedBy(userDetailsService.getUserByUsername(user.getName()));
-         
+         generatedTicket.setPersons(dto.getPersons());
          generatedTicket=generatedTicketRepo.save(generatedTicket);
          
          for(TicketsRatesMaster rate:rates) {
-        	 BillSummary billRow = new BillSummary();			 
-			 billRow.setPersons(dto.getPersons());
+        	 TicketBillRow billRow = new TicketBillRow();		
 			 billRow.setPrice(dto.getPersons()*rate.getPrice());             
 			 billRow.setRate(rate);
 			 totalPrice+=billRow.getPrice();
 			 billRow.setGeneratedTicket(generatedTicket);	
 			 billRows.add(billRow);
          }
-		
+         BillSummarize billSummarize = billCalculator.summarizeBill(dto);         
+         
+         generatedTicket.setTicketPayload(CommonUtills.convertToJSON(billSummarize));         
 		 generatedTicket.setPrice(totalPrice);
 		 generatedTicket.setBillSummary(billRows);
 		 generatedTicketRepo.save(generatedTicket);

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.rsc.bhopal.dtos.GeneratedTicketDTO;
-import com.rsc.bhopal.service.GeneratedTicketService;
+import com.rsc.bhopal.dtos.TicketBillDTO;
+import com.rsc.bhopal.service.TicketBillService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,12 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 public class TicketController {
 	
 	@Autowired
-	GeneratedTicketService generatedTicketService;
+	TicketBillService ticketBillService;
 	
-	@GetMapping("/recent/{rows}")
-	public String recentTickets(@PathVariable("rows") Integer rows,Map<String,Object> mapAttributes) {		
-		log.debug("RECENT"+rows);				
-		List<GeneratedTicketDTO> generatedTickets = generatedTicketService.getRecentTickets(rows);		
+	@GetMapping(path = {"/recent/{rows}","/recent/"})
+	public String recentTickets(@PathVariable(name =  "rows",required = false) Integer rows,Map<String,Object> mapAttributes) {		
+		log.debug("RECENT"+rows);	
+		rows=rows==null?10:rows;
+		List<TicketBillDTO> generatedTickets = ticketBillService.getRecentTickets(rows);
+		
 		mapAttributes.put("tickets", generatedTickets);			
 		return "tickets/recent";
 	}
