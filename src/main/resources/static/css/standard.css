@@ -114,4 +114,8 @@ thead{
   .badge{
   letter-spacing:0.025cm;
   }
+  .form-control,.form-select{
+  font-weight: 600;
+  }
+  
   

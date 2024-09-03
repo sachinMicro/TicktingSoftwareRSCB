@@ -60,7 +60,7 @@ public class TicketsRatesMaster {
 	
 	@OneToOne
 	@JoinColumn(name = "REVISED_BY",referencedColumnName = "ID")
-    private User user;
+    private RSCUser user;
 
 	
 	@Override
