@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.rsc.bhopal.dtos.NewTicketRate;
+import com.rsc.bhopal.dtos.ResponseMessage;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.entity.TicketDetails;
@@ -36,7 +40,7 @@ public class TicketsRatesService {
 			 rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
 		 });		 
 		 return rates;
-    }
+	}
 	
 	
 	public List<Long> getTicketsByGroup(long familyGroupId){
@@ -90,8 +94,57 @@ public class TicketsRatesService {
 	public List<TicketsRatesMaster> getTicketsRatesMasters() {
 		return ticketRateRepo.findAll();
 	}
-	
-	
-	
-	
+
+	public ResponseEntity<ResponseMessage> updatePrice(NewTicketRate newTicketRate){
+		TicketsRatesMaster newRateMaster = new TicketsRatesMaster();
+		TicketsRatesMaster rateMaster = ticketRateRepo.findByGroupAndTicketIds(newTicketRate.getTicketId(), newTicketRate.getGroupId());
+
+		ResponseMessage responseMessage = new ResponseMessage();
+
+		try {
+			if (rateMaster.getIsActive() && rateMaster.getPrice() != newTicketRate.getPrice()) {
+				rateMaster.setIsActive(false);
+				rateMaster = ticketRateRepo.save(rateMaster);
+
+				BeanUtils.copyProperties(rateMaster, newRateMaster);
+				newRateMaster.setId(null);
+				log.debug("Set new price: " + newTicketRate.getPrice() + " for Ticket ID: " + newTicketRate.getTicketId(), ", Visitor ID: " + newTicketRate.getGroupId() + "and Group ID");
+				newRateMaster.setPrice(newTicketRate.getPrice());
+				newRateMaster.setIsActive(true);
+				newRateMaster.setRevisedAt(java.util.Date.from(java.time.Instant.now()));
+				newRateMaster.setRevisionNo(rateMaster.getRevisionNo() == null ? 1 : rateMaster.getRevisionNo() + 1);
+				// log.debug(rateMaster.getUser().getName());
+				// newRateMaster.setUser(rateMaster.getUser());
+				newRateMaster.setUser(rateMaster.getUser());
+				ticketRateRepo.save(newRateMaster);
+
+				// return "Price changed";
+				responseMessage.setStatus(true);
+				responseMessage.setMessage("Price successfully updated");
+				return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
+			}
+		}
+		catch (NullPointerException ex) {
+			log.debug(ex.getMessage());
+
+			// return "Tables inconsistant.";
+			responseMessage.setStatus(false);
+			responseMessage.setMessage("Table inconsistant");
+			return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
+		}
+		catch (Exception ex) {
+			log.debug(ex.getMessage());
+
+			// return ex.getMessage();
+			responseMessage.setStatus(false);
+			responseMessage.setMessage(ex.getMessage());
+			return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
+		}
+
+		// return "";
+		responseMessage.setStatus(false);
+		responseMessage.setMessage("");
+		return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
+	}
+
 }

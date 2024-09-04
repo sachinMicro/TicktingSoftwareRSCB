@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.ResponseExtractor;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.RSCUserDTO;
+import com.rsc.bhopal.dtos.ResponseMessage;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketRate;
 import com.rsc.bhopal.dtos.TicketRateByGroup;
@@ -49,13 +52,10 @@ public class AdminController {
 
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
-	
-	
+
 	@GetMapping("/rates")
 	public String rates(Map<String, Object> attributes) {
-
 		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();
-
 		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getAllActiveVisitorTypes()
 				.stream()
 				.filter(dto ->
@@ -73,7 +73,6 @@ public class AdminController {
 			TicketRate rate = new TicketRate();
 			rate.setTicketId(ticket.getId());
 			rate.setTicketName(ticket.getName());
-
 
 			vistoryList.forEach(visitor->{
 				try{
@@ -94,21 +93,15 @@ public class AdminController {
 		return "admin/rates";
 	}
 
-	
-	
 	@PostMapping("/rates/update")
-	public @ResponseBody String updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {
+	public @ResponseBody ResponseEntity<ResponseMessage> updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {
 		log.debug(user.getName());
-		log.debug(newTicketRate.toString());	
-		
-		
-		
-		//return newTicketRate.toString();
-		
-		
-		return "success";
+		log.debug(newTicketRate.toString());		
+		// return newTicketRate.toString();
+		return ticketsRatesService.updatePrice(newTicketRate);
+
 	}
-	
+
 	@GetMapping("/users")
 	public String showUsers(Map<String, Object> attributes) {
 		List<UserRoleDTO> roles = userDetailsService.getAllRoles();		
@@ -117,23 +110,23 @@ public class AdminController {
 		attributes.put("roles", roles);
 		return "admin/users";
 	}
-	
+
 	@PostMapping("/users/add")
 	public String addUsers(@ModelAttribute RSCUserDTO user) {
-	    log.debug(user.toString());	    
-	    userDetailsService.addUser(user);
+		log.debug(user.toString());
+		userDetailsService.addUser(user);
 		return "redirect:/admin/users";
 	}
-	
+
 	@PostMapping("/users/status")
 	public String changeStatus(@RequestParam("username") String username) {
-	    userDetailsService.changeUserStatus(username);	    
+		userDetailsService.changeUserStatus(username);
 		return "redirect:/admin/users";
 	}
-	
+
 	@PostMapping("/users/password")
 	public String changePassword(@RequestParam("username") String username,@RequestParam("password") String password) {
-	    userDetailsService.changeUserPassword(username,password);	    
+		userDetailsService.changeUserPassword(username,password);
 		return "redirect:/admin/users";
 	}
 }
