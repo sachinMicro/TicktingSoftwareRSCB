@@ -90,4 +90,8 @@ public class TicketsRatesService {
 	public List<TicketsRatesMaster> getTicketsRatesMasters() {
 		return ticketRateRepo.findAll();
 	}
+	
+	
+	
+	
 }

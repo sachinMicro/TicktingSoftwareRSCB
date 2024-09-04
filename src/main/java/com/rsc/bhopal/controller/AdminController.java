@@ -31,7 +31,7 @@ import com.rsc.bhopal.service.VisitorTypeService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/manage")
 @Slf4j
 public class AdminController {
 
@@ -56,7 +56,7 @@ public class AdminController {
 
 		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();
 
-		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getAllVisitorTypes()
+		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getAllActiveVisitorTypes()
 				.stream()
 				.filter(dto ->
 				// !dto.getType().equals(VisitorsTypeEnum.FAMILY)&&
@@ -66,7 +66,7 @@ public class AdminController {
 				true
 				).collect(Collectors.toList());
 
-		List<TicketDetailsDTO> tickets = ticketDetailsService.getAllTickets();
+		List<TicketDetailsDTO> tickets = ticketDetailsService.getAllActiveTickets();
 
 		for(TicketDetailsDTO ticket: tickets ){
 			Map<Long, Float> prices = new HashMap<Long, Float>();
@@ -99,8 +99,13 @@ public class AdminController {
 	@PostMapping("/rates/update")
 	public @ResponseBody String updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {
 		log.debug(user.getName());
-		log.debug(newTicketRate.toString());		
+		log.debug(newTicketRate.toString());	
+		
+		
+		
 		//return newTicketRate.toString();
+		
+		
 		return "success";
 	}
 	

@@ -42,6 +42,7 @@
 
 
 <link th:href="@{/css/standard.css}" rel="stylesheet" />
+
 <style type="text/css">
 #billSummary {
 	width: 100%;
@@ -53,78 +54,71 @@
 td small {
 	font-size: 10px
 }
-</style>
 
-<script type="text/javascript">
-//Hello
-			function sendUpdate($field) {
-				const value = $field.val();
-				const $form = $field.closest("form");
-				$.ajax({
-					url: $form.attr("action"),
-					method: $form.attr("method"),
-					data: $form.serialize(),
-					processData: false,
-					contentType: "application/x-www-form-urlencoded",
-					success: function(response) {
-						 showToast("Message","Rates updated Succesfully.",true);
-					},
-					error: function(xhr, status, error) {
-						console.error("This field did not update.");
-					}
-				});
-			}
-			$(document).ready(function() {
-				$(document).find(".form-control").on("focusout", function() {
-					// $(this).closest("form").submit();
-					sendUpdate($(this));
-				});
-			});
-		</script>
+.mw-250 {
+	max-width: 250px;
+}
+</style>
 </head>
 <body>
+
 	<div th:replace="fragments/navbar::navbar"></div>
 
-	<div th:replace="fragments/toast::toast"></div>
 	<div class="container-fluid">
-	<div class="row">
-		<div class="col-12 mt-3 p-2 container">
-          <div style="overflow-x:scroll;" >
-           	<table class="table table-striped border w-100" >
-				<thead class="bg-gray">
-					<tr>
-						<th scope="col">Ticket</th>
-						<th scope="col" th:each="ticket, index : ${ticketRates.groups}">
-							<span th:text="${ticket}"></span>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="ticket : ${ticketRates.ticketRates}">
-						<td scope="col" th:text="${ticket.ticketName}"></td>
-						<th:block th:each="price : ${ticket.prices}">
-							<!-- <td scope="col" th:text="'₹' + ${price}"></td> -->
-							<td>
-								<form method="POST" th:action="@{/manage/rates/update}" class="d-flex">
-									<input type="hidden" name="ticketId" placeholder="Ticket ID"
-										th:value="${ticket.ticketId}" /> <input type="hidden"
-										name="groupId" placeholder="Group ID" th:value="${price.key}" />
-									<input class="form-control" type="number" name="price"
-										placeholder="new rate" th:value="${price.value}" />
-									<button class="btn btn-outline-secondary ms-1">
-										<i class="fa-solid fa-check-double"></i>
-									</button>
-								</form>
-							</td>
-						</th:block>
-					</tr>
-				</tbody>
-			</table>
-          </div>
+		<div class="row">
+			<div class="col-12 mt-3">
+				<form th:action="@{/manage/tickets/add}" method="post">
+					<div class="row g-2">
+						<div class="col-12">
+							<h2 class="m-0">Add Ticket</h2>
+						</div>
+						<div class="col-lg-3 col-md-3">
+							<div class="form-floating">
+								<input type="text" name="name" class="form-control" id="name"
+									placeholder="Name" value="" required> <label for="name">Ticket Name</label>
+							</div>
+						</div>			
+						<div class="col-lg-auto col-md-auto d-flex  align-items-center">
+							<div class="btn-group">
+								<button type="submit" class="btn btn-success">Save Ticket</button>
+							</div>
+						</div>
+					</div>
+				</form>
+				<!-- ROLES -->
+			</div>
+			<div class="col-12 mt-3">
+				<h2>
+					All Tickets 
+				</h2>
+		<table class="table table-striped border w-100" id="tickets">
+					<thead class="bg-gray">
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Added At</th>
+							<th scope="col">Added By</th>
+							<th scope="col" >Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="ticket : ${tickets}">
+							<td scope="col" th:text="${ticket.name}"></td>
+							<td scope="col" th:text="${ticket.addedAt}"></td>
+							<td scope="col" th:text="${ticket.addedBy}"></td>		
+							<td scope="col" >
+							<form th:action="@{/admin/tickets/status}" method="post">
+							    <input type="hidden" name="ticketId" th:value="${ticket.id}">
+							    <button class="btn " th:classappend="${ticket.isActive?'btn-danger':'btn-success'}" th:text="${ticket.isActive?'Inactive':'Active'}"></button>							
+							</form>	
+							</td>												
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-	</div>
-	<script>
+</body>
+<script>
 	$(document).ready(function() {
 		var tableConfig = {
 			info : true,
@@ -134,8 +128,7 @@ td small {
 			responsive : true,
 			destroy : true
 		};
-		new DataTable('#rates', tableConfig);
+		new DataTable('#tickets', tableConfig);
 	});
 </script>
-</body>
 </html>

@@ -42,8 +42,7 @@ public class TicketBillService {
 	
 	@Autowired
 	private BillCalculatorService billCalculator;
-	
-	
+
 	public List<TicketBillDTO> getRecentTickets(int rows){
 		List<TicketBillDTO> ticketDTOs = new ArrayList();
 		Pageable page=PageRequest.of(0, rows, Sort.by(Direction.DESC, "id"));		
@@ -56,10 +55,7 @@ public class TicketBillService {
 			ticketDTO.setBillSummarize( CommonUtills.convertJSONToObject(ticket.getTicketPayload(),BillSummarize.class));
 			log.debug(ticket.toString());
 			ticketDTOs.add(ticketDTO);
-		});		
-			
-		
-		
+		});	
 		return ticketDTOs;
 	}
 	

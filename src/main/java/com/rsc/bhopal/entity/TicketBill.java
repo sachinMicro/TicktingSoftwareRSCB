@@ -19,6 +19,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 
 @Data
@@ -32,6 +34,7 @@ public class TicketBill {
 	private Long id;	
 	
 	@Column(name = "GENERATED_AT")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date generatedAt;
 	
 	@Column(name = "TOTAL_BILL")
@@ -47,6 +50,8 @@ public class TicketBill {
 	@JoinColumn(name = "GENERATED_BY",referencedColumnName = "ID")
     private RSCUser generatedBy;
 
+	
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "generatedTicket",fetch = FetchType.LAZY)	
 	@Cascade(CascadeType.ALL)

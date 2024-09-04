@@ -118,4 +118,8 @@ thead{
   font-weight: 600;
   }
   
+  .dropdown-item:focus, .dropdown-item:hover {
+    color: var(--bs-dropdown-link-hover-color);
+    background-color: #838383;
+}
   

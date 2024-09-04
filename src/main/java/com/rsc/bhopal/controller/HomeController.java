@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.rsc.bhopal.dtos.TicketBillDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
-import com.rsc.bhopal.enums.VisitorsTypeEnum;
+import com.rsc.bhopal.enums.VisitorsCategoryEnum;
 import com.rsc.bhopal.service.ParkingService;
+import com.rsc.bhopal.service.TicketBillService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.VisitorTypeService;
 
@@ -38,19 +41,19 @@ public class HomeController {
 		attributes.put("tickets", tickets);
 		
 		attributes.put("groups", visitors.stream().filter(visitorType->
-		VisitorsTypeEnum.GROUP.equals(visitorType.getType())|| 
-		VisitorsTypeEnum.SCHOOL.equals(visitorType.getType())||
-		VisitorsTypeEnum.FREE.equals(visitorType.getType())||
-		VisitorsTypeEnum.SPECIAL.equals(visitorType.getType())	
+		VisitorsCategoryEnum.GROUP.equals(visitorType.getCategory())|| 
+		VisitorsCategoryEnum.SCHOOL.equals(visitorType.getCategory())||
+		VisitorsCategoryEnum.FREE.equals(visitorType.getCategory())||
+		VisitorsCategoryEnum.SPECIAL.equals(visitorType.getCategory())	
 		).collect(Collectors.toList()));
 		
 		attributes.put("familyGroups", visitors.stream().filter(visitorType->
-		VisitorsTypeEnum.FAMILY.equals(visitorType.getType())
+		VisitorsCategoryEnum.FAMILY.equals(visitorType.getCategory())
 		).collect(Collectors.toList()));
 		
 
 		attributes.put("generalVistor", visitors.stream().filter(visitorType->
-		VisitorsTypeEnum.GENERAL.equals(visitorType.getType())
+		VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())
 		).findFirst().get());
 		
 		attributes.put("parkingDetails",parkingService.getParkingDetails());
@@ -59,5 +62,10 @@ public class HomeController {
 		
 		return "employee/home";
 	}
+	
+
+
+	
+	
 
 }
