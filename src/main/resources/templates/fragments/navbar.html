@@ -7,7 +7,7 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item">
-							<a class="nav-link active" aria-current="page" th:href="@{/home}">Home</a></li>
+							<a class="nav-link " aria-current="page" th:href="@{/home}">Home</a></li>
 						<li class="nav-item">
 							<a class="nav-link" th:href="@{/admin/rates}" >Rates</a>
 						</li>
@@ -24,4 +24,15 @@
 					</form>
 				</div>
 			</div>
-		</nav>
+			<script>
+			    $(document).ready(function(){
+			    	let url = $(location).attr('href').toUpperCase();
+			    	$('.nav-link').each(function(){			    		
+			    		if(url.includes($(this).text().toUpperCase())){
+			    			$(this).attr("class","nav-link active")
+			    		 }			    		
+			    	});
+			    });
+			//$(location).attr('href')
+			</script>
+</nav>

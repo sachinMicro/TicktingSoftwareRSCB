@@ -25,9 +25,8 @@ body,*{
   padding: 10px;
  /*  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
-.table,th,td{
-    vertical-align: middle;
-    font-size: 12px  !important; 
+.table,th,td,span{
+    vertical-align: middle; 
     font-weight: 600 !important; 
 }
 .bg-gray {
