@@ -106,7 +106,7 @@ td small {
 							<td scope="col" th:text="${ticket.addedAt}"></td>
 							<td scope="col" th:text="${ticket.addedBy}"></td>		
 							<td scope="col" >
-							<form th:action="@{/admin/tickets/status}" method="post">
+							<form th:action="@{/manage/tickets/status}" method="post">
 							    <input type="hidden" name="ticketId" th:value="${ticket.id}">
 							    <button class="btn " th:classappend="${ticket.isActive?'btn-danger':'btn-success'}" th:text="${ticket.isActive?'Inactive':'Active'}"></button>							
 							</form>	

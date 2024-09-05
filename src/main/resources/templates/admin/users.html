@@ -144,7 +144,7 @@ max-width: 250px;
 							</td>				
 							<td><span  style="font-weight:bold" th:class="${user.isActive?'text-success':'text-danger'}"  th:text="${user.isActive?'Active':'Inactive'}"></span> </td>
 							<td scope="col" >
-							<form th:action="@{/admin/users/status}" method="post">
+							<form th:action="@{/manage/users/status}" method="post">
 							    <input type="hidden" name="username" th:value="${user.username}">
 							    <button class="btn " th:classappend="${user.isActive?'btn-danger':'btn-success'}" th:text="${user.isActive?'Inactive':'Active'}"></button>							
 							</form>						  
