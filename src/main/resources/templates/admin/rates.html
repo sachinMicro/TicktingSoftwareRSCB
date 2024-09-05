@@ -46,10 +46,10 @@
 			}
 			$(document).ready(function() {
 				$(document).find("form").on("submit", function() {
-					const previousPrice = parseFloat($(this).find("input[name=previousPrice]").val());
+					const previousPrice = parseFloat($(this).find("input[name=actualPrice]").val());
 					const price = parseFloat($(this).find("input[name=price]").val());
 					if (previousPrice == price) {
-						showToast("Check price field!", "Same values will not submit.", false);
+						showToast("Check price field!", "Price is unchanged", false);
 					}
 					else {
 						sendUpdate($(this));
@@ -86,7 +86,7 @@
 											th:value="${ticket.ticketId}" />
 										<input type="hidden"
 											name="groupId" placeholder="Group ID" th:value="${price.key}" />
-										<input class="form-control" type="hidden" name="previousPrice" disabled
+										<input class="form-control" type="hidden" name="actualPrice" disabled
 											placeholder="Initial price" th:value="${#numbers.formatDecimal(price.value, 0, 'COMMA', 0, 'POINT')}" />
 										<input class="form-control" type="number" name="price"
 											placeholder="new rate" th:value="${#numbers.formatDecimal(price.value, 0, 'COMMA', 0, 'POINT')}" />

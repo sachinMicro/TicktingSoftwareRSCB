@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_ROLES")
+@Table(name = "RSC_TS_ROLES")
 public class UserRole {
 	  
 		@Id

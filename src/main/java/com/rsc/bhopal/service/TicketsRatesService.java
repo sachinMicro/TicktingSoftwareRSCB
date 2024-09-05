@@ -2,6 +2,7 @@ package com.rsc.bhopal.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,15 @@ import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.ResponseMessage;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
+import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.entity.VisitorsType;
+import com.rsc.bhopal.enums.BillType;
+import com.rsc.bhopal.repos.TicketDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
-
-import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +35,11 @@ public class TicketsRatesService {
 	
 	@Autowired
 	private VisitorTypeRepository vistorsTypeRepo;
-
+	
+	@Autowired
+	private TicketDetailsRepository  ticketDetailsRepo;
+	@Autowired
+	private RSCUserDetailsService userDetailsService;
 	
 	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId){
 		 List<TicketsRatesMaster> rates = new ArrayList<>();
@@ -95,14 +102,36 @@ public class TicketsRatesService {
 		return ticketRateRepo.findAll();
 	}
 
-	public ResponseEntity<ResponseMessage> updatePrice(NewTicketRate newTicketRate){
+	public  void updateOrAddNewPrice(NewTicketRate newTicketRate,String username){		
+		Integer count =  ticketRateRepo.checkIfRateIsAvaiable(newTicketRate.getTicketId(), newTicketRate.getGroupId());
+        log.debug("checkIfRateIsAvaiable "+count);
+        RSCUser user =   userDetailsService.getUserByUsername(username);
+        if(count==0) { 
+        	  addNewRate(newTicketRate,user);
+        }else {
+        	updatePrice(newTicketRate,user);
+        }
+      
+	}
+	
+	public void addNewRate(NewTicketRate newTicketRate,RSCUser user ) {		
+		TicketsRatesMaster ticketRate = new TicketsRatesMaster();		
+    	Optional<TicketDetails> ticket =  ticketDetailsRepo.findById(newTicketRate.getTicketId());
+    	Optional<VisitorsType> visitorType =  vistorsTypeRepo.findById(newTicketRate.getGroupId());    	
+    	ticketRate.setBillType(BillType.TICKET);
+    	ticketRate.setIsActive(true);
+    	ticketRate.setPrice(newTicketRate.getPrice());
+    	ticketRate.setRevisionNo(0);
+    	ticketRate.setUser(user);
+    	ticketRate.setTicketType(ticket.get());
+    	ticketRate.setVisitorsType(visitorType.get());    	
+    	ticketRateRepo.save(ticketRate);    	
+	}
+	
+	public void updatePrice(NewTicketRate newTicketRate,RSCUser user){
 		TicketsRatesMaster newRateMaster = new TicketsRatesMaster();
 		TicketsRatesMaster rateMaster = ticketRateRepo.findByGroupAndTicketIds(newTicketRate.getTicketId(), newTicketRate.getGroupId());
-
-		ResponseMessage responseMessage = new ResponseMessage();
-
-		try {
-			if (rateMaster.getIsActive() && rateMaster.getPrice() != newTicketRate.getPrice()) {
+        if (rateMaster.getIsActive() && rateMaster.getPrice() != newTicketRate.getPrice()) {
 				rateMaster.setIsActive(false);
 				rateMaster = ticketRateRepo.save(rateMaster);
 
@@ -113,38 +142,10 @@ public class TicketsRatesService {
 				newRateMaster.setIsActive(true);
 				newRateMaster.setRevisedAt(java.util.Date.from(java.time.Instant.now()));
 				newRateMaster.setRevisionNo(rateMaster.getRevisionNo() == null ? 1 : rateMaster.getRevisionNo() + 1);
-				// log.debug(rateMaster.getUser().getName());
-				// newRateMaster.setUser(rateMaster.getUser());
-				newRateMaster.setUser(rateMaster.getUser());
+				// log.debug(rateMaster.getUser().getName());				
+				newRateMaster.setUser(user);
 				ticketRateRepo.save(newRateMaster);
-
-				// return "Price changed";
-				responseMessage.setStatus(true);
-				responseMessage.setMessage("Price successfully updated");
-				return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
 			}
 		}
-		catch (NullPointerException ex) {
-			log.debug(ex.getMessage());
-
-			// return "Tables inconsistant.";
-			responseMessage.setStatus(false);
-			responseMessage.setMessage("Table inconsistant");
-			return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
-		}
-		catch (Exception ex) {
-			log.debug(ex.getMessage());
-
-			// return ex.getMessage();
-			responseMessage.setStatus(false);
-			responseMessage.setMessage(ex.getMessage());
-			return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
-		}
-
-		// return "";
-		responseMessage.setStatus(false);
-		responseMessage.setMessage("");
-		return new ResponseEntity<ResponseMessage>(responseMessage, HttpStatus.OK);
-	}
 
 }

@@ -21,7 +21,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_TICKET_RATE_MASTER")
+@Table(name = "RSC_TS_TICKET_RATE_MASTER")
 public class TicketsRatesMaster {	
 	@Id
 	@Column(name = "ID")

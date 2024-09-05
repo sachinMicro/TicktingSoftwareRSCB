@@ -33,34 +33,38 @@ public class HomeController {
 	private ParkingService parkingService;
 	
 	@GetMapping(path = {"","/{variable}"} )
-	public String hello(Map<String, Object> attributes) {
-		
+	public String hello(Map<String, Object> attributes) {		
 		List<TicketDetailsDTO> tickets = ticketDetails.getAllTickets();
 		List<VisitorsTypeDTO> visitors = visitorDetails.getAllVisitorTypes();
-		
-		attributes.put("tickets", tickets);
-		
-		attributes.put("groups", visitors.stream().filter(visitorType->
-		VisitorsCategoryEnum.GROUP.equals(visitorType.getCategory())|| 
-		VisitorsCategoryEnum.SCHOOL.equals(visitorType.getCategory())||
-		VisitorsCategoryEnum.FREE.equals(visitorType.getCategory())||
-		VisitorsCategoryEnum.SPECIAL.equals(visitorType.getCategory())	
-		).collect(Collectors.toList()));
-		
-		attributes.put("familyGroups", visitors.stream().filter(visitorType->
-		VisitorsCategoryEnum.FAMILY.equals(visitorType.getCategory())
-		).collect(Collectors.toList()));
-		
+		String redirectString="";
+		if(tickets.size()==0||visitors.size()==0) {
+			if(tickets.size()==0) {
+				redirectString="redirect:/manage/tickets/add";
+			}else if(visitors.size()==0) {
+				redirectString="redirect:/manage/groups/add";
+			}
+		}else {			
+			attributes.put("tickets", tickets);		
+			attributes.put("groups", visitors.stream().filter(visitorType->
+			VisitorsCategoryEnum.GROUP.equals(visitorType.getCategory())|| 
+			VisitorsCategoryEnum.SCHOOL.equals(visitorType.getCategory())||
+			VisitorsCategoryEnum.FREE.equals(visitorType.getCategory())||
+			VisitorsCategoryEnum.SPECIAL.equals(visitorType.getCategory())	
+			).collect(Collectors.toList()));
+			
+			attributes.put("familyGroups", visitors.stream().filter(visitorType->
+			VisitorsCategoryEnum.FAMILY.equals(visitorType.getCategory())
+			).collect(Collectors.toList()));			
 
-		attributes.put("generalVistor", visitors.stream().filter(visitorType->
-		VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())
-		).findFirst().get());
+			attributes.put("generalVistor", visitors.stream().filter(visitorType->
+			VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())
+			).findFirst().get());			
+			attributes.put("parkingDetails",parkingService.getParkingDetails());			
+			redirectString="employee/home";
+		}
+
 		
-		attributes.put("parkingDetails",parkingService.getParkingDetails());
-		
-		
-		
-		return "employee/home";
+		return redirectString;
 	}
 	
 

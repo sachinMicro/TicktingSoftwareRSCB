@@ -15,7 +15,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_TICKET_BILL_ROWS")
+@Table(name = "RSC_TS_TICKET_BILL_ROWS")
 public class TicketBillRow {
 	
 	@Id

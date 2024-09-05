@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "RCS_TS_VISITOR_TYPE_MASTER")
+@Table(name = "RSC_TS_VISITOR_TYPE_MASTER")
 public class VisitorsType {
 
 	@Id

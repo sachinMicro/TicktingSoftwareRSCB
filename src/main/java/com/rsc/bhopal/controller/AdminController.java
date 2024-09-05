@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,12 +95,18 @@ public class AdminController {
 	}
 
 	@PostMapping("/rates/update")
-	public @ResponseBody ResponseEntity<ResponseMessage> updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {
-		log.debug(user.getName());
-		log.debug(newTicketRate.toString());		
-		// return newTicketRate.toString();
-		return ticketsRatesService.updatePrice(newTicketRate);
-
+	public @ResponseBody ResponseEntity<ResponseMessage> updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {		
+		try {
+			ticketsRatesService.updateOrAddNewPrice(newTicketRate,user.getName());			
+			return new ResponseEntity<ResponseMessage>(ResponseMessage.builder()
+					                                                  .status(true)
+					                                                  .message("Rate Updated Successfully").build(), HttpStatus.OK);
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return new ResponseEntity<ResponseMessage>(ResponseMessage.builder()
+                    .status(false)
+                    .message("Some Error occurred!!").build(), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@GetMapping("/users")

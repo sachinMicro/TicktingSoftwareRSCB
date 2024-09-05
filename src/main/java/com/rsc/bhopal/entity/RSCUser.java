@@ -22,7 +22,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_USERS")
+@Table(name = "RSC_TS_USERS")
 public class RSCUser {
   
 	@Id
@@ -51,7 +51,7 @@ public class RSCUser {
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
-	@JoinTable(name = "RCS_TS_USER_ROLES",
+	@JoinTable(name = "RSC_TS_USER_ROLES",
 	        joinColumns = {@JoinColumn(name = "user_id")},
 	        inverseJoinColumns = {@JoinColumn(name = "role_id")})
 	private Set<UserRole> roles;

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "RCS_TS_TICKET_MASTER")
+@Table(name = "RSC_TS_TICKET_MASTER")
 public class TicketDetails {
  
 	@Id
