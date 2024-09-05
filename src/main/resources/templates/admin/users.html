@@ -129,7 +129,7 @@ max-width: 250px;
 							</td>
 							<td scope="col" th:text="${user.username}"></td>
 							<td class="w-auto" >
-							 <form  class="d-flex " th:action="@{/admin/users/password}" method="post">
+							 <form  class="d-flex " th:action="@{/manage/users/password}" method="post">
 							     <input type="hidden" name="username" th:value="${user.username}">
 							     <input type="text"  name="password"  class="form-control mw-250" >
 							     <button class="btn btn-success ms-2">Change</button>

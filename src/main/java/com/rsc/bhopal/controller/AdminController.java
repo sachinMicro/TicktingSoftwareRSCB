@@ -122,18 +122,18 @@ public class AdminController {
 	public String addUsers(@ModelAttribute RSCUserDTO user) {
 		log.debug(user.toString());
 		userDetailsService.addUser(user);
-		return "redirect:/admin/users";
+		return "redirect:/manage/users";
 	}
 
 	@PostMapping("/users/status")
 	public String changeStatus(@RequestParam("username") String username) {
 		userDetailsService.changeUserStatus(username);
-		return "redirect:/admin/users";
+		return "redirect:/manage/users";
 	}
 
 	@PostMapping("/users/password")
 	public String changePassword(@RequestParam("username") String username,@RequestParam("password") String password) {
 		userDetailsService.changeUserPassword(username,password);
-		return "redirect:/admin/users";
+		return "redirect:/manage/users";
 	}
 }
