@@ -91,6 +91,17 @@ public class VisitorTypeService {
 		return visitorsDTOs;
 	}
 
+	public List<VisitorsTypeDTO> getVisitorTypeByGroupType(GroupType groupType) {
+		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
+		List<VisitorsType> visitors = visitorTypeRepo.findByGroupTypeAndIsActive(groupType,true);
+		for (VisitorsType visitor : visitors) {
+			VisitorsTypeDTO visitorDTO = new VisitorsTypeDTO();
+			BeanUtils.copyProperties(visitor, visitorDTO);
+			visitorDTO.setAddedBy(visitor.getAddedBy().getName());
+			visitorsDTOs.add(visitorDTO);
+		}
+		return visitorsDTOs;
+	}
 	
 	
 	public List<VisitorsTypeDTO> getAllVisitorTypes() {

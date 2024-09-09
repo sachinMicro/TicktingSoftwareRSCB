@@ -34,8 +34,8 @@ public class HomeController {
 	
 	@GetMapping(path = {"","/{variable}"} )
 	public String hello(Map<String, Object> attributes) {		
-		List<TicketDetailsDTO> tickets = ticketDetails.getAllTickets();
-		List<VisitorsTypeDTO> visitors = visitorDetails.getAllVisitorTypes();
+		List<TicketDetailsDTO> tickets = ticketDetails.getAllActiveTickets();
+		List<VisitorsTypeDTO> visitors = visitorDetails.getAllActiveVisitorTypes();
 		String redirectString="";
 		if(tickets.size()==0||visitors.size()==0) {
 			if(tickets.size()==0) {

@@ -15,7 +15,6 @@ public interface VisitorTypeRepository extends JpaRepository<VisitorsType, Long>
 	List<VisitorsType> findByCategory(VisitorsCategoryEnum category);
 
 	List<VisitorsType> findByIsActive(Boolean isActive);
-	 
 	
 	List<VisitorsType>  findByGroupTypeAndIsActive(GroupType groupType,Boolean isActive);
 	//List<ComboVisitorRateTicketsDTO> getComboVisitorRateTickets(long id);

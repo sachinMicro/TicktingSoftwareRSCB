@@ -52,7 +52,7 @@ public class TicketBillService {
 			TicketBillDTO ticketDTO = new TicketBillDTO();
 			BeanUtils.copyProperties(ticket, ticketDTO);
 			ticketDTO.setGeneratedBy(ticket.getGeneratedBy().getName());
-			ticketDTO.setBillSummarize( CommonUtills.convertJSONToObject(ticket.getTicketPayload(),BillSummarize.class));
+			ticketDTO.setBillSummarize(ticket.getTicketPayload()!=null?CommonUtills.convertJSONToObject(ticket.getTicketPayload(),BillSummarize.class):null);
 			log.debug(ticket.toString());
 			ticketDTOs.add(ticketDTO);
 		});	
