@@ -21,7 +21,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_TICKET_RATE_MASTER")
+@Table(name = "RSC_TS_TICKET_RATE_MASTER")
 public class TicketsRatesMaster {	
 	@Id
 	@Column(name = "ID")
@@ -40,10 +40,10 @@ public class TicketsRatesMaster {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARKING_DET_ID",referencedColumnName = "ID")
 	private ParkingDetails  parkingDetails;
-	
-	
+		
 	@Column(name = "PRICE")
 	private Float price;
+	
 	
 	@Column(name = "IS_ACTIVE")
 	private Boolean isActive;
@@ -54,15 +54,16 @@ public class TicketsRatesMaster {
 	@Column(name = "REVISED_AT")
 	private Date revisedAt;
 	
+	
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "BILL_TYPE")
 	private BillType billType;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "REVISED_BY",referencedColumnName = "ID")
-    private User user;
+    private RSCUser user;
 
-	
 	@Override
 	public String toString(){
 		return String.format("TicketsRatesMaster{ %s || %s || %d }", ticketType.getName(),visitorsType.getName(),Math.round(price));

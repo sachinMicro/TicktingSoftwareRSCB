@@ -11,11 +11,25 @@ var tableConfig = {
 
 $(document).ready(function() {
 
-	$('#form').on("submit", function() {
-		getFormFields($(this));
+	$('#CALCULATE').on("click", function() {
+		getFormFields($(this).closest("form"));
 		return false;
 	});
-
+	
+	$('#PRINT').on("click", function() {
+		getFormFields($(this).closest("form"));
+		return true;
+	});
+	
+	/*$('#form').on("submit", function() {
+		getFormFields($(this));
+		return false;
+	});*/
+	
+	
+  //$field.closest("form")
+	
+	
 	billSummaryTable =
 		new DataTable('#billSummary', tableConfig);
 });
