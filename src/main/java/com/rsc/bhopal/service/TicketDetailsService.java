@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
+import com.rsc.bhopal.dtos.TicketDetailsDTOByGroup;
 import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.VisitorsType;
@@ -27,6 +28,15 @@ public class TicketDetailsService {
  @Autowired
   private RSCUserDetailsService userDetailsService;
 	
+ public List<TicketDetailsDTOByGroup> getAllTicketsByGroup(long groupId){
+	return ticketRepo.getAllTicketsByGroup(groupId);
+ }
+ 
+ public Optional<TicketDetails> getTicketsById(long ticketId) {
+		Optional<TicketDetails> ticket = ticketRepo.findById(ticketId);		
+		return ticket;
+	}
+ 
   public void addTicket(String name,String username){	
 	  TicketDetails ticket = new TicketDetails();
 	  ticket.setName(name);

@@ -23,6 +23,9 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 			value = "select rate.ticketType.id  from  TicketsRatesMaster rate where rate.visitorsType.id=:groupId and isActive=true")
 	List<Long> getTicketsByGroup(long groupId);
 	
+     
+
+
 	
 }
 

@@ -8,14 +8,25 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class TicketDetailsDTO {
-	
-	private long id;	
+
+	private Long id;
+
+	private Long groupId;
+
 	private String name;
-	  
-    private Date addedAt;
-    
-    private String addedBy;
-    
-    private Boolean isActive;
-    
+
+	private Date addedAt;
+
+	private String addedBy;
+
+	// RATE
+	// if rate master contains row with this group id and ticket id (is active=true)
+	// private Float price=100f;
+	private Float price;
+ 
+	// RATE if rate master contains row with this group id and ticket id (is active=true) then true  
+	private Boolean checked;
+
+	private Boolean isActive;
+
 }

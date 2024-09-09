@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class VisitorsTypeDTO {
 
-	private long id; 
+	private Long id; 
 	
 	private String name; 
 	
@@ -18,9 +18,9 @@ public class VisitorsTypeDTO {
 
 	private GroupType  groupType; 
 	
-	private int minMembers; 
+	private Integer minMembers; 
 
-    private int fixedMembers;
+    private Integer fixedMembers;
    
     private Date addedAt;
     

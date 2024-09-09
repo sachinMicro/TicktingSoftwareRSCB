@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.VisitorsType;
+import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.enums.VisitorsCategoryEnum;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
 
@@ -26,6 +27,18 @@ public class VisitorTypeService {
 
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
+	
+	public List<VisitorsTypeDTO> getComboVisitorTypes( ) {
+		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
+		List<VisitorsType> visitors = visitorTypeRepo.findByGroupTypeAndIsActive(GroupType.COMBO,true);
+		for (VisitorsType visitor : visitors) {
+			VisitorsTypeDTO visitorDTO = new VisitorsTypeDTO();
+			BeanUtils.copyProperties(visitor, visitorDTO);
+			visitorsDTOs.add(visitorDTO);
+		}
+		return visitorsDTOs;
+	}
+	
 	
 	public void changeVisitorStatus(Long visitorId) {
 		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);	    
@@ -42,6 +55,11 @@ public class VisitorTypeService {
 		visitorType.setIsActive(true);
 		visitorType.setAddedBy(user);
 		visitorTypeRepo.save(visitorType);	
+	}
+	
+	public Optional<VisitorsType> getVisitorById(long visitorid) {
+		Optional<VisitorsType> visitorsType = visitorTypeRepo.findById(visitorid);		
+		return visitorsType;
 	}
 	
 	public VisitorsTypeDTO getGeneralVisitorId(long visitorid) {
@@ -72,6 +90,8 @@ public class VisitorTypeService {
 		}
 		return visitorsDTOs;
 	}
+
+	
 	
 	public List<VisitorsTypeDTO> getAllVisitorTypes() {
 		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();

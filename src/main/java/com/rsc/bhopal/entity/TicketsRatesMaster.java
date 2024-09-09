@@ -54,6 +54,8 @@ public class TicketsRatesMaster {
 	@Column(name = "REVISED_AT")
 	private Date revisedAt;
 	
+	
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "BILL_TYPE")
 	private BillType billType;
