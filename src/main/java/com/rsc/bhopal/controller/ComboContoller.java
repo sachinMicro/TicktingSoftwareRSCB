@@ -63,7 +63,6 @@ public class ComboContoller {
 				.getTickets()
 				.stream().mapToLong(ticket->ticket.getGroupId()).findFirst().getAsLong();
 		
-		
 		tickets.getTickets().stream().forEach(System.out::println);
 		
 		ticketsRatesService.updateRateForComboTicket(tickets.getTickets(), user.getName());		

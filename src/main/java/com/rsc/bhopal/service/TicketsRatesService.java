@@ -176,29 +176,35 @@ public class TicketsRatesService {
 	}
 
 	public void updateRateForComboTicket(ArrayList<TicketDetailsDTO> tickets, String username) {
-		tickets.forEach(ticket -> {	
-			//No Rate for Ticket
+		tickets.forEach(ticket -> {
+			// No Rate for Ticket
 			TicketsRatesMasterDTO rateMaster = null;
-		    try {rateMaster=getTicketRateByGroup(ticket.getId(), ticket.getGroupId());}catch(Exception ex) {log.debug("Rate is null");}			
-			if (rateMaster == null && ticket.getChecked()!=null ) {
-				  addNewPrice(ticket, username);			
-			} else {				
-				if(ticket.getChecked()!=null && !rateMaster.getPrice().equals(ticket.getPrice())  ) {
-				  	replacePrice(ticket, rateMaster.getId(), username);
-				}else {
-					 removeTicketFromGroup(ticket, rateMaster.getId(), username);
+			try {rateMaster = getTicketRateByGroup(ticket.getId(), ticket.getGroupId());} catch (Exception ex) {log.debug("Rate is null");}
+			
+			if (rateMaster == null) {
+				if (ticket.getChecked() != null)
+					 addNewPrice(ticket, username);
+			} else {
+				log.debug("RATE MASTER IS AVAILABLE{}"+rateMaster);
+				if (ticket.getChecked() != null) {
+					if(!rateMaster.getPrice().equals(ticket.getPrice())) {
+						log.debug("REPLACING RATE MASTER{}"+ticket);
+						replacePrice(ticket, rateMaster.getId(), username);
+					}
+				} else {
+					log.debug("REMOVING RATE MASTER{}"+ticket);
+					removeTicketFromGroup(ticket, rateMaster.getId(), username);
 				}
 			}
 		});
 	}
-	
+
 	public void removeTicketFromGroup(TicketDetailsDTO dto, Long rateMasterId, String username) {
 		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(rateMasterId)
 				.orElseThrow(() -> new RuntimeException("Ticket not found"));
 		ticketsRatesMaster.setIsActive(false);
 		ticketsRatesMaster = ticketRateRepo.save(ticketsRatesMaster);
 	}
-
 
 	public void replacePrice(TicketDetailsDTO dto, Long rateMasterId, String username) {
 		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(rateMasterId)

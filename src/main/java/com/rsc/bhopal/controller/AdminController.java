@@ -1,6 +1,8 @@
 package com.rsc.bhopal.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.ResponseExtractor;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.RSCUserDTO;
@@ -32,6 +33,9 @@ import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
 import com.rsc.bhopal.service.VisitorTypeService;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -115,6 +119,10 @@ public class AdminController {
 		List<RSCUserDTO> users = userDetailsService.getAllUser();		
 		attributes.put("users", users);
 		attributes.put("roles", roles);
+		
+		//attributes.put("tests", 
+			//	Arrays.asList(new Test(1,"Sachin",true),new Test(2,"Ashish",false)));
+		
 		return "admin/users";
 	}
 
@@ -136,4 +144,33 @@ public class AdminController {
 		userDetailsService.changeUserPassword(username,password);
 		return "redirect:/manage/users";
 	}
+	
+	@GetMapping(path = "/users/test")
+	public String test(@RequestParam Map<String,String> allRequestParams) {
+		//userDetailsService.changeUserStatus(username);
+		log.debug(""+allRequestParams.toString());
+		return "redirect:/manage/users";
+	}
+	
+	@GetMapping(path = "/users/test2")
+	public String test2(@ModelAttribute TestContainer TestContainer) {
+		//userDetailsService.changeUserStatus(username);
+		log.debug(""+TestContainer.toString());
+		return "redirect:/manage/users";
+	}
+}
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class Test{
+	private Integer id;
+	private String name;
+	private Boolean checked;
+}
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class TestContainer{
+	private ArrayList<Test> tests;
 }
