@@ -33,30 +33,28 @@ public class TicketsRatesService {
 
 	@Autowired
 	private VisitorTypeService visitorTypeService;
-	
+
 	@Autowired
 	private VisitorTypeRepository visitorTypeRepo;
-	
+
 	@Autowired
 	private TicketDetailsRepository ticketDetailsRepo;
-	
+
 	@Autowired
 	TicketDetailsService ticketDetailsService;
-	
-	
+
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
 
-	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId){
-		 List<TicketsRatesMaster> rates = new ArrayList<>();
-		 tickets.forEach(ticket->{
-			 rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
-		 });		 
-		 return rates;
+	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId) {
+		List<TicketsRatesMaster> rates = new ArrayList<>();
+		tickets.forEach(ticket -> {
+			rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
+		});
+		return rates;
 	}
 
-
-	public List<Long> getTicketsByGroup(long familyGroupId){
+	public List<Long> getTicketsByGroup(long familyGroupId) {
 		return ticketRateRepo.getTicketsByGroup(familyGroupId);
 	}
 
@@ -104,7 +102,6 @@ public class TicketsRatesService {
 		return ticketRatesDTOs;
 	}
 
-
 	public List<TicketsRatesMasterDTO> getAllActiveTicketRates() {
 		List<TicketsRatesMasterDTO> ticketRatesDTOs = new ArrayList<>();
 		List<TicketsRatesMaster> ticketRates = ticketRateRepo.findAll();
@@ -130,64 +127,117 @@ public class TicketsRatesService {
 		return ticketRatesDTOs;
 	}
 
+	public void updateOrAddNewPrice(NewTicketRate newTicketRate, String username) {
+		Integer count = ticketRateRepo.checkIfRateIsAvaiable(newTicketRate.getTicketId(), newTicketRate.getGroupId());
+		log.debug("checkIfRateIsAvaiable " + count);
+		RSCUser user = userDetailsService.getUserByUsername(username);
+		if (count == 0) {
+			addNewRate(newTicketRate, user);
+		} else {
+			updatePrice(newTicketRate, user);
+		}
 
-
-
-	public  void updateOrAddNewPrice(NewTicketRate newTicketRate,String username){		
-		Integer count =  ticketRateRepo.checkIfRateIsAvaiable(newTicketRate.getTicketId(), newTicketRate.getGroupId());
-        log.debug("checkIfRateIsAvaiable "+count);
-        RSCUser user =   userDetailsService.getUserByUsername(username);
-        if(count==0) { 
-        	  addNewRate(newTicketRate,user);
-        }else {
-        	updatePrice(newTicketRate,user);
-        }
-      
 	}
 
-	public void addNewRate(NewTicketRate newTicketRate,RSCUser user ) {		
-		TicketsRatesMaster ticketRate = new TicketsRatesMaster();		
-    	Optional<TicketDetails> ticket =  ticketDetailsRepo.findById(newTicketRate.getTicketId());
-    	Optional<VisitorsType> visitorType =  visitorTypeService.getVisitorById(newTicketRate.getGroupId());    	
-    	ticketRate.setBillType(BillType.TICKET);
-    	ticketRate.setIsActive(true);
-    	ticketRate.setPrice(newTicketRate.getPrice());
-    	ticketRate.setRevisionNo(0);
-    	ticketRate.setUser(user);
-    	ticketRate.setTicketType(ticket.get());
-    	ticketRate.setVisitorsType(visitorType.get());    	
-    	ticketRateRepo.save(ticketRate);    	
+	public void addNewRate(NewTicketRate newTicketRate, RSCUser user) {
+		TicketsRatesMaster ticketRate = new TicketsRatesMaster();
+		Optional<TicketDetails> ticket = ticketDetailsRepo.findById(newTicketRate.getTicketId());
+		Optional<VisitorsType> visitorType = visitorTypeService.getVisitorById(newTicketRate.getGroupId());
+		ticketRate.setBillType(BillType.TICKET);
+		ticketRate.setIsActive(true);
+		ticketRate.setPrice(newTicketRate.getPrice());
+		ticketRate.setRevisionNo(0);
+		ticketRate.setUser(user);
+		ticketRate.setTicketType(ticket.get());
+		ticketRate.setVisitorsType(visitorType.get());
+		ticketRateRepo.save(ticketRate);
 	}
 
 	public void updatePrice(NewTicketRate newTicketRate, RSCUser user) {
 		TicketsRatesMaster newRateMaster = new TicketsRatesMaster();
-		TicketsRatesMaster rateMaster = ticketRateRepo.findByGroupAndTicketIds(newTicketRate.getTicketId(), newTicketRate.getGroupId());
+		TicketsRatesMaster rateMaster = ticketRateRepo.findByGroupAndTicketIds(newTicketRate.getTicketId(),
+				newTicketRate.getGroupId());
 		if (rateMaster.getIsActive() && rateMaster.getPrice() != newTicketRate.getPrice()) {
-				rateMaster.setIsActive(false);
-				rateMaster = ticketRateRepo.save(rateMaster);
+			rateMaster.setIsActive(false);
+			rateMaster = ticketRateRepo.save(rateMaster);
 
-				BeanUtils.copyProperties(rateMaster, newRateMaster);
-				newRateMaster.setId(null);
-				log.debug("Set new price: " + newTicketRate.getPrice() + " for Ticket ID: " + newTicketRate.getTicketId(), ", Visitor ID: " + newTicketRate.getGroupId() + "and Group ID");
-				newRateMaster.setPrice(newTicketRate.getPrice());
-				newRateMaster.setIsActive(true);
-				newRateMaster.setRevisedAt(java.util.Date.from(java.time.Instant.now()));
-				newRateMaster.setRevisionNo(rateMaster.getRevisionNo() == null ? 1 : rateMaster.getRevisionNo() + 1);
-				// log.debug(rateMaster.getUser().getName());
-				newRateMaster.setUser(user);
-				ticketRateRepo.save(newRateMaster);
-			}
+			BeanUtils.copyProperties(rateMaster, newRateMaster);
+			newRateMaster.setId(null);
+			log.debug("Set new price: " + newTicketRate.getPrice() + " for Ticket ID: " + newTicketRate.getTicketId(),
+					", Visitor ID: " + newTicketRate.getGroupId() + "and Group ID");
+			newRateMaster.setPrice(newTicketRate.getPrice());
+			newRateMaster.setIsActive(true);
+			newRateMaster.setRevisedAt(java.util.Date.from(java.time.Instant.now()));
+			newRateMaster.setRevisionNo(rateMaster.getRevisionNo() == null ? 1 : rateMaster.getRevisionNo() + 1);
+			// log.debug(rateMaster.getUser().getName());
+			newRateMaster.setUser(user);
+			ticketRateRepo.save(newRateMaster);
 		}
+	}
 
-	public void updateRateForComboTicket(TicketDetailsDTO ticket,String username) {
+	public void updateRateForComboTicket(ArrayList<TicketDetailsDTO> tickets, String username) {
+		tickets.forEach(ticket -> {	
+			//No Rate for Ticket
+			TicketsRatesMasterDTO rateMaster = null;
+		    try {rateMaster=getTicketRateByGroup(ticket.getId(), ticket.getGroupId());}catch(Exception ex) {log.debug("Rate is null");}			
+			if (rateMaster == null && ticket.getChecked()!=null ) {
+				  addNewPrice(ticket, username);			
+			} else {				
+				if(ticket.getChecked()!=null && !rateMaster.getPrice().equals(ticket.getPrice())  ) {
+				  	replacePrice(ticket, rateMaster.getId(), username);
+				}else {
+					 removeTicketFromGroup(ticket, rateMaster.getId(), username);
+				}
+			}
+		});
+	}
+	
+	public void removeTicketFromGroup(TicketDetailsDTO dto, Long rateMasterId, String username) {
+		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(rateMasterId)
+				.orElseThrow(() -> new RuntimeException("Ticket not found"));
+		ticketsRatesMaster.setIsActive(false);
+		ticketsRatesMaster = ticketRateRepo.save(ticketsRatesMaster);
+	}
+
+
+	public void replacePrice(TicketDetailsDTO dto, Long rateMasterId, String username) {
+		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(rateMasterId)
+				.orElseThrow(() -> new RuntimeException("Ticket not found"));
+		ticketsRatesMaster.setIsActive(false);
+		ticketsRatesMaster = ticketRateRepo.save(ticketsRatesMaster);
+		TicketsRatesMaster newRatesMaster = new TicketsRatesMaster();
+		newRatesMaster.setRevisedAt(new Date());
+		newRatesMaster.setRevisionNo(ticketsRatesMaster.getRevisionNo() + 1);
+		newRatesMaster.setIsActive(true);
+		newRatesMaster.setPrice(dto.getPrice());
+		newRatesMaster.setBillType(BillType.TICKET);
+		newRatesMaster.setTicketType(ticketDetailsService.getTicketsById(dto.getId()).get());
+		newRatesMaster.setUser(userDetailsService.getUserByUsername(username));
+		newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(dto.getGroupId()).get());
+		ticketRateRepo.save(newRatesMaster);
+	}
+
+	public void addNewPrice(TicketDetailsDTO ticket, String username) {
+		TicketsRatesMaster newRatesMaster = new TicketsRatesMaster();
+		newRatesMaster.setIsActive(true);
+		newRatesMaster.setPrice(ticket.getPrice());
+		newRatesMaster.setBillType(BillType.TICKET);
+		newRatesMaster.setRevisedAt(new Date());
+		newRatesMaster.setRevisionNo(0);
+		newRatesMaster.setTicketType(ticketDetailsService.getTicketsById(ticket.getId()).get());
+		newRatesMaster.setUser(userDetailsService.getUserByUsername(username));
+		newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(ticket.getGroupId()).get());
+		ticketRateRepo.save(newRatesMaster);
+	}
+
+	public void updateRateForComboTicketBKP(TicketDetailsDTO ticket, String username) {
+
 		TicketsRatesMasterDTO ticketsRatesMasterDTO = null;
 		try {
 			ticketsRatesMasterDTO = getTicketRateByGroup(ticket.getId(), ticket.getGroupId());
-		}
-		catch(NullPointerException ex) {
+		} catch (NullPointerException ex) {
 			log.debug(ex.getMessage());
-		}
-		catch(Exception ex) {
+		} catch (Exception ex) {
 			log.debug(ex.getMessage());
 		}
 
@@ -203,9 +253,9 @@ public class TicketsRatesService {
 			newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(ticket.getGroupId()).get());
 
 			ticketRateRepo.save(newRatesMaster);
-		}
-		else {
-			TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(ticketsRatesMasterDTO.getId()).orElseThrow(() -> new RuntimeException("Ticket not found"));
+		} else {
+			TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(ticketsRatesMasterDTO.getId())
+					.orElseThrow(() -> new RuntimeException("Ticket not found"));
 			ticketsRatesMaster.setIsActive(false);
 			ticketsRatesMaster = ticketRateRepo.save(ticketsRatesMaster);
 
@@ -218,7 +268,7 @@ public class TicketsRatesService {
 			// newRatesMaster.setRevisedAt(new Date());
 			newRatesMaster.setTicketType(ticketDetailsService.getTicketsById(ticket.getId()).get());
 			newRatesMaster.setUser(userDetailsService.getUserByUsername(username));
-			newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(ticket.getGroupId()).get());			
+			newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(ticket.getGroupId()).get());
 			ticketRateRepo.save(newRatesMaster);
 		}
 	}

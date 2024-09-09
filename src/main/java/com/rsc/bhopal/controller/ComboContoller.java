@@ -58,17 +58,15 @@ public class ComboContoller {
 
 	@PostMapping(path = "/price/change")
 	public String addComboPrice(@ModelAttribute TicketDetailsDTOWrapper tickets, Principal user) {
-
+		
 		Long groupCategory = tickets
 				.getTickets()
 				.stream().mapToLong(ticket->ticket.getGroupId()).findFirst().getAsLong();
-
-		tickets
-		.getTickets()
-		.stream()
-		.filter(ticket->ticket.getChecked()!=null).forEach(ticket -> {
-			ticketsRatesService.updateRateForComboTicket(ticket, user.getName());
-		});
+		
+		
+		tickets.getTickets().stream().forEach(System.out::println);
+		
+		ticketsRatesService.updateRateForComboTicket(tickets.getTickets(), user.getName());		
 
 		return "redirect:/manage/combo/add?groupId=" + groupCategory;
 	}
