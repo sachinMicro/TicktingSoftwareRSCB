@@ -61,7 +61,7 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12 mt-3">
-					<form th:action="@{/manage/parking/add}" method="GET" enctype="application/x-www-form-urlencoded">
+					<form th:action="@{/manage/parking/add}" method="POST" enctype="application/x-www-form-urlencoded">
 						<div class="row g-2">
 							<div class="col-12">
 								<h2 class="m-0">Parking</h2>
@@ -89,29 +89,21 @@
 			</div>
 
 			<div class="col-12 mt-3">
-				<form method="POST" th:action="@{/manage/parking/price/change}" th:object="${tickets}" enctype="application/x-www-form-urlencoded">
+				<form method="POST" th:action="@{/manage/parking/price/change}" enctype="application/x-www-form-urlencoded">
 				<h2>All Parking Details</h2>
 				<table class="table table-striped border w-100" id="tickets">
 					<thead class="bg-gray">
 						<tr>
 							<th scope="col">Parking</th>
-							<th scope="col">Change price</th>
 							<th scope="col">Price</th>
+							<th scope="col">Date</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="ticket, stat : ${tickets}">
-							<td scope="col" th:text="${ticket.name}"></td>
-							<td scope="col">
-								<!-- <input type="hidden" th:name="|tickets[${stat.index}].id|" th:value="${ticket.id}" /> -->
-								<!-- <input type="hidden" th:name="|tickets[${stat.index}].groupId|" th:value="${groupId}" /> -->
-								<!-- <label class="form-check-label" th:for="${'checkbox-' + stat.index}"></label> -->
-								<!-- <input type="checkbox" th:name="|tickets[${stat.index}].checked|" th:checked="${ticket.checked}" class="form-check-input" th:id="${'checkbox-' + stat.index}" /> -->
-						   </td>
-							<td scope="col">
-								<!-- <input type="number" th:name="|tickets[${stat.index}].price|" th:value="${ticket.price}" class="form-control" /> -->
-								<!-- <input type="hidden" th:name="price" th:value="${ticket.price}" class="form-control" disabled /> -->
-							</td>
+						<tr th:each="parking : ${parkings}">
+							<td scope="col" th:text="${parking.name}"></td>
+							<td scope="col" th:text="${parking.ticketsRatesMasterDTO.price}"></td>
+							<td scope="col" th:text="${parking.addedAt}"></td>
 						</tr>
 					</tbody>
 					<tfoot></tfoot>

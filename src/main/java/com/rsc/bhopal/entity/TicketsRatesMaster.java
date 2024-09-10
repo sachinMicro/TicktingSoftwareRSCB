@@ -36,7 +36,6 @@ public class TicketsRatesMaster {
 	@JoinColumn(name = "VISITOR_ID",referencedColumnName = "ID")
 	private VisitorsType  visitorsType;
 	
-	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARKING_DET_ID",referencedColumnName = "ID")
 	private ParkingDetails  parkingDetails;
@@ -66,6 +65,6 @@ public class TicketsRatesMaster {
 
 	@Override
 	public String toString(){
-		return String.format("TicketsRatesMaster{ %s || %s || %d }", ticketType.getName(),visitorsType.getName(),Math.round(price));
+		return String.format("TicketsRatesMaster{ %d }", Math.round(price));
 	}
 }
