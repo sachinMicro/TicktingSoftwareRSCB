@@ -10,11 +10,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rsc.bhopal.annotations.RSCLog;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTOByGroup;
 import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.TicketDetails;
-import com.rsc.bhopal.entity.VisitorsType;
 import com.rsc.bhopal.repos.TicketDetailsRepository;
 
 import jakarta.transaction.Transactional;
@@ -37,7 +37,8 @@ public class TicketDetailsService {
 		return ticket;
 	}
  
-  public void addTicket(String name,String username){	
+ @RSCLog(desc="Ticket Add")
+ public void addTicket(String name,String username){	
 	  TicketDetails ticket = new TicketDetails();
 	  ticket.setName(name);
 	  ticket.setIsActive(true);
@@ -46,14 +47,14 @@ public class TicketDetailsService {
 	  ticket.setAddedBy(user);
 	  ticketRepo.save(ticket);
   }
-  
+ 
+  @RSCLog(desc="Ticket Status Change")
   public void changeTicketStatus(Long ticketId) {
 		Optional<TicketDetails> ticket =  ticketRepo.findById(ticketId);	    
 		ticket.get().setIsActive(!ticket.get().getIsActive());
 		ticketRepo.save(ticket.get());
 	}
-  
-  
+    
   @Transactional
   public void addTickets(){	  
 	  List<TicketDetails> ticketDetails = Arrays.asList

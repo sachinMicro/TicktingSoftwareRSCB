@@ -20,6 +20,7 @@ import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.entity.VisitorsType;
 import com.rsc.bhopal.enums.BillType;
+import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.repos.TicketDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
@@ -61,10 +62,12 @@ public class TicketsRatesService {
 	}
 
 	public TicketsRatesMasterDTO getTicketRateByGroup(long ticketId, long groupId) {
-		TicketsRatesMaster ticketRate = ticketRateRepo.findByGroupAndTicketIds(ticketId, groupId);
+		TicketDetails ticketDetails = ticketDetailsService.getTicketsById(ticketId).get();
+		TicketsRatesMaster ticketRate = ticketRateRepo.findByGroupAndTicketIds(ticketId, groupId);		
+		if(ticketRate==null) {
+			throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for "+ticketDetails.getName());
+		}		
 		TicketsRatesMasterDTO ticketRatesDTO = new TicketsRatesMasterDTO();
-
-		TicketDetails ticketDetails = ticketRate.getTicketType();
 		TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
 		log.debug("TICKET {} " + ticketRate);
 		BeanUtils.copyProperties(ticketDetails, ticketDetailsDTO);

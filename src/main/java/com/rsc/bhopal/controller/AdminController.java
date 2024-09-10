@@ -28,6 +28,8 @@ import com.rsc.bhopal.dtos.TicketRateByGroup;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.UserRoleDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.enums.GroupType;
+import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.service.RSCUserDetailsService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
@@ -60,17 +62,11 @@ public class AdminController {
 
 	@GetMapping("/rates")
 	public String rates(Map<String, Object> attributes) {
-		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();
-		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getAllActiveVisitorTypes()
-				.stream()
-				.filter(dto ->
-				// !dto.getType().equals(VisitorsTypeEnum.FAMILY)&&
-				// !dto.getType().equals(VisitorsTypeEnum.SPONCERED)&&
-				// !dto.getType().equals(VisitorsTypeEnum.SPECIAL)&&
-				// !dto.getType().equals(VisitorsTypeEnum.OTHER)
-				true
-				).collect(Collectors.toList());
-
+		
+		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();		
+		
+		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getVisitorTypeByGroupType(GroupType.SINGLE);
+		
 		List<TicketDetailsDTO> tickets = ticketDetailsService.getAllActiveTickets();
 
 		for(TicketDetailsDTO ticket: tickets ){
@@ -84,7 +80,7 @@ public class AdminController {
 					TicketsRatesMasterDTO ticketRateMaster = ticketsRatesMasterService.getTicketRateByGroup(ticket.getId(), visitor.getId());
 					prices.put(visitor.getId(), ticketRateMaster.getPrice());
 				}
-				catch(NullPointerException ex) {
+				catch(TicketRateNotMaintainedException ex) {
 					log.debug(ex.getMessage());
 					prices.put(visitor.getId(), 0f);
 				}
