@@ -3,6 +3,8 @@ package com.rsc.bhopal.controller;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.BillSummarize;
+import com.rsc.bhopal.dtos.ResponseMessage;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
+import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.service.BillCalculatorService;
 import com.rsc.bhopal.service.TicketBillService;
 
@@ -29,10 +33,30 @@ public class BillController {
 	private TicketBillService ticketBillService;
 	
 	@PostMapping("/calculate")	
-	public @ResponseBody BillSummarize calculateBill(@ModelAttribute TicketSelectorDTO ticketSelector) {
+	public @ResponseBody ResponseEntity<?>  calculateBill(@ModelAttribute TicketSelectorDTO ticketSelector) {
 		log.debug("Ticket Selector "+ticketSelector);		
-		BillSummarize billSummarize = billCalculator.summarizeBill(ticketSelector);
-		return billSummarize;		
+		try {
+			BillSummarize billSummarize = billCalculator.summarizeBill(ticketSelector);		
+			return new ResponseEntity<>(ResponseMessage.builder()
+                    .status(true)
+                    .data(billSummarize)
+                    .message("Bill Calculated")
+                    .build(),HttpStatus.OK);
+		}catch(TicketRateNotMaintainedException ex) {	
+			ex.printStackTrace();
+			return new ResponseEntity<>(ResponseMessage.builder()
+                    .status(false)
+                    .data(null)
+                    .message(ex.getMessage())
+                    .build(),HttpStatus.BAD_REQUEST);
+		}catch(Exception ex) {	
+			ex.printStackTrace();
+			return new ResponseEntity<>(ResponseMessage.builder()
+                    .status(false)
+                    .data(null)
+                    .message("Some Internal Error occurred")
+                    .build(),HttpStatus.BAD_REQUEST);
+		}
 	}
 		
 	@PostMapping("/print")	

@@ -39,7 +39,6 @@ public class VisitorTypeService {
 		return visitorsDTOs;
 	}
 	
-	
 	public void changeVisitorStatus(Long visitorId) {
 		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);	    
 		visitor.get().setIsActive(!visitor.get().getIsActive());
@@ -78,6 +77,7 @@ public class VisitorTypeService {
 		}
 		return visitorsDTOs;
 	}
+	
 	
 	public List<VisitorsTypeDTO> getAllActiveVisitorTypes() {
 		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();

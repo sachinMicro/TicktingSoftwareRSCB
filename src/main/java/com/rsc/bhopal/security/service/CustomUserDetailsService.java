@@ -31,12 +31,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 		UserDetails userDetails = null;
 		if (user.isPresent()) {
 
-			List<String> roles = user.get().getRoles().stream().map(role -> role.getRole().toString())
+			List<String> roles = user.get().getRoles().stream().map(role -> role.getRole().toString().toUpperCase())
 					.collect(Collectors.toList());
-
-			userDetails = User.withUsername(user.get().getUsername()).password(user.get().getPassword()).roles(
-					 roles.toArray(new String[roles.size()]))
-					.build();
+			
+			
+			userDetails = User.withUsername(user.get()
+					                            .getUsername())
+					                            .password(user.get().getPassword())
+					                            .roles(roles.toArray(new String[roles.size()]))
+					                            .build();
 
 		} else {
 			throw new UsernameNotFoundException("User is not Present in the DB");

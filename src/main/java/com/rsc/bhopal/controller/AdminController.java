@@ -29,6 +29,7 @@ import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.UserRoleDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.enums.GroupType;
+import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.service.RSCUserDetailsService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
@@ -79,7 +80,7 @@ public class AdminController {
 					TicketsRatesMasterDTO ticketRateMaster = ticketsRatesMasterService.getTicketRateByGroup(ticket.getId(), visitor.getId());
 					prices.put(visitor.getId(), ticketRateMaster.getPrice());
 				}
-				catch(NullPointerException ex) {
+				catch(TicketRateNotMaintainedException ex) {
 					log.debug(ex.getMessage());
 					prices.put(visitor.getId(), 0f);
 				}

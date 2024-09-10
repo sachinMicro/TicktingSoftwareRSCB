@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,6 +55,9 @@ td small {
 
 <body>
 	<div th:replace="fragments/navbar::navbar"></div>
+	
+	<div th:replace="fragments/toast::toast"></div>
+	
 	<div class="container-fluid">
 		<!--<form   action="#" enctype="application/x-www-form-urlencoded">-->
 		<form th:action="@{/bill/print}" id="form" method="POST"
