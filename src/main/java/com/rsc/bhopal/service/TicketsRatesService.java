@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
+import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.entity.ParkingDetails;
 import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
@@ -277,5 +279,14 @@ public class TicketsRatesService {
 			newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(ticket.getGroupId()).get());
 			ticketRateRepo.save(newRatesMaster);
 		}
+	}
+
+	public void addParkingRate(ParkingDetails parkingDetails) {
+		TicketsRatesMaster ticketsRatesMaster = new TicketsRatesMaster();
+		ticketsRatesMaster.setId(null);
+		ticketsRatesMaster.setBillType(BillType.PARKING);
+		ticketsRatesMaster.setRevisedAt(new Date());
+		ticketsRatesMaster.setParkingDetails(parkingDetails);
+		ticketRateRepo.save(ticketsRatesMaster);
 	}
 }

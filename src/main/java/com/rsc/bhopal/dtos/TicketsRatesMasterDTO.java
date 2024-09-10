@@ -1,5 +1,7 @@
 package com.rsc.bhopal.dtos;
 
+import com.rsc.bhopal.enums.BillType;
+
 import lombok.Data;
 
 @Data
@@ -7,9 +9,11 @@ public class TicketsRatesMasterDTO {
 
 	private Long id; 
 	
-	private TicketDetailsDTO  ticketType;
+	private TicketDetailsDTO ticketType;
 
-	private VisitorsTypeDTO  visitorsType;
+	private VisitorsTypeDTO visitorsType;
 
 	private Float price;
+
+	private BillType billType;
 }
