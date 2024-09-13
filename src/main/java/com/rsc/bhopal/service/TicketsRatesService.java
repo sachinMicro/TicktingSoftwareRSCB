@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
+import com.rsc.bhopal.dtos.ParkingPriceDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
@@ -48,6 +49,9 @@ public class TicketsRatesService {
 
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
+
+	@Autowired
+	private ParkingService parkingService;
 
 	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId) {
 		List<TicketsRatesMaster> rates = new ArrayList<>();
@@ -284,12 +288,5 @@ public class TicketsRatesService {
 		}
 	}
 
-	public void addParkingRate(ParkingDetails parkingDetails) {
-		TicketsRatesMaster ticketsRatesMaster = new TicketsRatesMaster();
-		ticketsRatesMaster.setId(null);
-		ticketsRatesMaster.setBillType(BillType.PARKING);
-		ticketsRatesMaster.setRevisedAt(new Date());
-		ticketsRatesMaster.setParkingDetails(parkingDetails);
-		ticketRateRepo.save(ticketsRatesMaster);
-	}
+	
 }
