@@ -46,6 +46,7 @@ public class HomeController {
 		}else {			
 			attributes.put("tickets", tickets);		
 			attributes.put("groups", visitors.stream().filter(visitorType->
+			VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())|| 
 			VisitorsCategoryEnum.GROUP.equals(visitorType.getCategory())|| 
 			VisitorsCategoryEnum.SCHOOL.equals(visitorType.getCategory())||
 			VisitorsCategoryEnum.FREE.equals(visitorType.getCategory())||
@@ -58,7 +59,9 @@ public class HomeController {
 
 			attributes.put("generalVistor", visitors.stream().filter(visitorType->
 			VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())
-			).findFirst().get());			
+			).findFirst().get());	
+			
+			
 			attributes.put("parkingDetails",parkingService.getParkingDetails());			
 			redirectString="employee/home";
 		}

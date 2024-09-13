@@ -34,8 +34,9 @@ public class ActivityLog {
 	@JoinColumn(name = "ACTION_BY",referencedColumnName = "ID")
 	private RSCUser actionBy;
 
-	@Column(name = "PAYLOAD",columnDefinition = "varchar(1000)")
+	@Column(name = "PAYLOAD",length = 1000)
 	private String payload;
 	
+	//Data Sediugn 
 	
 }

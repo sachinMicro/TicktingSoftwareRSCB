@@ -9,7 +9,9 @@ public class LogDTO {
 	private Date actionAt;
 	private Long actionBy;
 	private String message;
+	
 	private String payload;
+	
 	private Boolean status;
 	public LogDTO() {
 	}

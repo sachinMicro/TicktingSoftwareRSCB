@@ -69,16 +69,18 @@
 								<th scope="col">Payload</th>
 								<th scope="col">Action At</th>
 								<th scope="col">Action By</th>
-								<th scope="col">Status</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="log : ${logs}">
-								<td scope="col" th:text="${log.message}"></td>
-								<td scope="col" th:text="${log.payload}"></td>
+								<td scope="col">
+								    <i class="fa-solid fa-circle  small me-4" th:classappend="${log.status?'text-success':'text-danger'}"></i>
+								    <span th:text="${log.message}"></span>
+								</td>
+								<td scope="col" th:text="${log.argsPayload}"></td>
 								<td scope="col" th:text="${log.actionAt}"></td>
 								<td scope="col" th:text="${log.actionBy}"></td>
-								<td scope="col" th:text="${log.status}"></td>
+								
 							</tr>
 						</tbody>
 						<tfoot></tfoot>

@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rsc.bhopal.annotations.RSCLog;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.VisitorsType;
@@ -45,7 +46,7 @@ public class VisitorTypeService {
 		visitorTypeRepo.save(visitor.get());
 	}
 	
-	
+	@RSCLog(desc="Visitors add request")
 	public void addVisitorType(VisitorsTypeDTO dto,String username) {		
 		VisitorsType visitorType = new VisitorsType();		
 		BeanUtils.copyProperties(dto, visitorType);

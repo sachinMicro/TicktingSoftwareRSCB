@@ -4,9 +4,10 @@ import java.util.Date;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class ActivityLogDTO {	
 	
 	private Long id;
@@ -21,5 +22,6 @@ public class ActivityLogDTO {
 	
 	private LogPayload payload;
 	
+	private String argsPayload;
 	
 }

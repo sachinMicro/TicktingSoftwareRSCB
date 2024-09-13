@@ -11,7 +11,7 @@ public class TicketBillDTO {
 	
 	private Date generatedAt;
 	
-	private Double price;
+	private Double totalBill;
 	
     private String generatedBy;
     

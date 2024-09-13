@@ -75,16 +75,16 @@ public class TicketBillService {
          
          for(TicketsRatesMaster rate:rates) {
         	 TicketBillRow billRow = new TicketBillRow();		
-			 billRow.setPrice(dto.getPersons()*rate.getPrice());             
+			 billRow.setTotalSum(dto.getPersons()*rate.getPrice());             
 			 billRow.setRate(rate);
-			 totalPrice+=billRow.getPrice();
+			 totalPrice+=billRow.getTotalSum();
 			 billRow.setGeneratedTicket(generatedTicket);	
 			 billRows.add(billRow);
          }
          BillSummarize billSummarize = billCalculator.summarizeBill(dto);         
          
          generatedTicket.setTicketPayload(CommonUtills.convertToJSON(billSummarize));         
-		 generatedTicket.setPrice(totalPrice);
+		 generatedTicket.setTotalBill(totalPrice);
 		 generatedTicket.setBillSummary(billRows);
 		 generatedTicketRepo.save(generatedTicket);
 		 

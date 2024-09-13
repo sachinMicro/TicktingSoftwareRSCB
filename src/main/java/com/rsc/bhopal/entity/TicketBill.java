@@ -38,19 +38,18 @@ public class TicketBill {
 	private Date generatedAt;
 	
 	@Column(name = "TOTAL_BILL")
-	private Double price;
+	private Double totalBill;
 	
 	@Column(name = "PERSONS")
 	private int persons;
 	
-	@Column(name = "TICKET_PAYLOAD")
+	@Column(name = "TICKET_PAYLOAD" , length = 1000)
 	private String ticketPayload;
 		
 	@ManyToOne
 	@JoinColumn(name = "GENERATED_BY",referencedColumnName = "ID")
     private RSCUser generatedBy;
 
-	
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "generatedTicket",fetch = FetchType.LAZY)	
@@ -59,7 +58,7 @@ public class TicketBill {
 
 	@Override
 	public String toString() {
-		return "GeneratedTicket [id=" + id + ", generatedAt=" + generatedAt + ", price=" + price + ", generatedBy="
+		return "GeneratedTicket [id=" + id + ", generatedAt=" + generatedAt + ", totalBill=" + totalBill + ", generatedBy="
 				+ generatedBy + "]";
 	}
 	

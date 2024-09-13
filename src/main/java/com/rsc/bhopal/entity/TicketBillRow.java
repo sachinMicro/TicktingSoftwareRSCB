@@ -23,8 +23,8 @@ public class TicketBillRow {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "TIKCET_PRICE")
-	private Float price;
+	@Column(name = "TOTAL_SUM")
+	private Float totalSum;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RATE_MASTER_ID",referencedColumnName = "ID")
@@ -32,7 +32,7 @@ public class TicketBillRow {
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TICKET_ID",referencedColumnName = "ID")
+	@JoinColumn(name = "BILL_ID",referencedColumnName = "ID")
 	private TicketBill generatedTicket;
 	
 }

@@ -29,16 +29,15 @@ public class ServiceLogAspect {
 		  MethodSignature ms = (MethodSignature) joinPoint.getSignature();
 		  String desc = ms.getMethod().getAnnotation(RSCLog.class).desc();		  
 	      log.debug("desc {} "+desc);	        
-		  ActivityLogDTO dto = ActivityLogDTO.builder()
-                .actionBy("admin")
-                .message(desc)
-                .status(true)
-                .payload(LogPayload.builder()
-             		              .className(joinPoint.getTarget().getClass().getSimpleName())
-             		              .functionName(joinPoint.getSignature().getName())
-             		              .args(joinPoint.getArgs())
-             		              .build())
-                .build();
+		  ActivityLogDTO dto = new  ActivityLogDTO();
+				  dto.setActionBy("admin");
+				  dto.setMessage(desc);
+				  dto.setStatus(true);				  
+				  LogPayload payload=new LogPayload();
+				  payload.setClassName(joinPoint.getTarget().getClass().getSimpleName());
+				  payload.setFunctionName(joinPoint.getSignature().getName());
+				  payload.setArgs(joinPoint.getArgs());		              
+				  dto.setPayload(payload);				  
 		try {
 			logService.log(dto);
 		}catch(Exception ex) {
