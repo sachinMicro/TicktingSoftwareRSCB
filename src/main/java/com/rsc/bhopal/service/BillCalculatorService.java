@@ -31,8 +31,6 @@ public class BillCalculatorService {
 	@Autowired
 	private ParkingService parkingService;
 	
-
-	
 	public  List<ParkingBillDescription> getParkingBillDescription(int bikes , int threeFourWheeler){
 		
 		List<ParkingDetailsDTO> parkingDetails = parkingService.getParkingDetails();	

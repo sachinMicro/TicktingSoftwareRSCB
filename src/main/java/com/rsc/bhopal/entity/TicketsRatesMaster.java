@@ -2,6 +2,8 @@ package com.rsc.bhopal.entity;
 
 import java.util.Date;
 
+import org.hibernate.annotations.Fetch;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rsc.bhopal.enums.BillType;
 
@@ -53,6 +55,9 @@ public class TicketsRatesMaster {
 	@Column(name = "REVISED_AT")
 	private Date revisedAt;
 	
+	@OneToOne(fetch =FetchType.LAZY)
+	@JoinColumn(name = "REVISED_FROM",referencedColumnName = "ID")
+    private TicketsRatesMaster oldRateMaster;
 	
 	
 	@Enumerated(EnumType.STRING)

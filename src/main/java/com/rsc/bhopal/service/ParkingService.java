@@ -39,7 +39,6 @@ public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO) {
 		ticketsRatesMaster.setPrice(parkingPriceDTO.getPrice());
 		ticketsRatesMaster.setRevisedAt(new Date());
 		ticketsRatesMaster.setIsActive(true);
-
 		ParkingDetails parkingDetails = new ParkingDetails();
 		parkingDetails.setName(parkingPriceDTO.getName());
 		parkingDetails.setAddedAt(new Date());
@@ -48,7 +47,6 @@ public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO) {
 		parkingDetails=parkingRepo.saveAndFlush(parkingDetails);
 		ticketsRatesMaster.setParkingDetails(parkingDetails);
 		ticketsRatesMaster=ticketRepo.saveAndFlush(ticketsRatesMaster);
-
 	}
 
 

@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
-import com.rsc.bhopal.dtos.ParkingDetailsDTO;
-import com.rsc.bhopal.dtos.ParkingPriceDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
+import com.rsc.bhopal.dtos.TicketRevisedSummary;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
-import com.rsc.bhopal.entity.ParkingDetails;
 import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
@@ -26,6 +24,7 @@ import com.rsc.bhopal.repos.TicketDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -63,6 +62,32 @@ public class TicketsRatesService {
 
 	public List<Long> getTicketsByGroup(long familyGroupId) {
 		return ticketRateRepo.getTicketsByGroup(familyGroupId);
+	}
+	
+	
+	public List<TicketRevisedSummary> getRevisedRates(){
+		List<TicketRevisedSummary> dtos = new  ArrayList();
+		List<TicketsRatesMaster> ticketSummary = ticketRateRepo.getRecentRevisions();
+		ticketSummary.forEach(ticket->{
+			TicketRevisedSummary dto = new TicketRevisedSummary();
+			BeanUtils.copyProperties(ticket, dto);
+			dto.setUser(ticket.getUser().getName());			
+			dto.setOldPrice(ticket.getOldRateMaster().getPrice());
+			
+			dto.setPriceIncreased(dto.getOldPrice()<dto.getPrice());
+			
+			
+			if(ticket.getParkingDetails()==null) {
+				dto.setTicketType(ticket.getTicketType().getName());
+				dto.setVisitorsType(ticket.getVisitorsType().getName());
+				dto.setParkingRate(false);
+			}else {
+				dto.setParkingRate(true);
+				dto.setParkingDetails(ticket.getParkingDetails().getName());
+			}			
+			dtos.add(dto);
+		});
+		return dtos;
 	}
 
 	public TicketsRatesMasterDTO getTicketRateByGroup(long ticketId, long groupId) {
@@ -166,6 +191,7 @@ public class TicketsRatesService {
 		TicketsRatesMaster newRateMaster = new TicketsRatesMaster();
 		TicketsRatesMaster rateMaster = ticketRateRepo.findByGroupAndTicketIds(newTicketRate.getTicketId(),
 				newTicketRate.getGroupId());
+		
 		if (rateMaster.getIsActive() && rateMaster.getPrice() != newTicketRate.getPrice()) {
 			rateMaster.setIsActive(false);
 			rateMaster = ticketRateRepo.save(rateMaster);
@@ -180,6 +206,7 @@ public class TicketsRatesService {
 			newRateMaster.setRevisionNo(rateMaster.getRevisionNo() == null ? 1 : rateMaster.getRevisionNo() + 1);
 			// log.debug(rateMaster.getUser().getName());
 			newRateMaster.setUser(user);
+			newRateMaster.setOldRateMaster(rateMaster);
 			ticketRateRepo.save(newRateMaster);
 		}
 	}

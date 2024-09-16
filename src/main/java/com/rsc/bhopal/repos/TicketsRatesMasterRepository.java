@@ -22,9 +22,10 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 	@Query(name="GET_TICKET_RATE_BY_GROUP",
 			value = "select rate.ticketType.id  from  TicketsRatesMaster rate where rate.visitorsType.id=:groupId and isActive=true")
 	List<Long> getTicketsByGroup(long groupId);
-	
-     
 
+	@Query(name="GET_TICKET_RATE_BY_GROUP_AND_TICKET",
+			value = "select rate from  TicketsRatesMaster rate where revisionNo>0 order by revisedAt desc")
+	List<TicketsRatesMaster> getRecentRevisions();
 
 	
 }
