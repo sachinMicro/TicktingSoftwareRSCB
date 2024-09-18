@@ -97,14 +97,10 @@ td small {
 
 								<th:block th:each="group,index : ${groups}">
 									<input type="radio" name="group" th:value="${group.id}"
-										class="btn-check" th:id="${'group'+index}" autocomplete="off">
+										class="btn-check" th:id="${'group'+index.index}" th:data-minpersons="${group.minMembers}"  autocomplete="off">
 									<label class="btn btn-outline-primary"
-										th:for="${'group'+index}" th:text="${group.name}">NA</label>
+										th:for="${'group'+index.index}" th:text="${group.name}">NA</label>
 								</th:block>
-								<input type="radio" name="group" th:value="${generalVistor.id}"
-									class="btn-check" id="generalVistor" autocomplete="off" checked>
-								<label class="btn btn-outline-primary" for="generalVistor"
-									th:text="${generalVistor.name}"></label>
 							</div>
 						</div>
 
@@ -130,9 +126,9 @@ td small {
 								<th:block th:each="familyGroup,index : ${familyGroups}">
 									<input type="radio" name="familyGroup"
 										th:value="${familyGroup.id}" class="btn-check"
-										th:id="${'familyGroup'+index}" autocomplete="off">
+										th:id="${'familyGroup'+index.index}" autocomplete="off">
 									<label class="btn btn-outline-primary"
-										th:for="${'familyGroup'+index}" th:text="${familyGroup.name}">NA</label>
+										th:for="${'familyGroup'+index.index}" th:text="${familyGroup.name}">NA</label>
 								</th:block>
 
 								<input type="radio" name="familyGroup" value="0"
@@ -147,7 +143,7 @@ td small {
 
 							<h5>Choose Parking Vehicle Type</h5>
 
-							<th:block th:each="parkingDetail ,index : ${parkingDetails}">
+							<!-- <th:block th:each="parkingDetail,index : ${parkingDetails}">
 								<h6 class="m-0 mb-1" th:text="${parkingDetail.name}"></h6>
 								<div class="d-flex align-items-center mb-2 counter">
 									<button class="btn btn-outline-danger minus count"
@@ -155,6 +151,23 @@ td small {
 										<i class="fa-solid fa-angles-down"></i>
 									</button>
 									<input class="input-count" th:name="${parkingDetail.idDsec}"
+										value="0" type="number">
+									<button class="btn btn-outline-success plus count"
+										type="button">
+										<i class="fa-solid fa-angles-up"></i>
+									</button>
+								</div>
+							</th:block> -->
+
+							<th:block th:each="parking,stat : ${parkings}">
+								<h6 class="m-0 mb-1" th:text="${parking.name}"></h6>
+								<div class="d-flex align-items-center mb-2 counter">
+									<button class="btn btn-outline-danger minus count"
+										type="button">
+										<i class="fa-solid fa-angles-down"></i>
+									</button>
+									<input type="hidden" th:name="|parkings[${stat.index}].id|" th:value="${parking.id}" />
+									<input class="input-count" th:name="|parkings[${stat.index}].count|"
 										value="0" type="number">
 									<button class="btn btn-outline-success plus count"
 										type="button">
@@ -200,7 +213,7 @@ td small {
 								</h1>
 							</div>
 							<div class="d-flex justify-content-center mb-5">							  
-							    <button class="btn btn-success p-3" id="CALCULATE">Calculate Bill</button>
+								<button class="btn btn-success p-3" id="CALCULATE">Calculate Bill</button>
 								<button class="btn btn-primary p-3 mx-2" id="PRINT">Print Ticket</button>
 								
 							</div>

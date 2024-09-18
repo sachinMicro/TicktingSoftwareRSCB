@@ -13,7 +13,7 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 
 	@Query(name="GET_TICKET_RATE_BY_GROUP_AND_TICKET",
 			value = "select rate from  TicketsRatesMaster rate where rate.ticketType.id =:ticketid and rate.visitorsType.id=:groupId and isActive=true")
-	TicketsRatesMaster findByGroupAndTicketIds(long ticketid,long groupId);
+	TicketsRatesMaster findByGroupAndTicketIds(long ticketid, long groupId);
 	
 	@Query(name="CHECK_IF_RATE_IS_AVAIABLE",
 			value = "select count(*) from  TicketsRatesMaster rate where rate.ticketType.id =:ticketid and rate.visitorsType.id=:groupId and isActive=true")
@@ -23,9 +23,9 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 			value = "select rate.ticketType.id  from  TicketsRatesMaster rate where rate.visitorsType.id=:groupId and isActive=true")
 	List<Long> getTicketsByGroup(long groupId);
 	
-     
 
-
-	
+	@Query(name="GET_PARKING_TICKET_RATE",
+			value = "select rate from  TicketsRatesMaster rate where rate.billType=\'PARKING\' and isActive=true")
+	List<TicketsRatesMaster> findActiveParking();
 }
 

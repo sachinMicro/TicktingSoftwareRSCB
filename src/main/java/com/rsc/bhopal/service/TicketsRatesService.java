@@ -287,6 +287,14 @@ public class TicketsRatesService {
 			ticketRateRepo.save(newRatesMaster);
 		}
 	}
-
-	
+	public List<TicketsRatesMasterDTO> getActiveParkingDetails() {
+		List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = new java.util.ArrayList<TicketsRatesMasterDTO>();
+		final List<TicketsRatesMaster> ticketsRatesMasters = ticketRateRepo.findActiveParking();
+		for (TicketsRatesMaster ticketsRatesMaster: ticketsRatesMasters) {
+			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster, ticketsRatesMasterDTO);
+			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
+		}
+		return ticketsRatesMasterDTOs;
+	}
 }
