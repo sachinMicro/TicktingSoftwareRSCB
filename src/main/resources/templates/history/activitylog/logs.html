@@ -65,6 +65,7 @@
 					<table class="table table-striped border w-100" id="tickets">
 						<thead class="bg-gray">
 							<tr>
+							    <th scope="col">Status</th>
 								<th scope="col">Message</th>
 								<th scope="col">Payload</th>
 								<th scope="col">Action At</th>
@@ -73,8 +74,10 @@
 						</thead>
 						<tbody>
 							<tr th:each="log : ${logs}">
+							   <td scope="col">
+								    <i class="fa-solid fa-circle  small me-4" th:classappend="${log.status?'text-success':'text-danger'}"></i>								  
+								</td>
 								<td scope="col">
-								    <i class="fa-solid fa-circle  small me-4" th:classappend="${log.status?'text-success':'text-danger'}"></i>
 								    <span th:text="${log.message}"></span>
 								</td>
 								<td scope="col" th:text="${log.argsPayload}"></td>

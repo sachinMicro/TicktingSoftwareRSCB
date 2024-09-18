@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tickets</title>
+<title>Groups</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -125,7 +125,7 @@ td small {
 			</div>
 			<div class="col-12 mt-3">
 				<h2>
-					All Groups 
+					All Groups
 				</h2>
 				<table class="table table-striped border w-100" id="groups">
 					<thead class="bg-gray">
@@ -137,6 +137,7 @@ td small {
 							<th scope="col">Added At</th>
 							<th scope="col">Added By</th>
 							<th scope="col">Action</th>
+							<th scope="col">Set As Default</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -151,6 +152,14 @@ td small {
 							<form th:action="@{/manage/groups/status}" method="post">
 							    <input type="hidden" name="vistiorId" th:value="${visitor.id}">
 							    <button class="btn " th:classappend="${visitor.isActive?'btn-danger':'btn-success'}" th:text="${visitor.isActive?'Inactive':'Active'}"></button>							
+							</form>	
+							</td>
+							<td scope="col" >
+							<form th:action="@{/manage/groups/make-default}" method="post">
+							    <input type="hidden" name="vistiorId" th:value="${visitor.id}">
+							    <button class="btn " 
+							    th:classappend="${visitor.isDefault?'btn-warning disabled':'btn-success'}" 
+							    th:text="${visitor.isDefault?'Default':'Set As Default'}"></button>							
 							</form>	
 							</td>												
 						</tr>

@@ -9,8 +9,7 @@ public class CommonUtills {
 	public static String convertToJSON( Object obj) throws JsonProcessingException {
 		 ObjectMapper om = new ObjectMapper();
          return om.writeValueAsString(obj);
-	}
-	
+	}	
 	public static <T> T convertJSONToObject(String parload, Class<T> clazz) {
 		ObjectMapper mapper = new ObjectMapper();		
 		try {
@@ -22,5 +21,6 @@ public class CommonUtills {
 		}
 		return null;
 	}
+	
 	
 }

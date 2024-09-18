@@ -33,7 +33,7 @@ public class BillController {
 	private TicketBillService ticketBillService;
 	
 	@PostMapping("/calculate")	
-	public @ResponseBody ResponseEntity<?>  calculateBill(@ModelAttribute TicketSelectorDTO ticketSelector) {
+	public @ResponseBody ResponseEntity<?>  calculateBill(                  TicketSelectorDTO ticketSelector) {
 		log.debug("Ticket Selector "+ticketSelector);		
 		try {
 			BillSummarize billSummarize = billCalculator.summarizeBill(ticketSelector);		
@@ -50,13 +50,17 @@ public class BillController {
                     .message(ex.getMessage())
                     .build(),HttpStatus.BAD_REQUEST);
 		}catch(Exception ex) {	
-			ex.printStackTrace();
+			ex.printStackTrace();                                                                          
 			return new ResponseEntity<>(ResponseMessage.builder()
                     .status(false)
                     .data(null)
                     .message("Some Internal Error occurred")
                     .build(),HttpStatus.BAD_REQUEST);
 		}
+		
+		//user 9679,conf- 8051,approver 8044
+		//BP Authorization 
+		
 	}
 		
 	@PostMapping("/print")	

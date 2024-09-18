@@ -27,5 +27,11 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 	@Query(name="GET_PARKING_TICKET_RATE",
 			value = "select rate from  TicketsRatesMaster rate where rate.billType=\'PARKING\' and isActive=true")
 	List<TicketsRatesMaster> findActiveParking();
+
+	@Query(name="GET_TICKET_RATE_BY_GROUP_AND_TICKET",
+			value = "select rate from  TicketsRatesMaster rate where revisionNo>0 order by revisedAt desc")
+	List<TicketsRatesMaster> getRecentRevisions();
+
+	
 }
 

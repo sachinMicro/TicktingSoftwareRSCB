@@ -60,7 +60,8 @@ public class VisitorsType {
 	@Column(name = "IS_ACTIVE")
     private Boolean isActive;
 	
-	
+	@Column(name = "IS_DEFAULT")
+    private Boolean isDefault;
 	
 	@ManyToOne
 	@JoinColumn(name = "ADDED_BY",referencedColumnName = "ID")
