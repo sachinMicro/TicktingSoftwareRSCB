@@ -48,4 +48,12 @@ public class GroupController {
 		return "redirect:/manage/groups/add";
 	}
 
+	@PostMapping("/make-default")
+	public String changeDefault(@RequestParam("vistiorId") Long visitorId) {
+		visitorTypeService.changeDefaultVisitor(visitorId);	    
+		return "redirect:/manage/groups/add";
+	}
+
+	
+	
 }

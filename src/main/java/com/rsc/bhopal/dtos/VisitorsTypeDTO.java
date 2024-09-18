@@ -27,5 +27,7 @@ public class VisitorsTypeDTO {
     private String addedBy;
     
     private Boolean isActive;
+    
+    private Boolean isDefault;
 	
 }

@@ -34,5 +34,7 @@ public class TicketRevisedSummary {
     private String user;
     
     private boolean isParkingRate;
+    
+    private Float percentage;
 	
 }

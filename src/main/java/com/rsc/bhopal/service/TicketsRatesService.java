@@ -23,6 +23,7 @@ import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.repos.TicketDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
+import com.rsc.bhopal.utills.CommonUtills;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -75,8 +76,7 @@ public class TicketsRatesService {
 			dto.setOldPrice(ticket.getOldRateMaster().getPrice());
 			
 			dto.setPriceIncreased(dto.getOldPrice()<dto.getPrice());
-			
-			
+			//dto.setPercentage(CommonUtills.calculatePercentageDifference(dto.getOldPrice(),dto.getPrice()));			
 			if(ticket.getParkingDetails()==null) {
 				dto.setTicketType(ticket.getTicketType().getName());
 				dto.setVisitorsType(ticket.getVisitorsType().getName());

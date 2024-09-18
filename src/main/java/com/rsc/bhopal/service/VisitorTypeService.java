@@ -19,7 +19,9 @@ import com.rsc.bhopal.enums.VisitorsCategoryEnum;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class VisitorTypeService {	
 
@@ -41,8 +43,20 @@ public class VisitorTypeService {
 	}
 	
 	public void changeVisitorStatus(Long visitorId) {
-		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);	    
-		visitor.get().setIsActive(!visitor.get().getIsActive());
+		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);
+		
+		if(visitor.get().getIsDefault()==false)
+		    visitor.get().setIsActive(!visitor.get().getIsActive());
+		
+		visitorTypeRepo.save(visitor.get());
+	}
+	
+	@Transactional
+	public void changeDefaultVisitor(Long visitorId) {
+		log.debug("Removing all defaults");
+		visitorTypeRepo.removeDefaults();		
+		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);
+		visitor.get().setIsDefault(true);		
 		visitorTypeRepo.save(visitor.get());
 	}
 	
@@ -53,6 +67,7 @@ public class VisitorTypeService {
 		RSCUser user = userDetailsService.getUserByUsername(username);
 		visitorType.setAddedAt(new Date());
 		visitorType.setIsActive(true);
+		visitorType.setIsDefault(false);
 		visitorType.setAddedBy(user);
 		visitorTypeRepo.save(visitorType);	
 	}
