@@ -75,7 +75,8 @@ td small {
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating">
 								<input type="text" name="name" class="form-control" id="name"
-									placeholder="Name" value="" required> <label for="name">Group Name</label>
+									placeholder="Name" value="" required>
+								<label for="name">Group Name</label>
 							</div>
 						</div>
 						<div class="col-lg-2 col-md-2">
@@ -84,9 +85,10 @@ td small {
 									aria-label="Floating label select example" required>
 									<option value="">Please Select Category</option>
 									<th:block th:each="type : ${T(com.rsc.bhopal.enums.VisitorsCategoryEnum).values()}">
-									 <option th:value="${type.name}"  th:text="${type.name}"></option>
+										<option th:value="${type.name}" th:text="${type.name}"></option>
 									</th:block>
-								</select> <label for="floatingSelect">Category</label>
+								</select>
+								<label for="floatingSelect">Category</label>
 							</div>
 						</div>
 							<div class="col-lg-2 col-md-2">
@@ -95,9 +97,10 @@ td small {
 									aria-label="Floating label select example" required>
 									<option  value="">Please Select Type</option>
 									<th:block th:each="groupType : ${T(com.rsc.bhopal.enums.GroupType).values()}">
-									 <option th:value="${groupType.name}"  th:text="${groupType.name}"></option>
+										<option th:value="${groupType.name}" th:text="${groupType.name}"></option>
 									</th:block>
-								</select> <label for="floatingSelect">Type</label>
+								</select>
+								<label for="floatingSelect">Type</label>
 							</div>
 						</div>
 						<div class="col-lg-2 col-md-2">
@@ -131,7 +134,7 @@ td small {
 					<thead class="bg-gray">
 						<tr>
 							<th scope="col">Name</th>
-							<th scope="col">Type</th>
+							<th scope="col">Category</th>
 							<th scope="col">Min Members</th>
 							<th scope="col">Fixed Members</th>
 							<th scope="col">Added At</th>
@@ -157,9 +160,9 @@ td small {
 							<td scope="col" >
 							<form th:action="@{/manage/groups/make-default}" method="post">
 							    <input type="hidden" name="vistiorId" th:value="${visitor.id}">
-							    <button class="btn " 
-							    th:classappend="${visitor.isDefault?'btn-warning disabled':'btn-success'}" 
-							    th:text="${visitor.isDefault?'Default':'Set As Default'}"></button>							
+							    <button class="btn" 
+							    	th:classappend="${visitor.isDefault?'btn-warning disabled':'btn-success'}" 
+							    	th:text="${visitor.isDefault?'Default':'Set As Default'}"></button>							
 							</form>	
 							</td>												
 						</tr>

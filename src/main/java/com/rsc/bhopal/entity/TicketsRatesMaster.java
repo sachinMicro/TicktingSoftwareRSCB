@@ -38,7 +38,7 @@ public class TicketsRatesMaster {
 	@JoinColumn(name = "VISITOR_ID",referencedColumnName = "ID")
 	private VisitorsType  visitorsType;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARKING_DET_ID",referencedColumnName = "ID")
 	private ParkingDetails  parkingDetails;
 		

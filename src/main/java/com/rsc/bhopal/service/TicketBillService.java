@@ -44,7 +44,7 @@ public class TicketBillService {
 	private BillCalculatorService billCalculator;
 
 	public List<TicketBillDTO> getRecentTickets(int rows){
-		List<TicketBillDTO> ticketDTOs = new ArrayList();
+		List<TicketBillDTO> ticketDTOs = new ArrayList<TicketBillDTO>();
 		Pageable page=PageRequest.of(0, rows, Sort.by(Direction.DESC, "id"));		
 		List<TicketBill> tickets=generatedTicketRepo.recentRecords(page);	
 		

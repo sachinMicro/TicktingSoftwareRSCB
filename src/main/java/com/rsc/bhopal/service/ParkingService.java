@@ -3,6 +3,7 @@ package com.rsc.bhopal.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,13 +65,17 @@ public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO) {
 			try {
 				ParkingDetailsDTO parkingDetailsDTO = new ParkingDetailsDTO();
 
-				TicketsRatesMasterDTO rateMaster = new TicketsRatesMasterDTO();
+				TicketsRatesMasterDTO rateMasterDTO = new TicketsRatesMasterDTO();
 
-				BeanUtils.copyProperties(parkingDetail.getRateMaster(), rateMaster);
+				Optional<TicketsRatesMaster> rateMaster=parkingDetail.getRateMaster().stream()
+				                                      .filter(rate->rate.getIsActive()).findFirst();
+				 
+				BeanUtils.copyProperties(rateMaster.get(), rateMasterDTO);
 
 				BeanUtils.copyProperties(parkingDetail, parkingDetailsDTO);
 
-				parkingDetailsDTO.setTicketsRatesMasterDTO(rateMaster);
+
+				parkingDetailsDTO.setTicketsRatesMasterDTO(rateMasterDTO);
 
 				parkingDetailsDTOs.add(parkingDetailsDTO);
 

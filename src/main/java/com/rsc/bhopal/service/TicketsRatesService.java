@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
+import com.rsc.bhopal.dtos.ParkingPriceDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketRevisedSummary;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
@@ -323,5 +324,30 @@ public class TicketsRatesService {
 			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
 		}
 		return ticketsRatesMasterDTOs;
+	}
+
+	public void updateParkingRate(final List<ParkingPriceDTO> parkingPriceDTOs) {
+		final List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = getActiveParkingDetails();
+		parkingPriceDTOs.forEach(parkingPriceDTO -> {
+			for (TicketsRatesMasterDTO ticketsRatesMasterDTO: ticketsRatesMasterDTOs) {
+				if ((ticketsRatesMasterDTO.getParkingDetails().getId() == parkingPriceDTO.getId()) && (!ticketsRatesMasterDTO.getPrice().equals(parkingPriceDTO.getPrice()))) {
+					// log.debug("Parking ID: " + ticketsRatesMasterDTO.getParkingDetails().getId() + ", Price: " + ticketsRatesMasterDTO.getPrice());
+					// log.debug(parkingPriceDTO.toString());
+					final TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(ticketsRatesMasterDTO.getId())
+						.orElseThrow(() -> new RuntimeException("Parking Rate not found"));
+					ticketsRatesMaster.setIsActive(false);
+					ticketRateRepo.save(ticketsRatesMaster);
+					TicketsRatesMaster newTicketsRatesMaster = new TicketsRatesMaster();
+					// log.debug("\r\n" + ticketsRatesMasterDTO.toString());
+					BeanUtils.copyProperties(ticketsRatesMasterDTO, newTicketsRatesMaster);
+					newTicketsRatesMaster.setId(null);
+					newTicketsRatesMaster.setRevisedAt(new Date());
+					newTicketsRatesMaster.setRevisionNo(ticketsRatesMasterDTO.getRevisionNo() == null ? 0 : ticketsRatesMaster.getRevisionNo() + 1);
+					newTicketsRatesMaster.setIsActive(true);
+					newTicketsRatesMaster.setPrice(parkingPriceDTO.getPrice());
+					ticketRateRepo.save(newTicketsRatesMaster);
+				}
+			}
+		});
 	}
 }

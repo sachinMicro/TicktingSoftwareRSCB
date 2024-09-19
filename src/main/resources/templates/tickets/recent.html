@@ -111,15 +111,16 @@ td small {
 														</th>
 													</tr>
 													<tr>
-														<th scope="col">Ticket</th>
+														<th scope="col">Name</th>
 														<th scope="col">Group</th>
-														<th scope="col">Person</th>
+														<th scope="col">Count</th>
 														<th scope="col">Per/Price</th>
 														<th scope="col">Total</th>
 													</tr>
 												</thead>
 												<tbody>
 													<th:block th:if="${ticket.billSummarize!=null}">
+														
 														<th:block
 															th:each="billRow, stat  : ${ticket.billSummarize.billDescription}">
 															<tr>
@@ -130,7 +131,21 @@ td small {
 																<td th:text="${billRow.totalSum}"></td>
 															</tr>
 														</th:block>
+
+														<th:block th:each="billRow, stat : ${ticket.billSummarize.parkingBillDescription}">
+															<tr>
+																<td th:text="${billRow.desc}"></td>
+																<td >PARKING</td>
+																<td th:text="${billRow.count}"></td>
+																<td th:text="${billRow.perCharge}"></td>
+																<td th:text="${billRow.sum}"></td>
+															</tr>
+														</th:block>
 													</th:block>
+													<tr>
+														<td colspan="4">Total Bill</td>														
+														<td th:text="${ticket.totalBill}"></td>
+													</tr>
 												</tbody>
 											</table>
 										</div>

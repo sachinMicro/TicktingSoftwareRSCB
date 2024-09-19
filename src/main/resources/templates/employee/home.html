@@ -78,9 +78,9 @@ td small {
 
 								<th:block th:each="ticket,index : ${tickets}">
 									<input type="checkbox" name="tickets" th:value="${ticket.id}"
-										class="btn-check" th:id="${'ticket'+index}" autocomplete="off">
+										class="btn-check" th:id="${'ticket'+index.index}" autocomplete="off">
 									<label class="btn btn-outline-primary"
-										th:for="${'ticket'+index}" th:text="${ticket.name}">NA</label>
+										th:for="${'ticket'+index.index}" th:text="${ticket.name}">NA</label>
 								</th:block>
 
 								<!-- <input type="checkbox" name="tickets" value="0"
@@ -97,7 +97,7 @@ td small {
 
 								<th:block th:each="group,index : ${groups}">
 									<input type="radio" name="group" th:value="${group.id}"
-										class="btn-check" th:id="${'group'+index.index}" th:data-minpersons="${group.minMembers}"  autocomplete="off">
+										class="btn-check" th:id="${'group'+index.index}" th:data-minpersons="${group.minMembers}" th:checked="${group.isDefault}" autocomplete="off">
 									<label class="btn btn-outline-primary"
 										th:for="${'group'+index.index}" th:text="${group.name}">NA</label>
 								</th:block>

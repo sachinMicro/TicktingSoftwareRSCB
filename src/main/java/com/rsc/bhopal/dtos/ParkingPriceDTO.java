@@ -6,4 +6,6 @@ import lombok.Data;
 public class ParkingPriceDTO {
 	private String name;
 	private Float price;
+
+	private Long id;
 }

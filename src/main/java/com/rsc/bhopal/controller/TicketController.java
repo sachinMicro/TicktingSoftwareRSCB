@@ -24,8 +24,8 @@ public class TicketController {
 	public String recentTickets(@PathVariable(name =  "rows",required = false) Integer rows,Map<String,Object> mapAttributes) {		
 		log.debug("RECENT"+rows);	
 		rows=rows==null?10:rows;
-		List<TicketBillDTO> generatedTickets = ticketBillService.getRecentTickets(rows);
-		
+		List<TicketBillDTO> generatedTickets = ticketBillService.getRecentTickets(rows);		
+		// log.debug("TIEKEer================"+generatedTickets);
 		mapAttributes.put("tickets", generatedTickets);			
 		return "tickets/recent";
 	}

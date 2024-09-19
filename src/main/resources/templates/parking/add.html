@@ -100,10 +100,23 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="parking : ${parkings}">
+						<!-- <tr th:each="parking : ${parkings}">
 							<td scope="col" th:text="${parking.name}"></td>
 							<td scope="col" th:text="${parking.ticketsRatesMasterDTO.price}"></td>
 							<td scope="col" th:text="${parking.addedAt}"></td>
+						</tr> -->
+						<tr th:each="parking,stat : ${parkings}">
+							<td scope="col">
+								<input type="text" class="form-control" th:value="${parking.name}" th:name="|parkingRates[${stat.index}].name|" />
+							</td>
+							<td scope="col">
+								<input type="number" class="form-control" th:value="${parking.ticketsRatesMasterDTO.price}" th:name="|parkingRates[${stat.index}].price|" />
+								<input type="hidden" class="form-control" th:value="${parking.ticketsRatesMasterDTO.price}" th:name="|parkingRates[${stat.index}].previousPrice|" />
+							</td>
+							<td scope="col" th:inline="text">
+								[[${parking.addedAt}]]
+								<input type="hidden" class="form-control" th:value="${parking.id}" th:name="|parkingRates[${stat.index}].id|" />
+							</td>
 						</tr>
 					</tbody>
 					<tfoot></tfoot>
