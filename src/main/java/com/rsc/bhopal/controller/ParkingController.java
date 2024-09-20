@@ -1,5 +1,6 @@
 package com.rsc.bhopal.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -39,28 +40,27 @@ public class ParkingController {
 	}
 
 	@PostMapping(path = "/parking/add")
-	public String addNewParkingDetails(@ModelAttribute ParkingPriceDTO parkingPriceDTO, Map<String, Object> attributes) {
+	public String addNewParkingDetails(@ModelAttribute ParkingPriceDTO parkingPriceDTO, Principal user, Map<String, Object> attributes) {
 		// parkingService.addNewParking(parkingPriceDTO);
-		parkingService.addNewParkingRate(parkingPriceDTO);
+		parkingService.addNewParkingRate(parkingPriceDTO, user);
 		log.debug(parkingPriceDTO.toString());
 		attributes.put("parkings", parkingService.getParkingDetails());
 		return "redirect:/manage/parking/add";
 	}
 
 	@PostMapping(path = "/parking/price/change")
-	public String postMethodName(@ModelAttribute ParkingPriceDTOWrapper parkingRates) {
-		log.debug(parkingRates.toString());
-		/*
-		final List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = ticketsRatesService.getActiveParkingDetails();
-		parkingRates.getParkingRates().forEach(parkingRate -> {
-			for (TicketsRatesMasterDTO ticketsRatesMasterDTO: ticketsRatesMasterDTOs) {
-				if (ticketsRatesMasterDTO.getParkingDetails().getId() == parkingRate.getId()) {}
-			}
-		});
-		*/
-		ticketsRatesService.updateParkingRate(parkingRates.getParkingRates());
+	public String updateParkingRate(@ModelAttribute ParkingPriceDTO parkingPriceDTO) {
+		ticketsRatesService.updateParkingRate(parkingPriceDTO);
 		return "redirect:/manage/parking/add";
 	}
+/*
+	@PostMapping(path = "/parking/price/change")
+	public String postMethodName(@ModelAttribute ParkingPriceDTOWrapper parkingRates) {
+		log.debug(parkingRates.toString());
+		ticketsRatesService.updateParkingRates(parkingRates.getParkingRates());
+		return "redirect:/manage/parking/add";
+	}
+*/
 
 /*
 	@PostMapping(path = "/parking/price/change")
@@ -74,7 +74,7 @@ public class ParkingController {
 		// parkingDetailsDTO.forEach(parkingDetailDTO -> {});
 		return "parking/add";
 	}
- */
+*/
 	@GetMapping(path = "/parking/details")
 	@ResponseBody
 	public List<ParkingDetailsDTO> getDetails() {

@@ -68,16 +68,15 @@ public class TicketsRatesService {
 	
 	
 	public List<TicketRevisedSummary> getRevisedRates(){
-		List<TicketRevisedSummary> dtos = new  ArrayList();
+		List<TicketRevisedSummary> dtos = new ArrayList<TicketRevisedSummary>();
 		List<TicketsRatesMaster> ticketSummary = ticketRateRepo.getRecentRevisions();
 		ticketSummary.forEach(ticket->{
 			TicketRevisedSummary dto = new TicketRevisedSummary();
 			BeanUtils.copyProperties(ticket, dto);
 			dto.setUser(ticket.getUser().getName());			
-			dto.setOldPrice(ticket.getOldRateMaster().getPrice());
-			
+			dto.setOldPrice(ticket.getOldRateMaster().getPrice());			
 			dto.setPriceIncreased(dto.getOldPrice()<dto.getPrice());
-			//dto.setPercentage(CommonUtills.calculatePercentageDifference(dto.getOldPrice(),dto.getPrice()));			
+
 			if(ticket.getParkingDetails()==null) {
 				dto.setTicketType(ticket.getTicketType().getName());
 				dto.setVisitorsType(ticket.getVisitorsType().getName());
@@ -325,7 +324,23 @@ public class TicketsRatesService {
 		}
 		return ticketsRatesMasterDTOs;
 	}
+	public void updateParkingRate(final ParkingPriceDTO parkingPriceDTO) {
 
+		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findByIsActiveAndParkingDetails_Id(true, parkingPriceDTO.getId());
+		ticketsRatesMaster.setIsActive(false);				
+		ticketRateRepo.save(ticketsRatesMaster);
+		TicketsRatesMaster newTicketsRatesMaster = new TicketsRatesMaster();
+		BeanUtils.copyProperties(ticketsRatesMaster, newTicketsRatesMaster);
+		newTicketsRatesMaster.setId(null);
+		newTicketsRatesMaster.setOldRateMaster(ticketsRatesMaster);
+		newTicketsRatesMaster.setRevisedAt(new Date());
+		newTicketsRatesMaster.setRevisionNo(ticketsRatesMaster.getRevisionNo() + 1);
+		newTicketsRatesMaster.setIsActive(true);
+		newTicketsRatesMaster.setPrice(parkingPriceDTO.getPrice());
+		ticketRateRepo.save(newTicketsRatesMaster);
+
+	}
+/*
 	public void updateParkingRate(final List<ParkingPriceDTO> parkingPriceDTOs) {
 		final List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = getActiveParkingDetails();
 		parkingPriceDTOs.forEach(parkingPriceDTO -> {
@@ -350,4 +365,5 @@ public class TicketsRatesService {
 			}
 		});
 	}
+*/
 }

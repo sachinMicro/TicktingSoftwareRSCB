@@ -72,23 +72,32 @@ td small {
 							</h5>
 
 
+							<th:block th:each="count : ${#numbers.sequence(1,ticketGroups+1,1)}">
+								<div  class="btn-group mb-2" role="group" autocomplete="off">
+	                          <th:block th:each="index : ${#numbers.sequence(((count*8)-8),((count*8)-1),1)}">
 
-							<div class="btn-group" role="group"
-								aria-label="Basic checkbox toggle button group">
-
-								<th:block th:each="ticket,index : ${tickets}">
-									<input type="checkbox" name="tickets" th:value="${ticket.id}"
-										class="btn-check" th:id="${'ticket'+index.index}" autocomplete="off">
-									<label class="btn btn-outline-primary"
-										th:for="${'ticket'+index.index}" th:text="${ticket.name}">NA</label>
+							       <th:block th:if="${tickets.size>index}">
+									<input type="checkbox" name="tickets" th:value="${tickets[index].id}" class="btn-check" th:id="${'ticket'+index}" autocomplete="off" />
+									<label class="btn btn-outline-primary" th:for="${'ticket'+index}" th:text="${tickets[index].name}">NA</label>
+								   </th:block>
+									
 								</th:block>
+							
+							
+								</div>
+						        	<!-- <span th:text="${count}"></span><br>
+									<span th:text="${'=MIN INDEX='+((count*8)-8)}"></span><br>							
+							         <span th:text="${'=MAX INDEX='+((count*8)-1)}"></span><br>		 -->
+							</th:block>
 
-								<!-- <input type="checkbox" name="tickets" value="0"
-									class="btn-check" id="ticketsNone" autocomplete="off"
-									checked> <label class="btn btn-outline-primary"
-									for="ticketsNone">None</label> -->
+							<!-- <th:block th:each="count : ${#numbers.sequence(0, tickets.size, 8)}">
+								<div th:each="index : ${#numbers.sequence(count, 8)}" class="btn-group" role="group" class="btn-check" th:id="${'ticket'+index.index}" autocomplete="off">
+									<input type="checkbox" name="tickets" th:value="${tickets[index].id}" class="btn-check" th:id="${'ticket'+index}" autocomplete="off" />
+									<label class="btn btn-outline-primary" th:for="${'ticket'+index}" th:text="${tickets[index].name}">NA</label>
+								</div>
+							</th:block> -->
 							</div>
-						</div>
+
 
 						<div class="form-container">
 							<h5>Select From Groups</h5>

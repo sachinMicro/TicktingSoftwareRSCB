@@ -32,6 +32,7 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 			value = "select rate from  TicketsRatesMaster rate where revisionNo>0 order by revisedAt desc")
 	List<TicketsRatesMaster> getRecentRevisions();
 
-	
+	TicketsRatesMaster findByIsActiveAndParkingDetails_Id(boolean isActive,Long parkingId);
+
 }
 

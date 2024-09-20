@@ -69,4 +69,4 @@ public class ComboContoller {
 
 		return "redirect:/manage/combo/add?groupId=" + groupCategory;
 	}
-	}
+}

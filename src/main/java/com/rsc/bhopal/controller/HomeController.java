@@ -87,6 +87,14 @@ public class HomeController {
 			}
 		}
 		else {
+			attributes.put("tickets1", tickets.subList(0, 8));
+			attributes.put("tickets2", tickets.subList(8, tickets.size()));
+
+			float ticketGroups = (float)tickets.size() / 8f;
+			attributes.put("ticketGroups", ticketGroups);
+
+
+
 			attributes.put("tickets", tickets);
 
 			attributes.put("groups", visitors.stream().filter(visitorType->
