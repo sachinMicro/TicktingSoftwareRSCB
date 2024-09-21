@@ -21,7 +21,6 @@ public class TicketDetailsDTO {
 
 	// RATE
 	// if rate master contains row with this group id and ticket id (is active=true)
-	// private Float price=100f;
 	private Float price;
  
 	// RATE if rate master contains row with this group id and ticket id (is active=true) then true  

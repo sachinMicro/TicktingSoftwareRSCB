@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ParkingController {
 	@Autowired
 	private ParkingService parkingService;
+
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
 
@@ -53,28 +54,7 @@ public class ParkingController {
 		ticketsRatesService.updateParkingRate(parkingPriceDTO);
 		return "redirect:/manage/parking/add";
 	}
-/*
-	@PostMapping(path = "/parking/price/change")
-	public String postMethodName(@ModelAttribute ParkingPriceDTOWrapper parkingRates) {
-		log.debug(parkingRates.toString());
-		ticketsRatesService.updateParkingRates(parkingRates.getParkingRates());
-		return "redirect:/manage/parking/add";
-	}
-*/
 
-/*
-	@PostMapping(path = "/parking/price/change")
-	public String updateParkingDetails(@ModelAttribute List<ParkingPriceDTO> parkingPriceDTO, Map<String, Object> attributes) {
-		log.debug(parkingPriceDTO.toString());
-
-		final List<ParkingDetailsDTO> parkingDetailsDTO = parkingService.getParkingDetails();
-		attributes.put("parkings", parkingDetailsDTO);
-		log.debug(parkingDetailsDTO.toString());
-
-		// parkingDetailsDTO.forEach(parkingDetailDTO -> {});
-		return "parking/add";
-	}
-*/
 	@GetMapping(path = "/parking/details")
 	@ResponseBody
 	public List<ParkingDetailsDTO> getDetails() {

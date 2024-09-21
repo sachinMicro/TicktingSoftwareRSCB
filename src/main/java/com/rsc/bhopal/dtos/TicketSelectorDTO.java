@@ -16,16 +16,7 @@ public class TicketSelectorDTO {
 
 	private int persons;
 
-	// private List<Long> parkingIds;
-
-	// private List<Integer> parkingValues;
-
 	private List<ParkingCalDTO> parkings;
-
-
-	// private int bikes;
-
-	// private int threeFourWheeler;
 
 	public TicketSelectorDTO(){
 		this.tickets = new ArrayList<>();

@@ -82,7 +82,8 @@ public class AdminController {
 				}
 				catch(TicketRateNotMaintainedException ex) {
 					log.debug(ex.getMessage());
-					prices.put(visitor.getId(), 0f);
+					prices.put(visitor.getId(), null);
+					// prices.put(visitor.getId(), 0f);
 				}
 			});
 
@@ -115,10 +116,6 @@ public class AdminController {
 		List<RSCUserDTO> users = userDetailsService.getAllUser();		
 		attributes.put("users", users);
 		attributes.put("roles", roles);
-		
-		//attributes.put("tests", 
-			//	Arrays.asList(new Test(1,"Sachin",true),new Test(2,"Ashish",false)));
-		
 		return "admin/users";
 	}
 

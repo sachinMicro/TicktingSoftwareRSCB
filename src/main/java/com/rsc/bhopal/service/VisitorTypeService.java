@@ -30,7 +30,7 @@ public class VisitorTypeService {
 
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
-	
+
 	public List<VisitorsTypeDTO> getComboVisitorTypes( ) {
 		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
 		List<VisitorsType> visitors = visitorTypeRepo.findByGroupTypeAndIsActive(GroupType.COMBO,true);
@@ -41,7 +41,7 @@ public class VisitorTypeService {
 		}
 		return visitorsDTOs;
 	}
-	
+
 	public void changeVisitorStatus(Long visitorId) {
 		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);
 		
@@ -50,7 +50,7 @@ public class VisitorTypeService {
 		
 		visitorTypeRepo.save(visitor.get());
 	}
-	
+
 	@Transactional
 	public void changeDefaultVisitor(Long visitorId) {
 		log.debug("Removing all defaults");
@@ -59,7 +59,7 @@ public class VisitorTypeService {
 		visitor.get().setIsDefault(true);		
 		visitorTypeRepo.save(visitor.get());
 	}
-	
+
 	@RSCLog(desc="Visitors add request")
 	public void addVisitorType(VisitorsTypeDTO dto,String username) {		
 		VisitorsType visitorType = new VisitorsType();		
@@ -71,18 +71,19 @@ public class VisitorTypeService {
 		visitorType.setAddedBy(user);
 		visitorTypeRepo.save(visitorType);	
 	}
-	
+
 	public Optional<VisitorsType> getVisitorById(long visitorid) {
 		Optional<VisitorsType> visitorsType = visitorTypeRepo.findById(visitorid);		
 		return visitorsType;
 	}
-	
+
 	public VisitorsTypeDTO getGeneralVisitorId(long visitorid) {
 		VisitorsTypeDTO visitorDTO = new VisitorsTypeDTO();
 		Optional<VisitorsType> visitorsType = visitorTypeRepo.findById(visitorid);
 		BeanUtils.copyProperties(visitorsType.get(), visitorDTO);
 		return visitorDTO;
 	}
+
 	public List<VisitorsTypeDTO> getFamilyVisitorTypes(VisitorsCategoryEnum typeEnum) {
 		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
 		List<VisitorsType> visitors = visitorTypeRepo.findByCategory(typeEnum);
@@ -93,8 +94,7 @@ public class VisitorTypeService {
 		}
 		return visitorsDTOs;
 	}
-	
-	
+
 	public List<VisitorsTypeDTO> getAllActiveVisitorTypes() {
 		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
 		List<VisitorsType> visitors = visitorTypeRepo.findByIsActive(true);
@@ -118,8 +118,7 @@ public class VisitorTypeService {
 		}
 		return visitorsDTOs;
 	}
-	
-	
+
 	public List<VisitorsTypeDTO> getAllVisitorTypes() {
 		List<VisitorsTypeDTO> visitorsDTOs = new ArrayList<VisitorsTypeDTO>();
 		List<VisitorsType> visitors = visitorTypeRepo.findAll();
@@ -143,7 +142,7 @@ public class VisitorTypeService {
 				new VisitorsType("Family Group (Group of 4)", VisitorsCategoryEnum.FAMILY, 4, 0),
 				new VisitorsType("Family Group (Group of 6)", VisitorsCategoryEnum.FAMILY, 6, 0),
 
-				new VisitorsType("Sponsored Visitors", VisitorsCategoryEnum.SPONCERED, 0, 0),
+				new VisitorsType("Sponsored Visitors", VisitorsCategoryEnum.SPONSORED, 0, 0),
 				new VisitorsType("Free Entry", VisitorsCategoryEnum.OTHER, 0, 0),
 				new VisitorsType("Special Case", VisitorsCategoryEnum.SPECIAL, 0, 0)
 

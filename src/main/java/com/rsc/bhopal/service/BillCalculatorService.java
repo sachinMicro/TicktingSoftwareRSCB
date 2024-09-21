@@ -37,8 +37,10 @@ public class BillCalculatorService {
 		BillSummarize billSummarize = new BillSummarize();
 		if (ticketSelectorDTO.getFamilyGroup() == 0) {
 			billSummarize.setBillDescription(summarizeTicketBill(ticketSelectorDTO));
+			billSummarize.setComboCase(false);
 		}
 		else {
+			billSummarize.setComboCase(true);
 			billSummarize.setBillDescription(summarizeFamilyBill(ticketSelectorDTO.getFamilyGroup()));
 		}
 		// billSummarize.getParkingBillDescription();

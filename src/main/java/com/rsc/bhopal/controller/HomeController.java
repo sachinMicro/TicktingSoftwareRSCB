@@ -26,52 +26,12 @@ public class HomeController {
 
 	@Autowired
 	private TicketDetailsService ticketDetails;
-	
+
 	@Autowired
 	private VisitorTypeService visitorDetails;
-	
+
 	@Autowired
 	private ParkingService parkingService;
-	
-/*
-	@GetMapping(path = {"","/{variable}"} )
-	public String hello(Map<String, Object> attributes) {		
-		List<TicketDetailsDTO> tickets = ticketDetails.getAllActiveTickets();
-		List<VisitorsTypeDTO> visitors = visitorDetails.getAllActiveVisitorTypes();
-		String redirectString="";
-		if(tickets.size()==0||visitors.size()==0) {
-			if(tickets.size()==0) {
-				redirectString="redirect:/manage/tickets/add";
-			}else if(visitors.size()==0) {
-				redirectString="redirect:/manage/groups/add";
-			}
-		}else {			
-			attributes.put("tickets", tickets);		
-			attributes.put("groups", visitors.stream().filter(visitorType->
-			VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())|| 
-			VisitorsCategoryEnum.GROUP.equals(visitorType.getCategory())|| 
-			VisitorsCategoryEnum.SCHOOL.equals(visitorType.getCategory())||
-			VisitorsCategoryEnum.FREE.equals(visitorType.getCategory())||
-			VisitorsCategoryEnum.SPECIAL.equals(visitorType.getCategory())	
-			).collect(Collectors.toList()));
-			
-			attributes.put("familyGroups", visitors.stream().filter(visitorType->
-			VisitorsCategoryEnum.FAMILY.equals(visitorType.getCategory())
-			).collect(Collectors.toList()));			
-
-			attributes.put("generalVistor", visitors.stream().filter(visitorType->
-			VisitorsCategoryEnum.GENERAL.equals(visitorType.getCategory())
-			).findFirst().get());	
-			
-			
-			attributes.put("parkingDetails",parkingService.getParkingDetails());			
-			redirectString="employee/home";
-		}
-
-		
-		return redirectString;
-	}
-*/
 
 	@GetMapping(path = {"","/{variable}"} )
 	public String hello(Map<String, Object> attributes) {
@@ -93,13 +53,17 @@ public class HomeController {
 			float ticketGroups = (float)tickets.size() / 8f;
 			attributes.put("ticketGroups", ticketGroups);
 
-
-
 			attributes.put("tickets", tickets);
 
 			attributes.put("groups", visitors.stream().filter(visitorType->
 				GroupType.SINGLE.equals(visitorType.getGroupType())
 				).collect(Collectors.toList()));
+			
+			visitors.forEach(visitorType -> {
+				if (GroupType.SINGLE.equals(visitorType.getGroupType()) && visitorType.getIsDefault()) {
+					attributes.put("defaultpersonvalue", visitorType.getMinMembers());
+				}
+			});
 
 			attributes.put("familyGroups", visitors.stream().filter(visitorType->
 				GroupType.COMBO.equals(visitorType.getGroupType())

@@ -22,55 +22,29 @@ public class TicktingSoftwareRscbApplication {
 
 	@Autowired
 	private TicketDetailsService ticketDetails;
-	
+
 	@Autowired
 	private VisitorTypeService visitorDetails;
-	
+
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
-	
+
 	@Autowired
 	private ParkingDetailsRepository parkingRepo;
-	
+
 	@Autowired
 	private VisitorTypeRepository visitorRepo;
-	
+
 	@Autowired
 	private ActivityLogService logService;
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(TicktingSoftwareRscbApplication.class, args);
-		
-		
-		
 	}
+
    @Bean
 	CommandLineRunner runner() {
 		return runner->{
-			/*
-			 * ActivityLogDTO dto = ActivityLogDTO.builder() .actionBy("admin")
-			 * .message("Test message") .status(true) .payload(LogPayload.builder()
-			 * .className(this.getClass().getName()) .functionName("runner") .args(null)
-			 * .build()) .build(); logService.log(dto);
-			 */
-			//ticketDetails.addTickets();
-			///visitorDetails.addVisitorType();			
-			//ticketsRatesService.getAllTicketRates();
-			/*
-			 * ParkingDetails parking= new ParkingDetails();
-			 * 
-			 * parking.setAddedAt(new Date()); parking.setIsActive(true);
-			 * parking.setName("3 or 4 Wheeler");
-			 * 
-			 * TicketsRatesMaster rateMaster = new TicketsRatesMaster();
-			 * rateMaster.setBillType(BillType.PARKING); rateMaster.setPrice(20f);
-			 * rateMaster.setIsActive(true);
-			 * 
-			 * parking.setRateMaster(rateMaster);
-			 * parking= parkingRepo.saveAndFlush(parking);
-			 */
 		};
 	}
-
-	
 }

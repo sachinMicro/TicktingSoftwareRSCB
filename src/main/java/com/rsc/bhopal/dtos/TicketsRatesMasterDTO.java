@@ -15,7 +15,8 @@ public class TicketsRatesMasterDTO {
 
 	private VisitorsTypeDTO visitorsType;
 
-	private ParkingDetails parkingDetails;
+	private ParkingDetailsDTO parkingDetails;
+	// private ParkingDetailsDTO parkingDetailsDTO;
 
 	private Boolean isActive;
 

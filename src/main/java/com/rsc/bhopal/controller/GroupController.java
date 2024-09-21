@@ -53,7 +53,4 @@ public class GroupController {
 		visitorTypeService.changeDefaultVisitor(visitorId);	    
 		return "redirect:/manage/groups/add";
 	}
-
-	
-	
 }

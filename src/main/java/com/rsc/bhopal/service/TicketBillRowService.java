@@ -7,13 +7,6 @@ import com.rsc.bhopal.repos.TicketBillRowRepository;
 
 @Service
 public class TicketBillRowService {
-
 	@Autowired
 	TicketBillRowRepository billSummRepo;
-	
-	
-	
-	
-	
-	
 }

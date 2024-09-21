@@ -38,7 +38,6 @@ public class ParkingService {
 	@Autowired
 	private RSCUserDetailsService userDetailsService;
 
-
 	public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO, Principal user) {
 		TicketsRatesMaster ticketsRatesMaster = new TicketsRatesMaster();
 		ticketsRatesMaster.setBillType(BillType.PARKING);
@@ -57,15 +56,11 @@ public class ParkingService {
 		ticketsRatesMaster=ticketRepo.saveAndFlush(ticketsRatesMaster);
 	}
 
-
-
 	public List<ParkingDetailsDTO> getParkingDetails() {
 
 		List<ParkingDetailsDTO> parkingDetailsDTOs = new ArrayList<ParkingDetailsDTO>();
 
 		List<ParkingDetails> parkingDetails = parkingRepo.findAll();
-
-
 
 		parkingDetails.forEach(parkingDetail -> {
 			System.out.println(parkingDetails);
@@ -81,7 +76,6 @@ public class ParkingService {
 
 				BeanUtils.copyProperties(parkingDetail, parkingDetailsDTO);
 
-
 				parkingDetailsDTO.setTicketsRatesMasterDTO(rateMasterDTO);
 
 				parkingDetailsDTOs.add(parkingDetailsDTO);
@@ -91,10 +85,7 @@ public class ParkingService {
 			catch(Exception ex) {
 				ex.printStackTrace();
 			}
-
-
 		});
-
 		return parkingDetailsDTOs;
 	}
 

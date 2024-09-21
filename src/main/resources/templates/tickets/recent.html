@@ -114,7 +114,7 @@ td small {
 														<th scope="col">Name</th>
 														<th scope="col">Group</th>
 														<th scope="col">Count</th>
-														<th scope="col">Per/Price</th>
+														<th scope="col" th:text="${ticket.billSummarize.comboCase?'Price Defined for Ticket':'Per/Price'}"></th>
 														<th scope="col">Total</th>
 													</tr>
 												</thead>
@@ -122,13 +122,15 @@ td small {
 													<th:block th:if="${ticket.billSummarize!=null}">
 														
 														<th:block
-															th:each="billRow, stat  : ${ticket.billSummarize.billDescription}">
+															th:each="billRow, stat : ${ticket.billSummarize.billDescription}">
 															<tr>
 																<td th:text="${billRow.ticket}"></td>
 																<td th:text="${billRow.groupName}"></td>
 																<td th:text="${billRow.person}"></td>
 																<td th:text="${billRow.perPersonPrice}"></td>
-																<td th:text="${billRow.totalSum}"></td>
+
+																<td th:if="${ticket.billSummarize.comboCase}" th:text="${billRow.perPersonPrice}"></td>
+																<td th:if="${!ticket.billSummarize.comboCase}" th:text="${billRow.totalSum}"></td>
 															</tr>
 														</th:block>
 

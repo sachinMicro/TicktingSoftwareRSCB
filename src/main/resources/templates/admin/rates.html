@@ -86,10 +86,12 @@
 											th:value="${ticket.ticketId}" />
 										<input type="hidden"
 											name="groupId" placeholder="Group ID" th:value="${price.key}" />
-										<input class="form-control" type="hidden" name="actualPrice" disabled
-											placeholder="Initial price" th:value="${#numbers.formatDecimal(price.value, 0, 'COMMA', 0, 'POINT')}" />
-										<input class="form-control" type="number" name="price"
-											placeholder="new rate" th:value="${#numbers.formatDecimal(price.value, 0, 'COMMA', 0, 'POINT')}" />
+											<input class="form-control" type="hidden" name="actualPrice" step="0.01" disabled
+												placeholder="Initial price" th:value="${price.value}" />
+											<input th:if="${price.value != null}" class="form-control" type="number" name="price" step="0.01"
+												placeholder="new rate" th:value="${price.value}" />
+											<input th:if="${price.value == null}" class="form-control" type="number" name="price" step="0.01"
+												placeholder="new rate" value="" />
 										<button type="submit" class="btn btn-outline-secondary ms-1">
 											<i class="fa-solid fa-check-double"></i>
 										</button>

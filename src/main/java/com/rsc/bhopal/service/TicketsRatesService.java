@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
+import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.ParkingPriceDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketRevisedSummary;
@@ -55,7 +56,7 @@ public class TicketsRatesService {
 	private ParkingService parkingService;
 
 	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId) {
-		List<TicketsRatesMaster> rates = new ArrayList<>();
+		List<TicketsRatesMaster> rates = new ArrayList<TicketsRatesMaster>();
 		tickets.forEach(ticket -> {
 			rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
 		});
@@ -181,6 +182,7 @@ public class TicketsRatesService {
 		ticketRate.setIsActive(true);
 		ticketRate.setPrice(newTicketRate.getPrice());
 		ticketRate.setRevisionNo(0);
+		ticketRate.setRevisedAt(new Date());
 		ticketRate.setUser(user);
 		ticketRate.setTicketType(ticket.get());
 		ticketRate.setVisitorsType(visitorType.get());
@@ -340,30 +342,27 @@ public class TicketsRatesService {
 		ticketRateRepo.save(newTicketsRatesMaster);
 
 	}
-/*
-	public void updateParkingRate(final List<ParkingPriceDTO> parkingPriceDTOs) {
-		final List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = getActiveParkingDetails();
-		parkingPriceDTOs.forEach(parkingPriceDTO -> {
-			for (TicketsRatesMasterDTO ticketsRatesMasterDTO: ticketsRatesMasterDTOs) {
-				if ((ticketsRatesMasterDTO.getParkingDetails().getId() == parkingPriceDTO.getId()) && (!ticketsRatesMasterDTO.getPrice().equals(parkingPriceDTO.getPrice()))) {
-					// log.debug("Parking ID: " + ticketsRatesMasterDTO.getParkingDetails().getId() + ", Price: " + ticketsRatesMasterDTO.getPrice());
-					// log.debug(parkingPriceDTO.toString());
-					final TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(ticketsRatesMasterDTO.getId())
-						.orElseThrow(() -> new RuntimeException("Parking Rate not found"));
-					ticketsRatesMaster.setIsActive(false);
-					ticketRateRepo.save(ticketsRatesMaster);
-					TicketsRatesMaster newTicketsRatesMaster = new TicketsRatesMaster();
-					// log.debug("\r\n" + ticketsRatesMasterDTO.toString());
-					BeanUtils.copyProperties(ticketsRatesMasterDTO, newTicketsRatesMaster);
-					newTicketsRatesMaster.setId(null);
-					newTicketsRatesMaster.setRevisedAt(new Date());
-					newTicketsRatesMaster.setRevisionNo(ticketsRatesMasterDTO.getRevisionNo() == null ? 0 : ticketsRatesMaster.getRevisionNo() + 1);
-					newTicketsRatesMaster.setIsActive(true);
-					newTicketsRatesMaster.setPrice(parkingPriceDTO.getPrice());
-					ticketRateRepo.save(newTicketsRatesMaster);
-				}
-			}
-		});
+	List<TicketsRatesMaster> getRatesOfCombo(long comboId) {
+		return ticketRateRepo.getAllActiveRatesOfGroup(comboId);
 	}
-*/
+
+	List<TicketsRatesMasterDTO> getAllActiveVisitorTicketsByComboId(long visitorsTypeId) {
+		List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = new ArrayList<TicketsRatesMasterDTO>();
+		final List<TicketsRatesMaster> ticketsRatesMasters = ticketRateRepo.getAllActiveRatesOfGroup(visitorsTypeId);
+		ticketsRatesMasters.forEach(ticketsRatesMaster -> {
+			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster, ticketsRatesMasterDTO);
+			TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster.getTicketType(), ticketDetailsDTO);
+			ticketsRatesMasterDTO.setTicketType(ticketDetailsDTO);
+			VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster.getVisitorsType(), visitorsTypeDTO);
+			ticketsRatesMasterDTO.setVisitorsType(visitorsTypeDTO);
+			// ParkingDetailsDTO parkingDetailsDTO = new ParkingDetailsDTO();
+			// BeanUtils.copyProperties(ticketsRatesMasterDTO.getParkingDetailsDTO(), parkingDetailsDTO);
+			// ticketsRatesMasterDTO.setParkingDetailsDTO(parkingDetailsDTO);
+			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
+		});
+		return ticketsRatesMasterDTOs;
+	}
 }

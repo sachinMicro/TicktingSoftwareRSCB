@@ -34,5 +34,8 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 
 	TicketsRatesMaster findByIsActiveAndParkingDetails_Id(boolean isActive,Long parkingId);
 
+	@Query(name = "GET_ACTIVE_VISITOR_TICKETS_BY_COMBO_ID",
+		value = "select rate from TicketsRatesMaster rate where visitorsType.id=:visitorsTypeId and isActive=true")
+	List<TicketsRatesMaster> getAllActiveRatesOfGroup(long visitorsTypeId);
 }
 
