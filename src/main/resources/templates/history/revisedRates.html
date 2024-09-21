@@ -107,39 +107,18 @@ td small {
 		</div>
 	</div>
 	<script type="text/javascript">
-			$(document).ready(function() {
-				var tableConfig = {
-					info : true,
-					ordering : true,
-					paging : true,
-					searching : true,
-					responsive : true,
-					destroy : true,
-					aaSorting: []
-				};
-					new DataTable('#tickets', {
-					    initComplete: function () {
-					        this.api()
-					            .columns()
-					            .every(function () {
-					                let column = this;
-					                let title = column.footer().textContent;
-					 
-					                // Create input element
-					                let input = document.createElement('input');
-					                input.placeholder = title;
-					                column.footer().replaceChildren(input);
-					 
-					                // Event listener for user input
-					                input.addEventListener('keyup', () => {
-					                    if (column.search() !== this.value) {
-					                        column.search(input.value).draw();
-					                    }
-					                });
-					            });
-					    }
-					});
-			});
-		</script>
+		$(document).ready(function() {
+			var tableConfig = {
+				"aaSorting" : [], //Default sorting false
+				info : true,
+				ordering : true,
+				paging : true,
+				searching : true,
+				responsive : false,
+				destroy : false
+			};
+			new DataTable('#tickets', tableConfig);
+		});
+	</script>
 </body>
 </html>

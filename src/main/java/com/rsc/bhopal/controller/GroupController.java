@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.service.VisitorTypeService;
 import com.rsc.bhopal.utills.CommonUtills;
 
@@ -32,6 +33,7 @@ public class GroupController {
 	public String addGroup(Map<String,Object> attributes) {			
 		List<VisitorsTypeDTO> visitors = visitorTypeService.getAllVisitorTypes();
 		attributes.put("visitors", visitors);
+		attributes.put("GroupType", GroupType.class);
 		return "groups/add";
 	}
 	

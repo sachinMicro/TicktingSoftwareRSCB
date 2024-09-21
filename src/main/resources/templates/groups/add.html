@@ -162,7 +162,7 @@ td small {
 							    <input type="hidden" name="vistiorId" th:value="${visitor.id}">
 							    <button class="btn" 
 							    	th:classappend="${visitor.isDefault?'btn-warning disabled':'btn-success'}" 
-							    	th:text="${visitor.isDefault?'Default':'Set As Default'}"></button>							
+							    	th:text="${visitor.isDefault?'Default':'Set As Default'}" th:disabled="${visitor.groupType == GroupType.COMBO}"></button>
 							</form>	
 							</td>												
 						</tr>
