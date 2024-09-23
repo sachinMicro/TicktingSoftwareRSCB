@@ -322,6 +322,9 @@ public class TicketsRatesService {
 		for (TicketsRatesMaster ticketsRatesMaster: ticketsRatesMasters) {
 			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
 			BeanUtils.copyProperties(ticketsRatesMaster, ticketsRatesMasterDTO);
+			ParkingDetailsDTO parkingDetailsDTO = new ParkingDetailsDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster.getParkingDetails(), parkingDetailsDTO);
+			ticketsRatesMasterDTO.setParkingDetails(parkingDetailsDTO);
 			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
 		}
 		return ticketsRatesMasterDTOs;
@@ -364,5 +367,9 @@ public class TicketsRatesService {
 			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
 		});
 		return ticketsRatesMasterDTOs;
+	}
+
+	TicketsRatesMaster getActiveParkingRateFloat(long parkingId) {
+		return ticketRateRepo.getActiveParkingRate(parkingId);
 	}
 }

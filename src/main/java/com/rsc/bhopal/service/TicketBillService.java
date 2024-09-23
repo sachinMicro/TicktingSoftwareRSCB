@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.BillSummarize;
+import com.rsc.bhopal.dtos.ParkingCalDTO;
 import com.rsc.bhopal.dtos.TicketBillDTO;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
@@ -67,7 +68,7 @@ public class TicketBillService {
 	public void saveAndPrintTicket(TicketSelectorDTO dto,Principal user) throws JsonProcessingException {
 
 		Optional<VisitorsType> comboGroup = null;
-		List<TicketBillRow> billRows = new ArrayList<>();
+		List<TicketBillRow> billRows = new ArrayList<TicketBillRow>();
 		Double totalPrice = 0d;
 		final boolean IS_COMBO_CASE=dto.getFamilyGroup() !=0 ? true : false;
 		TicketBill generatedTicket=new TicketBill();
@@ -100,6 +101,17 @@ public class TicketBillService {
 			}
 			billRow.setRate(rate);
 			billRow.setGeneratedTicket(generatedTicket);
+			billRows.add(billRow);
+		}
+
+		for( ParkingCalDTO parking :  dto.getParkings()){
+			TicketBillRow billRow = new TicketBillRow();
+			final TicketsRatesMaster rate = ticketsRatesService.getActiveParkingRateFloat(parking.getId());
+			log.debug("Parking Rate: " + rate.getPrice());
+			billRow.setTotalSum(parking.getCount() * rate.getPrice());
+			totalPrice += billRow.getTotalSum();
+			billRow.setGeneratedTicket(generatedTicket);
+			billRow.setRate(rate);
 			billRows.add(billRow);
 		}
 		BillSummarize billSummarize = billCalculator.summarizeBill(dto);

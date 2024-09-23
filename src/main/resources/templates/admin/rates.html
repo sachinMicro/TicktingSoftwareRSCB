@@ -91,7 +91,7 @@
 											<input th:if="${price.value != null}" class="form-control" type="number" name="price" step="0.01"
 												placeholder="Rate" th:value="${price.value}" />
 											<input th:if="${price.value == null}" class="form-control" type="number" name="price" step="0.01"
-												placeholder="Enter rate" value="" />
+												placeholder="Enter rate" value="" required />
 										<button type="submit" class="btn btn-outline-secondary ms-1">
 											<i class="fa-solid fa-check-double"></i>
 										</button>

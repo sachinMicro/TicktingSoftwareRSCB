@@ -60,6 +60,24 @@ td small {
 }
 </style>
 </head>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(document).find("select[name=groupType]").on("change", function(){
+					if ($(this).val() == "SINGLE") {
+						$(document).find("input[name=minMembers]").prop("disabled", false);
+						$(document).find("input[name=fixedMembers]").prop("disabled", true);
+						$(document).find("input[name=minMembers]").val("");
+						$(document).find("input[name=fixedMembers]").val(0);
+					}
+					else if ($(this).val() == "COMBO") {
+						$(document).find("input[name=minMembers]").prop("disabled", true);
+						$(document).find("input[name=fixedMembers]").prop("disabled", false);
+						$(document).find("input[name=minMembers]").val(0);
+						$(document).find("input[name=fixedMembers]").val("");
+					}
+				});
+			});
+		</script>
 <body>
 
 	<div th:replace="fragments/navbar::navbar"></div>

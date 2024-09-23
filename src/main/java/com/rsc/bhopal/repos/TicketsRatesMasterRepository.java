@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.DoubleArraySerializer;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 
 @Repository
@@ -37,5 +38,11 @@ public interface TicketsRatesMasterRepository extends JpaRepository<TicketsRates
 	@Query(name = "GET_ACTIVE_VISITOR_TICKETS_BY_COMBO_ID",
 		value = "select rate from TicketsRatesMaster rate where visitorsType.id=:visitorsTypeId and isActive=true")
 	List<TicketsRatesMaster> getAllActiveRatesOfGroup(long visitorsTypeId);
+
+	@Query(name = "GET_ACTIVE_PARKING_RATE",
+		value = "select rate from TicketsRatesMaster rate where rate.parkingDetails.id=:parkingId and isActive=true")
+		TicketsRatesMaster getActiveParkingRate(Long parkingId);
+
+
 }
 

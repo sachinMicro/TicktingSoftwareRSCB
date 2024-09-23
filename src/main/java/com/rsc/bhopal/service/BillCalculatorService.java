@@ -16,6 +16,7 @@ import com.rsc.bhopal.dtos.TicketSelectorDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
+import com.rsc.bhopal.enums.GroupType;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,8 +45,13 @@ public class BillCalculatorService {
 			billSummarize.setBillDescription(summarizeFamilyBill(ticketSelectorDTO.getFamilyGroup()));
 		}
 		// billSummarize.getParkingBillDescription();
-		log.debug(""+ticketSelectorDTO);
-		billSummarize.setParkingBillDescription(getParkingBillDescription(ticketSelectorDTO));
+		// log.debug(""+ticketSelectorDTO);
+		try {
+			billSummarize.setParkingBillDescription(getParkingBillDescription(ticketSelectorDTO));
+		}
+		catch(NullPointerException ex) {
+			log.debug("Parking empty, " + ex.getMessage());
+		}
 		return billSummarize;
 	}
 
@@ -81,9 +87,16 @@ public class BillCalculatorService {
 
 			bill.setTicket(ticketRate.getTicketType().getName());
 			bill.setGroupName(ticketRate.getVisitorsType().getName());
-			bill.setPerson(visitorDTO.getMinMembers());
+			// bill.setPerson(visitorDTO.getMinMembers());
 			bill.setPerPersonPrice(ticketRate.getPrice());
-			bill.setTotalSum(visitorDTO.getMinMembers()*ticketRate.getPrice());
+			if (visitorDTO.getGroupType() == GroupType.SINGLE) {
+				bill.setPerson(visitorDTO.getMinMembers());
+				bill.setTotalSum(visitorDTO.getMinMembers() * ticketRate.getPrice());
+			}
+			else if (visitorDTO.getGroupType() == GroupType.COMBO) {
+				bill.setPerson(visitorDTO.getFixedMembers());
+				bill.setTotalSum(ticketRate.getPrice());
+			}
 			bills.add(bill);
 		}
 		return bills;

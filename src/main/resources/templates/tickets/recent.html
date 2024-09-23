@@ -127,7 +127,13 @@ td small {
 																<td th:text="${billRow.ticket}"></td>
 																<td th:text="${billRow.groupName}"></td>
 																<td th:text="${billRow.person}"></td>
-																<td th:text="${billRow.perPersonPrice}"></td>
+																<td th:if="${ticket.billSummarize.comboCase}">
+																	<!-- <span th:text="${billRow.perPersonPrice}"></span><br>
+																	<span class="badge bg-info text-dark" th:text="${'PRICE FOR ALL ' + billRow.person}"></span> -->
+																	<span th:text="${#numbers.formatDecimal(billRow.perPersonPrice / billRow.person, 0, 2)}"></span><br>
+																	<span class="badge bg-info text-dark" th:text="${'COMBO PRICE PER ' + billRow.person + ' TICKETS'}"></span>
+																</td>
+																<td th:if="${!ticket.billSummarize.comboCase}" th:text="${billRow.perPersonPrice}"></td>
 
 																<td th:if="${ticket.billSummarize.comboCase}" th:text="${billRow.perPersonPrice}"></td>
 																<td th:if="${!ticket.billSummarize.comboCase}" th:text="${billRow.totalSum}"></td>

@@ -98,8 +98,8 @@ td small {
 								<button class="btn btn-outline-danger count minus" type="button">
 									<i class="fa-solid fa-angles-down"></i>
 								</button>
-								<input class="input-count" name="persons" value="0" type="number" th:if="${defaultpersonvalue == null}" />
-								<input class="input-count" name="persons" type="number" th:value="${defaultpersonvalue}" th:if="${defaultpersonvalue != null}" />
+								<input class="input-count" name="persons" value="0" type="number" th:if="${defaultpersonvalue == null}" required />
+								<input class="input-count" name="persons" type="number" th:value="${defaultpersonvalue}" th:if="${defaultpersonvalue != null}" required />
 								<button class="btn btn-outline-success count plus" type="button">
 									<i class="fa-solid fa-angles-up"></i>
 								</button>
