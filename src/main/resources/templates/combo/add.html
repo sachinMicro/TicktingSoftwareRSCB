@@ -83,7 +83,7 @@
 							<div class="col-lg-2 col-md-2">
 								<div class="form-floating">
 									<select class="form-select" id="floatingSelect" name="groupId" onchange="submit();"
-										aria-label="Floating label select example" required>
+										aria-label="Floating label select example" required autofocus>
 										<option value="">Select Combo Group</option>
 										<th:block th:each="comboVisitor : ${comboVisitors}">
 											<option th:value="${comboVisitor.id}" th:text="${comboVisitor.name}" th:selected="${groupId==comboVisitor.id}"></option>
