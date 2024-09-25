@@ -53,7 +53,7 @@ public class TicktingSoftwareRscbApplication {
    @Bean
 	CommandLineRunner runner() {
 		return runner->{
-			log.debug("Parking " + rateMaster.getActiveParkingRate(1L));
+			// log.debug("Parking " + rateMaster.getActiveParkingRate(1L));
 		};
 	}
 }
