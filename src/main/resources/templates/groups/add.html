@@ -131,6 +131,7 @@ td small {
 					<thead class="bg-gray">
 						<tr>
 							<th scope="col">Name</th>
+							<th scope="col">Category</th>
 							<th scope="col">Type</th>
 							<th scope="col">Min Members</th>
 							<th scope="col">Fixed Members</th>
@@ -143,7 +144,10 @@ td small {
 					<tbody>
 						<tr th:each="visitor : ${visitors}">
 							<td scope="col" th:text="${visitor.name}"></td>
-							<td scope="col" th:text="${visitor.category}"></td>
+							<td scope="col" th:text="${visitor.category}"></td>							
+							<td scope="col">
+							 <i class="fa-solid fa-cubes-stacked"></i>
+							</td>							
 							<td scope="col" th:text="${visitor.minMembers}"></td>
 							<td scope="col" th:text="${visitor.fixedMembers}"></td>
 							<td scope="col" th:text="${visitor.addedAt}"></td>

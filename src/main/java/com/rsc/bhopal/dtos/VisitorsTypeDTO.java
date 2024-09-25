@@ -19,7 +19,7 @@ public class VisitorsTypeDTO {
 	private GroupType  groupType; 
 	
 	private Integer minMembers; 
-
+	
     private Integer fixedMembers;
    
     private Date addedAt;
