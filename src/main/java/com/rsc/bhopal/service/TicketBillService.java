@@ -20,11 +20,13 @@ import com.rsc.bhopal.dtos.BillSummarize;
 import com.rsc.bhopal.dtos.ParkingCalDTO;
 import com.rsc.bhopal.dtos.TicketBillDTO;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
+import com.rsc.bhopal.dtos.TicketSummaryDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.entity.TicketBill;
 import com.rsc.bhopal.entity.TicketBillRow;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.entity.VisitorsType;
+import com.rsc.bhopal.projections.TicketSummary;
 import com.rsc.bhopal.repos.TicketBillRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
@@ -120,5 +122,18 @@ public class TicketBillService {
 		generatedTicket.setBillSummary(billRows);
 		generatedTicketRepo.save(generatedTicket);
 		log.debug("generatedTicket "+CommonUtills.convertToJSON(generatedTicket));
+	}
+
+	public List<TicketSummary> getTicketSummary(String startDate, String endDate){
+		return generatedTicketRepo.getTicketSummary(startDate, endDate);
+	}
+	public List<TicketSummaryDTO> getTicketSummaryDTOs(String startDate, String endDate) {
+		List<TicketSummaryDTO> ticketSummaryDTOs = new ArrayList<TicketSummaryDTO>();
+		generatedTicketRepo.getTicketSummary(startDate, endDate).forEach(ticketSummary -> {
+			TicketSummaryDTO ticketSummaryDTO = new TicketSummaryDTO();
+			BeanUtils.copyProperties(ticketSummary, ticketSummaryDTO);
+			ticketSummaryDTOs.add(ticketSummaryDTO);
+		});
+		return ticketSummaryDTOs;
 	}
 }

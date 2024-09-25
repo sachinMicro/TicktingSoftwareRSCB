@@ -1,24 +1,12 @@
 package com.rsc.bhopal.repos;
 
 import java.util.List;
-
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
-import com.rsc.bhopal.entity.TicketBill;
-import com.rsc.bhopal.projections.TicketSummary;
+import com.rsc.bhopal.entity.TicketSummary;
 
-@Repository
-public interface TicketBillRepository extends JpaRepository<TicketBill, Long>,PagingAndSortingRepository<TicketBill, Long> {
-	
-    //repository.findWithPageable(new PageRequest(0, 10, Direction.DESC, "id"));
-	@Query(value="from TicketBill")
-	List<TicketBill> recentRecords(Pageable pageable);
-	
-
+public interface TicketSummaryRepository extends JpaRepository<TicketSummary, Long> {
 	@Query(value="SELECT \n" + 
 				"    (COUNT(rows_.id)) COUNT,\n" + 
 				"    ticket_name TICKET,\n" + 
@@ -41,9 +29,12 @@ public interface TicketBillRepository extends JpaRepository<TicketBill, Long>,Pa
 				"ticket_name\n" + 
 				",visitor_name\n" + 
 				"ORDER BY \n" + 
-				"  ticket_name ,visitor_name", nativeQuery = true)
-	List<TicketSummary> getTicketSummary(String startDate,String endDate); 
-
-
-
+				" TOTAL DESC, ticket_name ASC, visitor_name ASC", nativeQuery = true)
+	public List<com.rsc.bhopal.projections.TicketSummary> getTicketSummaryCountByTicketsAndGroups(String startDate,String endDate);
+/*
+	@Query(name = "GET_BILL_SUMMARY_COUNT",
+		value = "SELECT COUNT(bill.id) AS co, rate.ticketType.name, rate.visitorsType.name, SUM(rate.price) FROM TicketSummary bill JOIN bill.ticketRatesMaster rate WHERE rate.billType <> 'PARKING' GROUP BY rate.ticketType.name, rate.visitorsType.name",
+		nativeQuery = true)
+	public List<com.rsc.bhopal.projections.TicketSummary> getAllBillSummary(String startDate, String endDate);
+*/
 }
