@@ -25,15 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/bill")
 @Slf4j
 public class BillController {
-	
+
 	@Autowired
 	private BillCalculatorService billCalculator;
-	
+
 	@Autowired	
 	private TicketBillService ticketBillService;
-	
+
 	@PostMapping("/calculate")	
-	public @ResponseBody ResponseEntity<?>  calculateBill(                  TicketSelectorDTO ticketSelector) {
+	public @ResponseBody ResponseEntity<?>  calculateBill(TicketSelectorDTO ticketSelector) {
 		log.debug("Ticket Selector "+ticketSelector);		
 		try {
 			BillSummarize billSummarize = billCalculator.summarizeBill(ticketSelector);		
@@ -57,17 +57,16 @@ public class BillController {
                     .message("Some Internal Error occurred")
                     .build(),HttpStatus.BAD_REQUEST);
 		}
-		
+
 		//user 9679,conf- 8051,approver 8044
 		//BP Authorization 
-		
+
 	}
-		
+
 	@PostMapping("/print")	
-	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector,Principal user) throws JsonProcessingException {
+	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user) throws JsonProcessingException {
 		log.debug("Ticket Selector "+ticketSelector);		
-		ticketBillService.saveAndPrintTicket(ticketSelector,user);	
+		ticketBillService.saveAndPrintTicket(ticketSelector, user);	
 		return "redirect:/home";
-		
 	}
 }

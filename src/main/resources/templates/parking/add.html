@@ -68,13 +68,13 @@
 							</div>
 							<div class="col-lg-3 col-md-3">
 								<div class="form-floating mb-3">
-									<input type="text" class="form-control" id="name" name="Name" placeholder="Name" />
+									<input type="text" class="form-control" id="name" name="Name" placeholder="Name" required />
 									<label for="name">Name</label>
 								</div>
 							</div>
 							<div class="col-lg-3 col-md-3">
 								<div class="form-floating mb-3">
-									<input type="number" class="form-control" id="price" name="Price" placeholder="Price" />
+									<input type="number" class="form-control" id="price" name="Price" placeholder="Price" required />
 									<label for="price">Price</label>
 								</div>
 							</div>
@@ -89,7 +89,6 @@
 			</div>
 
 			<div class="col-12 mt-3">
-				<form method="POST" th:action="@{/manage/parking/price/change}" enctype="application/x-www-form-urlencoded">
 				<h2>All Parking Details</h2>
 				<table class="table table-striped border w-100" id="tickets">
 					<thead class="bg-gray">
@@ -100,16 +99,23 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="parking : ${parkings}">
-							<td scope="col" th:text="${parking.name}"></td>
-							<td scope="col" th:text="${parking.ticketsRatesMasterDTO.price}"></td>
-							<td scope="col" th:text="${parking.addedAt}"></td>
+						<tr th:each="parking,stat : ${parkings}">
+								<td scope="col" th:text="${parking.name}"></td></td>
+								<td scope="col">
+									<form method="POST" th:action="@{/manage/parking/price/change}" enctype="application/x-www-form-urlencoded" class="d-flex">
+										<input type="hidden" class="form-control" th:value="${parking.id}" name="id" />
+										<input type="number" class="form-control" th:value="${parking.ticketsRatesMasterDTO.price}" name="price" th:id="${'price' + stat.index}" step="0.01" placeholder="Price" required />
+										<input type="hidden" class="form-control" th:value="${parking.ticketsRatesMasterDTO.price}" name="previousPrice" />
+										<button type="submit" class="btn btn-outline-secondary ms-1">
+											<i class="fa-solid fa-check-double"></i>
+										</button>
+									</form>
+								</td>
+								<td scope="col" th:text="${parking.addedAt}"></td>
 						</tr>
 					</tbody>
 					<tfoot></tfoot>
 				</table>
-				<button type="submit" class="btn btn-primary">Submit</button>
-			</form>
 			</div>
 		</div>
 		</div>

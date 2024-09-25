@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
+import com.rsc.bhopal.dtos.ParkingDetailsDTO;
+import com.rsc.bhopal.dtos.ParkingPriceDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketRevisedSummary;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
@@ -54,7 +56,7 @@ public class TicketsRatesService {
 	private ParkingService parkingService;
 
 	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId) {
-		List<TicketsRatesMaster> rates = new ArrayList<>();
+		List<TicketsRatesMaster> rates = new ArrayList<TicketsRatesMaster>();
 		tickets.forEach(ticket -> {
 			rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
 		});
@@ -67,16 +69,15 @@ public class TicketsRatesService {
 	
 	
 	public List<TicketRevisedSummary> getRevisedRates(){
-		List<TicketRevisedSummary> dtos = new  ArrayList();
+		List<TicketRevisedSummary> dtos = new ArrayList<TicketRevisedSummary>();
 		List<TicketsRatesMaster> ticketSummary = ticketRateRepo.getRecentRevisions();
 		ticketSummary.forEach(ticket->{
 			TicketRevisedSummary dto = new TicketRevisedSummary();
 			BeanUtils.copyProperties(ticket, dto);
 			dto.setUser(ticket.getUser().getName());			
-			dto.setOldPrice(ticket.getOldRateMaster().getPrice());
-			
+			dto.setOldPrice(ticket.getOldRateMaster().getPrice());			
 			dto.setPriceIncreased(dto.getOldPrice()<dto.getPrice());
-			//dto.setPercentage(CommonUtills.calculatePercentageDifference(dto.getOldPrice(),dto.getPrice()));			
+
 			if(ticket.getParkingDetails()==null) {
 				dto.setTicketType(ticket.getTicketType().getName());
 				dto.setVisitorsType(ticket.getVisitorsType().getName());
@@ -181,6 +182,7 @@ public class TicketsRatesService {
 		ticketRate.setIsActive(true);
 		ticketRate.setPrice(newTicketRate.getPrice());
 		ticketRate.setRevisionNo(0);
+		ticketRate.setRevisedAt(new Date());
 		ticketRate.setUser(user);
 		ticketRate.setTicketType(ticket.get());
 		ticketRate.setVisitorsType(visitorType.get());
@@ -252,6 +254,7 @@ public class TicketsRatesService {
 		newRatesMaster.setRevisionNo(ticketsRatesMaster.getRevisionNo() + 1);
 		newRatesMaster.setIsActive(true);
 		newRatesMaster.setPrice(dto.getPrice());
+		newRatesMaster.setOldRateMaster(newRatesMaster);
 		newRatesMaster.setBillType(BillType.TICKET);
 		newRatesMaster.setTicketType(ticketDetailsService.getTicketsById(dto.getId()).get());
 		newRatesMaster.setUser(userDetailsService.getUserByUsername(username));
@@ -314,6 +317,60 @@ public class TicketsRatesService {
 			ticketRateRepo.save(newRatesMaster);
 		}
 	}
+	public List<TicketsRatesMasterDTO> getActiveParkingDetails() {
+		List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = new java.util.ArrayList<TicketsRatesMasterDTO>();
+		final List<TicketsRatesMaster> ticketsRatesMasters = ticketRateRepo.findActiveParking();
+		for (TicketsRatesMaster ticketsRatesMaster: ticketsRatesMasters) {
+			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster, ticketsRatesMasterDTO);
+			ParkingDetailsDTO parkingDetailsDTO = new ParkingDetailsDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster.getParkingDetails(), parkingDetailsDTO);
+			ticketsRatesMasterDTO.setParkingDetails(parkingDetailsDTO);
+			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
+		}
+		return ticketsRatesMasterDTOs;
+	}
+	public void updateParkingRate(final ParkingPriceDTO parkingPriceDTO) {
 
-	
+		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findByIsActiveAndParkingDetails_Id(true, parkingPriceDTO.getId());
+		ticketsRatesMaster.setIsActive(false);				
+		ticketRateRepo.save(ticketsRatesMaster);
+		TicketsRatesMaster newTicketsRatesMaster = new TicketsRatesMaster();
+		BeanUtils.copyProperties(ticketsRatesMaster, newTicketsRatesMaster);
+		newTicketsRatesMaster.setId(null);
+		newTicketsRatesMaster.setOldRateMaster(ticketsRatesMaster);
+		newTicketsRatesMaster.setRevisedAt(new Date());
+		newTicketsRatesMaster.setRevisionNo(ticketsRatesMaster.getRevisionNo() + 1);
+		newTicketsRatesMaster.setIsActive(true);
+		newTicketsRatesMaster.setPrice(parkingPriceDTO.getPrice());
+		ticketRateRepo.save(newTicketsRatesMaster);
+
+	}
+	List<TicketsRatesMaster> getRatesOfCombo(long comboId) {
+		return ticketRateRepo.getAllActiveRatesOfGroup(comboId);
+	}
+
+	List<TicketsRatesMasterDTO> getAllActiveVisitorTicketsByComboId(long visitorsTypeId) {
+		List<TicketsRatesMasterDTO> ticketsRatesMasterDTOs = new ArrayList<TicketsRatesMasterDTO>();
+		final List<TicketsRatesMaster> ticketsRatesMasters = ticketRateRepo.getAllActiveRatesOfGroup(visitorsTypeId);
+		ticketsRatesMasters.forEach(ticketsRatesMaster -> {
+			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster, ticketsRatesMasterDTO);
+			TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster.getTicketType(), ticketDetailsDTO);
+			ticketsRatesMasterDTO.setTicketType(ticketDetailsDTO);
+			VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
+			BeanUtils.copyProperties(ticketsRatesMaster.getVisitorsType(), visitorsTypeDTO);
+			ticketsRatesMasterDTO.setVisitorsType(visitorsTypeDTO);
+			// ParkingDetailsDTO parkingDetailsDTO = new ParkingDetailsDTO();
+			// BeanUtils.copyProperties(ticketsRatesMasterDTO.getParkingDetailsDTO(), parkingDetailsDTO);
+			// ticketsRatesMasterDTO.setParkingDetailsDTO(parkingDetailsDTO);
+			ticketsRatesMasterDTOs.add(ticketsRatesMasterDTO);
+		});
+		return ticketsRatesMasterDTOs;
+	}
+
+	TicketsRatesMaster getActiveParkingRateFloat(long parkingId) {
+		return ticketRateRepo.getActiveParkingRate(parkingId);
+	}
 }

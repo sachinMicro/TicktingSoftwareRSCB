@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Fetch;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,7 +40,7 @@ public class TicketBill {
 	@Column(name = "PERSONS")
 	private int persons;
 	
-	@Column(name = "TICKET_PAYLOAD" , length = 1000)
+	@Column(name = "TICKET_PAYLOAD" , length = 3000)
 	private String ticketPayload;
 		
 	@ManyToOne

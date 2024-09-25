@@ -1,5 +1,6 @@
 package com.rsc.bhopal.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.ParkingPriceDTO;
+import com.rsc.bhopal.dtos.ParkingPriceDTOWrapper;
+import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.service.ParkingService;
 import com.rsc.bhopal.service.TicketsRatesService;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/manage")
@@ -24,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ParkingController {
 	@Autowired
 	private ParkingService parkingService;
+
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
 
@@ -34,26 +41,20 @@ public class ParkingController {
 	}
 
 	@PostMapping(path = "/parking/add")
-	public String addNewParkingDetails(@ModelAttribute ParkingPriceDTO parkingPriceDTO, Map<String, Object> attributes) {
+	public String addNewParkingDetails(@ModelAttribute ParkingPriceDTO parkingPriceDTO, Principal user, Map<String, Object> attributes) {
 		// parkingService.addNewParking(parkingPriceDTO);
-		parkingService.addNewParkingRate(parkingPriceDTO);
+		parkingService.addNewParkingRate(parkingPriceDTO, user);
 		log.debug(parkingPriceDTO.toString());
 		attributes.put("parkings", parkingService.getParkingDetails());
 		return "redirect:/manage/parking/add";
 	}
-/*
+
 	@PostMapping(path = "/parking/price/change")
-	public String updateParkingDetails(@ModelAttribute List<ParkingPriceDTO> parkingPriceDTO, Map<String, Object> attributes) {
-		log.debug(parkingPriceDTO.toString());
-
-		final List<ParkingDetailsDTO> parkingDetailsDTO = parkingService.getParkingDetails();
-		attributes.put("parkings", parkingDetailsDTO);
-		log.debug(parkingDetailsDTO.toString());
-
-		// parkingDetailsDTO.forEach(parkingDetailDTO -> {});
-		return "parking/add";
+	public String updateParkingRate(@ModelAttribute ParkingPriceDTO parkingPriceDTO) {
+		ticketsRatesService.updateParkingRate(parkingPriceDTO);
+		return "redirect:/manage/parking/add";
 	}
- */
+
 	@GetMapping(path = "/parking/details")
 	@ResponseBody
 	public List<ParkingDetailsDTO> getDetails() {

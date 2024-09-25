@@ -1,8 +1,10 @@
 package com.rsc.bhopal.service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import com.rsc.bhopal.dtos.ParkingPriceDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.entity.ParkingDetails;
+import com.rsc.bhopal.entity.RSCUser;
 import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.entity.VisitorsType;
@@ -32,24 +35,26 @@ public class ParkingService {
 	@Autowired
 	private TicketsRatesMasterRepository ticketRepo;
 
+	@Autowired
+	private RSCUserDetailsService userDetailsService;
 
-public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO) {
+	public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO, Principal user) {
 		TicketsRatesMaster ticketsRatesMaster = new TicketsRatesMaster();
 		ticketsRatesMaster.setBillType(BillType.PARKING);
+		ticketsRatesMaster.setRevisionNo(0);
 		ticketsRatesMaster.setPrice(parkingPriceDTO.getPrice());
 		ticketsRatesMaster.setRevisedAt(new Date());
+		ticketsRatesMaster.setUser(userDetailsService.getUserByUsername(user.getName()));
 		ticketsRatesMaster.setIsActive(true);
 		ParkingDetails parkingDetails = new ParkingDetails();
 		parkingDetails.setName(parkingPriceDTO.getName());
 		parkingDetails.setAddedAt(new Date());
 		parkingDetails.setIsActive(true);
-		//parkingDetails.setRateMaster(ticketsRatesMaster);				
+		// parkingDetails.setRateMaster(ticketsRatesMaster);
 		parkingDetails=parkingRepo.saveAndFlush(parkingDetails);
 		ticketsRatesMaster.setParkingDetails(parkingDetails);
 		ticketsRatesMaster=ticketRepo.saveAndFlush(ticketsRatesMaster);
 	}
-
-
 
 	public List<ParkingDetailsDTO> getParkingDetails() {
 
@@ -57,20 +62,21 @@ public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO) {
 
 		List<ParkingDetails> parkingDetails = parkingRepo.findAll();
 
-
-
 		parkingDetails.forEach(parkingDetail -> {
- System.out.println(parkingDetails);
+			System.out.println(parkingDetails);
 			try {
 				ParkingDetailsDTO parkingDetailsDTO = new ParkingDetailsDTO();
 
-				TicketsRatesMasterDTO rateMaster = new TicketsRatesMasterDTO();
+				TicketsRatesMasterDTO rateMasterDTO = new TicketsRatesMasterDTO();
 
-				BeanUtils.copyProperties(parkingDetail.getRateMaster(), rateMaster);
+				Optional<TicketsRatesMaster> rateMaster=parkingDetail.getRateMaster().stream()
+														.filter(rate->rate.getIsActive()).findFirst();
+
+				BeanUtils.copyProperties(rateMaster.get(), rateMasterDTO);
 
 				BeanUtils.copyProperties(parkingDetail, parkingDetailsDTO);
 
-				parkingDetailsDTO.setTicketsRatesMasterDTO(rateMaster);
+				parkingDetailsDTO.setTicketsRatesMasterDTO(rateMasterDTO);
 
 				parkingDetailsDTOs.add(parkingDetailsDTO);
 
@@ -79,10 +85,7 @@ public void addNewParkingRate(ParkingPriceDTO parkingPriceDTO) {
 			catch(Exception ex) {
 				ex.printStackTrace();
 			}
-			
-
 		});
-
 		return parkingDetailsDTOs;
 	}
 

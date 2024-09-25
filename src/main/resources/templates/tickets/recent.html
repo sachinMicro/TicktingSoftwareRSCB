@@ -111,26 +111,49 @@ td small {
 														</th>
 													</tr>
 													<tr>
-														<th scope="col">Ticket</th>
+														<th scope="col">Name</th>
 														<th scope="col">Group</th>
-														<th scope="col">Person</th>
-														<th scope="col">Per/Price</th>
+														<th scope="col">Count</th>
+														<th scope="col" th:text="${ticket.billSummarize.comboCase?'Price Defined for Ticket':'Per/Price'}"></th>
 														<th scope="col">Total</th>
 													</tr>
 												</thead>
 												<tbody>
 													<th:block th:if="${ticket.billSummarize!=null}">
+														
 														<th:block
-															th:each="billRow, stat  : ${ticket.billSummarize.billDescription}">
+															th:each="billRow, stat : ${ticket.billSummarize.billDescription}">
 															<tr>
 																<td th:text="${billRow.ticket}"></td>
 																<td th:text="${billRow.groupName}"></td>
 																<td th:text="${billRow.person}"></td>
-																<td th:text="${billRow.perPersonPrice}"></td>
-																<td th:text="${billRow.totalSum}"></td>
+																<td th:if="${ticket.billSummarize.comboCase}">
+																	<!-- <span th:text="${billRow.perPersonPrice}"></span><br>
+																	<span class="badge bg-info text-dark" th:text="${'PRICE FOR ALL ' + billRow.person}"></span> -->
+																	<span th:text="${#numbers.formatDecimal(billRow.perPersonPrice / billRow.person, 0, 2)}"></span><br>
+																	<span class="badge bg-info text-dark" th:text="${'COMBO PRICE PER ' + billRow.person + ' TICKETS'}"></span>
+																</td>
+																<td th:if="${!ticket.billSummarize.comboCase}" th:text="${billRow.perPersonPrice}"></td>
+
+																<td th:if="${ticket.billSummarize.comboCase}" th:text="${billRow.perPersonPrice}"></td>
+																<td th:if="${!ticket.billSummarize.comboCase}" th:text="${billRow.totalSum}"></td>
+															</tr>
+														</th:block>
+
+														<th:block th:each="billRow, stat : ${ticket.billSummarize.parkingBillDescription}">
+															<tr>
+																<td th:text="${billRow.desc}"></td>
+																<td >PARKING</td>
+																<td th:text="${billRow.count}"></td>
+																<td th:text="${billRow.perCharge}"></td>
+																<td th:text="${billRow.sum}"></td>
 															</tr>
 														</th:block>
 													</th:block>
+													<tr>
+														<td colspan="4" style="text-align: right;">Grand Total</td>														
+														<td th:text="${ticket.totalBill}"></td>
+													</tr>
 												</tbody>
 											</table>
 										</div>

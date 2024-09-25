@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class BillSummarize {
-   private List<BillDescription> billDescription;
-   private List<ParkingBillDescription> parkingBillDescription;
+	private List<BillDescription> billDescription;
+	private List<ParkingBillDescription> parkingBillDescription;
+	private boolean comboCase;
 }

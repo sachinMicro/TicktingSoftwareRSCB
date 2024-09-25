@@ -43,7 +43,7 @@ function getFormFields($form) {
 		data.data.billDescription.forEach(function(obj) {			
 			var row = [
 				obj.ticket+"<span class='ms-1 badge text-dark bg-info'>" + obj.groupName.toUpperCase() + "</span>",
-				"<small>" + obj.person+ " x " + obj.perPersonPrice + "</small>",
+				"<small>"  +(data.data.comboCase?obj.perPersonPrice: obj.person+ " x " + obj.perPersonPrice)+"</small>",
 				obj.totalSum
 			];
 			grandTotal += obj.totalSum;
@@ -53,7 +53,7 @@ function getFormFields($form) {
 		if(data.data.parkingBillDescription != null) {
 			data.data.parkingBillDescription.forEach(function(obj) {
 				var row = [
-					obj.desc+"<span class='ms-1 badge text-dark bg-warning'>" + obj.groupName.toUpperCase() + "</span>",
+					obj.desc+"<span class='ms-1 badge text-dark bg-warning'>PARKING</span>",
 					"<small>" + obj.count+ " x " + obj.perCharge + "</small>",
 					obj.sum
 				];

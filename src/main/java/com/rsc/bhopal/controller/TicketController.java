@@ -16,16 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/recent-tickets")
 public class TicketController {
-	
+
 	@Autowired
 	TicketBillService ticketBillService;
-	
+
 	@GetMapping(path = {"/{rows}","/"})
 	public String recentTickets(@PathVariable(name =  "rows",required = false) Integer rows,Map<String,Object> mapAttributes) {		
 		log.debug("RECENT"+rows);	
 		rows=rows==null?10:rows;
 		List<TicketBillDTO> generatedTickets = ticketBillService.getRecentTickets(rows);
-		
+		// log.debug("TIEKEer================"+generatedTickets);
 		mapAttributes.put("tickets", generatedTickets);			
 		return "tickets/recent";
 	}

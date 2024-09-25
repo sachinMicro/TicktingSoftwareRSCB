@@ -11,66 +11,49 @@ import com.rsc.bhopal.aops.service.ActivityLogService;
 import com.rsc.bhopal.dtos.ActivityLogDTO;
 import com.rsc.bhopal.dtos.LogPayload;
 import com.rsc.bhopal.repos.ParkingDetailsRepository;
+import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
 import com.rsc.bhopal.service.VisitorTypeService;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class TicktingSoftwareRscbApplication {
 
 	@Autowired
 	private TicketDetailsService ticketDetails;
-	
+
 	@Autowired
 	private VisitorTypeService visitorDetails;
-	
+
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
-	
+
 	@Autowired
 	private ParkingDetailsRepository parkingRepo;
-	
+
 	@Autowired
 	private VisitorTypeRepository visitorRepo;
-	
+
 	@Autowired
 	private ActivityLogService logService;
-	
+
+	@Autowired
+	private TicketsRatesMasterRepository rateMaster;
+
 	public static void main(String[] args) {
 		SpringApplication.run(TicktingSoftwareRscbApplication.class, args);
-		
-		
-		
 	}
+
    @Bean
 	CommandLineRunner runner() {
 		return runner->{
-			/*
-			 * ActivityLogDTO dto = ActivityLogDTO.builder() .actionBy("admin")
-			 * .message("Test message") .status(true) .payload(LogPayload.builder()
-			 * .className(this.getClass().getName()) .functionName("runner") .args(null)
-			 * .build()) .build(); logService.log(dto);
-			 */
-			//ticketDetails.addTickets();
-			///visitorDetails.addVisitorType();			
-			//ticketsRatesService.getAllTicketRates();
-			/*
-			 * ParkingDetails parking= new ParkingDetails();
-			 * 
-			 * parking.setAddedAt(new Date()); parking.setIsActive(true);
-			 * parking.setName("3 or 4 Wheeler");
-			 * 
-			 * TicketsRatesMaster rateMaster = new TicketsRatesMaster();
-			 * rateMaster.setBillType(BillType.PARKING); rateMaster.setPrice(20f);
-			 * rateMaster.setIsActive(true);
-			 * 
-			 * parking.setRateMaster(rateMaster);
-			 * parking= parkingRepo.saveAndFlush(parking);
-			 */
+			log.debug("Parking " + rateMaster.getActiveParkingRate(1L));
 		};
 	}
-
-	
 }

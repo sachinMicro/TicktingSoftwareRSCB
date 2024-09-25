@@ -70,6 +70,7 @@ public class TicketsRatesMaster {
 
 	@Override
 	public String toString(){
-		return String.format("TicketsRatesMaster{ %d }", Math.round(price));
+		return "NOT IMPLEMENTED";
+		// return String.format("TicketsRatesMaster{ %d }", Math.round(price));
 	}
 }
