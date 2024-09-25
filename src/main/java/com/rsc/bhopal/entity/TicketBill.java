@@ -43,11 +43,16 @@ public class TicketBill {
 	@Column(name = "TICKET_PAYLOAD" , length = 3000)
 	private String ticketPayload;
 		
+	@Column(name = "INTITUTION")
+	private String institution;
+		
+	@Column(name = "REMARK")
+	private String remark;
+	
 	@ManyToOne
 	@JoinColumn(name = "GENERATED_BY",referencedColumnName = "ID")
     private RSCUser generatedBy;
 
-	
 	@JsonIgnore
 	@OneToMany(mappedBy = "generatedTicket",fetch = FetchType.LAZY)	
 	@Cascade(CascadeType.ALL)

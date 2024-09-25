@@ -90,7 +90,7 @@ public class HomeController {
 				GroupType.COMBO.equals(visitorType.getGroupType())
 				).collect(Collectors.toList()));
 
-			attributes.put("parkings", parkingService.getParkingDetails());
+			attributes.put("parkings", parkingService.getActiveParkingDetails());
 			redirectString = "employee/home";
 		}
 		return redirectString;

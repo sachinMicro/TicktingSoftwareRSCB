@@ -19,6 +19,7 @@ import com.rsc.bhopal.enums.VisitorsCategoryEnum;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
 
 import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,6 +43,7 @@ public class VisitorTypeService {
 		return visitorsDTOs;
 	}
 
+	@Transactional(value = TxType.REQUIRED)
 	public void changeVisitorStatus(Long visitorId) {
 		Optional<VisitorsType> visitor =  visitorTypeRepo.findById(visitorId);
 		
@@ -51,7 +53,7 @@ public class VisitorTypeService {
 		visitorTypeRepo.save(visitor.get());
 	}
 
-	@Transactional
+	@Transactional(value = TxType.REQUIRED)
 	public void changeDefaultVisitor(Long visitorId) {
 		log.debug("Removing all defaults");
 		visitorTypeRepo.removeDefaults();		

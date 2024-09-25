@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
@@ -25,9 +26,9 @@ import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.repos.TicketDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
-import com.rsc.bhopal.utills.CommonUtills;
 
-import lombok.Data;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -54,11 +55,17 @@ public class TicketsRatesService {
 
 	@Autowired
 	private ParkingService parkingService;
-
+	
+	 
 	public List<TicketsRatesMaster> getTicketRateByGroup(List<Long> tickets, long groupId) {
 		List<TicketsRatesMaster> rates = new ArrayList<TicketsRatesMaster>();
 		tickets.forEach(ticket -> {
-			rates.add(ticketRateRepo.findByGroupAndTicketIds(ticket, groupId));
+			TicketsRatesMaster  rate = ticketRateRepo.findByGroupAndTicketIds(ticket, groupId);
+			if(rate==null) {
+				 String ticketName = ticketDetailsService.getTicketsById(ticket).get().getName();
+				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for "+ticketName);
+			}
+			rates.add(rate);
 		});
 		return rates;
 	}
@@ -162,6 +169,7 @@ public class TicketsRatesService {
 		return ticketRatesDTOs;
 	}
 
+	@Transactional(value = TxType.REQUIRED)
 	public void updateOrAddNewPrice(NewTicketRate newTicketRate, String username) {
 		Integer count = ticketRateRepo.checkIfRateIsAvaiable(newTicketRate.getTicketId(), newTicketRate.getGroupId());
 		log.debug("checkIfRateIsAvaiable " + count);
@@ -174,6 +182,7 @@ public class TicketsRatesService {
 
 	}
 
+	@Transactional(value = TxType.REQUIRED)
 	public void addNewRate(NewTicketRate newTicketRate, RSCUser user) {
 		TicketsRatesMaster ticketRate = new TicketsRatesMaster();
 		Optional<TicketDetails> ticket = ticketDetailsRepo.findById(newTicketRate.getTicketId());
@@ -189,6 +198,7 @@ public class TicketsRatesService {
 		ticketRateRepo.save(ticketRate);
 	}
 
+	@Transactional(value = TxType.REQUIRED)
 	public void updatePrice(NewTicketRate newTicketRate, RSCUser user) {
 		TicketsRatesMaster newRateMaster = new TicketsRatesMaster();
 		TicketsRatesMaster rateMaster = ticketRateRepo.findByGroupAndTicketIds(newTicketRate.getTicketId(),
@@ -213,6 +223,7 @@ public class TicketsRatesService {
 		}
 	}
 
+	@Transactional(value = TxType.REQUIRED)
 	public void updateRateForComboTicket(ArrayList<TicketDetailsDTO> tickets, String username) {
 		tickets.forEach(ticket -> {
 			// No Rate for Ticket
@@ -236,14 +247,14 @@ public class TicketsRatesService {
 			}
 		});
 	}
-
+	@Transactional(value = TxType.REQUIRED)
 	public void removeTicketFromGroup(TicketDetailsDTO dto, Long rateMasterId, String username) {
 		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(rateMasterId)
 				.orElseThrow(() -> new RuntimeException("Ticket not found"));
 		ticketsRatesMaster.setIsActive(false);
 		ticketsRatesMaster = ticketRateRepo.save(ticketsRatesMaster);
 	}
-
+	@Transactional(value = TxType.REQUIRED)
 	public void replacePrice(TicketDetailsDTO dto, Long rateMasterId, String username) {
 		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findById(rateMasterId)
 				.orElseThrow(() -> new RuntimeException("Ticket not found"));
@@ -254,13 +265,14 @@ public class TicketsRatesService {
 		newRatesMaster.setRevisionNo(ticketsRatesMaster.getRevisionNo() + 1);
 		newRatesMaster.setIsActive(true);
 		newRatesMaster.setPrice(dto.getPrice());
+		newRatesMaster.setOldRateMaster(newRatesMaster);
 		newRatesMaster.setBillType(BillType.TICKET);
 		newRatesMaster.setTicketType(ticketDetailsService.getTicketsById(dto.getId()).get());
 		newRatesMaster.setUser(userDetailsService.getUserByUsername(username));
 		newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(dto.getGroupId()).get());
 		ticketRateRepo.save(newRatesMaster);
 	}
-
+	@Transactional(value = TxType.REQUIRED)
 	public void addNewPrice(TicketDetailsDTO ticket, String username) {
 		TicketsRatesMaster newRatesMaster = new TicketsRatesMaster();
 		newRatesMaster.setIsActive(true);
@@ -273,7 +285,8 @@ public class TicketsRatesService {
 		newRatesMaster.setVisitorsType(visitorTypeService.getVisitorById(ticket.getGroupId()).get());
 		ticketRateRepo.save(newRatesMaster);
 	}
-
+	
+	@Transactional(value = TxType.REQUIRED)
 	public void updateRateForComboTicketBKP(TicketDetailsDTO ticket, String username) {
 
 		TicketsRatesMasterDTO ticketsRatesMasterDTO = null;
@@ -329,6 +342,8 @@ public class TicketsRatesService {
 		}
 		return ticketsRatesMasterDTOs;
 	}
+	
+	@Transactional(value = TxType.REQUIRED)
 	public void updateParkingRate(final ParkingPriceDTO parkingPriceDTO) {
 
 		TicketsRatesMaster ticketsRatesMaster = ticketRateRepo.findByIsActiveAndParkingDetails_Id(true, parkingPriceDTO.getId());
@@ -372,4 +387,6 @@ public class TicketsRatesService {
 	TicketsRatesMaster getActiveParkingRateFloat(long parkingId) {
 		return ticketRateRepo.getActiveParkingRate(parkingId);
 	}
+
+	
 }

@@ -92,7 +92,7 @@ max-width: 250px;
 								aria-label="Basic checkbox toggle button group">
 								<th:block th:each="role : ${roles}">
 									<input type="checkbox" name="roles" class="btn-check"
-										th:value="${role.id}" th:id="${role.role}" autocomplete="off" >
+										th:value="${role.id}" th:id="${role.role}" autocomplete="off" required>
 									<label class="btn btn-outline-primary" th:for="${role.role}"
 										th:text="${role.role}"></label>
 								</th:block>

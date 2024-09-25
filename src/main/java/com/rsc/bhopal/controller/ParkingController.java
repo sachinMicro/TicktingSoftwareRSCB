@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
@@ -55,6 +56,13 @@ public class ParkingController {
 		return "redirect:/manage/parking/add";
 	}
 
+	@PostMapping("/parking/status")
+	public String changeStatus(@RequestParam("parkingId") Long parkingId) {
+		parkingService.changeParkingStatus(parkingId);
+		return "redirect:/manage/parking/add";
+	}
+	
+	
 	@GetMapping(path = "/parking/details")
 	@ResponseBody
 	public List<ParkingDetailsDTO> getDetails() {

@@ -47,37 +47,7 @@ public class TicketSummaryService {
 		});
 		return ticketSummaryDTOs;
 	}
-/*
-	public List<TicketSummaryDTO> getTicketSummaryCountByTicketsAndGroups(String startDate, String endDate) {
-		List<TicketSummaryDTO> ticketSummaryDTOs = new java.util.ArrayList<TicketSummaryDTO>();
-		ticketSummaryRepository.getTicketSummary(startDate, endDate).forEach(ticketSummary -> {
-			TicketSummaryDTO ticketSummaryDTO = new TicketSummaryDTO();
-			BeanUtils.copyProperties(ticketSummary, ticketSummaryDTO);
 
-			TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
-			try {
-				BeanUtils.copyProperties(ticketSummary.getTicketDetails(), ticketDetailsDTO);
-			}
-			catch(IllegalArgumentException ex) {
-			}
-			ticketSummaryDTO.setTicketDetailsDTO(ticketDetailsDTO);
-
-			VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
-			try {
-				BeanUtils.copyProperties(ticketSummary.getVisitorsType(), visitorsTypeDTO);
-			}
-			catch(IllegalArgumentException ex) {
-			}
-			ticketSummaryDTO.setVisitorsTypeDTO(visitorsTypeDTO);
-
-			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
-			BeanUtils.copyProperties(ticketSummary.getTicketsRatesMaster(), ticketsRatesMasterDTO);
-			ticketSummaryDTO.setTicketsRatesMasterDTO(ticketsRatesMasterDTO);
-			ticketSummaryDTOs.add(ticketSummaryDTO);
-		});
-		return ticketSummaryDTOs;
-	}
-	*/
 	public List<com.rsc.bhopal.projections.TicketSummary> getTicketSummaryCountByTicketsAndGroups(String startDate, String endDate) {
 		return ticketSummaryRepository.getTicketSummaryCountByTicketsAndGroups(startDate, endDate);
 	}

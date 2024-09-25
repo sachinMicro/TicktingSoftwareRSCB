@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tickets</title>
+<title>Rate Revisions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -92,8 +92,9 @@ td small {
 							<td scope="col"><span th:text="${rate.oldPrice}"></span> <i
 								class="fa-solid text-secondary fa-arrow-right-long mx-2"></i> <span
 								th:text="${rate.price}"></span> <i class="fa-solid "
-								th:classappend="${rate.isPriceIncreased?'fa-arrow-trend-up text-success':'fa-arrow-trend-down text-danger'}"></i>
+								th:classappend="${rate.isPriceIncreased?'fa-arrow-up-long text-success':'fa-arrow-down-long text-danger'}"></i>
 							</td>
+							
 							<td scope="col"><span class="badge"
 								th:classappend="${rate.isActive?'bg-success':'bg-danger'}"
 								th:text="${rate.isActive?'Active':'InActive'}"> </span></td>
@@ -107,18 +108,18 @@ td small {
 		</div>
 	</div>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			var tableConfig = {
-				"aaSorting" : [], //Default sorting false
-				info : true,
-				ordering : true,
-				paging : true,
-				searching : true,
-				responsive : false,
-				destroy : false
-			};
-			new DataTable('#tickets', tableConfig);
-		});
-	</script>
+			$(document).ready(function() {
+				var tableConfig = {
+					info : true,
+					ordering : true,
+					paging : true,
+					searching : true,
+					responsive : true,
+					destroy : true,
+					aaSorting: []
+				};
+				new DataTable('#tickets',tableConfig);
+			});
+		</script>
 </body>
 </html>

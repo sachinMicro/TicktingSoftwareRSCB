@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tickets</title>
+<title>Generate Ticket</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -14,7 +14,6 @@
 	rel="stylesheet"
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
-
 
 <script src="https://code.jquery.com/jquery-3.7.1.js"
 	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
@@ -76,9 +75,7 @@ td small {
 								</th:block>
 							</div>
 						</div>
-						<h6 class="h6" th:text="${'Total active tickets: ' + tickets.size}"></h6>
-
-						<div class="form-container">
+<div class="form-container">
 							<h5>Select From Groups</h5>
 							<div class="btn-group" role="group"
 								aria-label="Basic checkbox toggle button group">
@@ -148,6 +145,21 @@ td small {
 							</th:block>
 
 						</div>
+						  <div class="form-container">
+							 <h5>Additional Information</h5>
+								 <div class=" d-flex j">
+								 <div class="form-floating w-25 me-2 ">
+								<input type="text" name="institution" class="form-control"
+									id="institution" placeholder="institution" value="" required> <label
+									for="institution">Institution Name</label>
+							</div>
+							<div class="form-floating  w-75">
+								<input type="text" name="remark" class="form-control"
+									id="remark" placeholder="remark" value="" required> <label
+									for="remark">Remark</label>
+							</div>
+								 </div>
+							</div>						
 						<div class="d-none form-container d-flex justify-content-center">
 							<button class="btn btn-success p-3">Calculate Bill</button>
 						</div>

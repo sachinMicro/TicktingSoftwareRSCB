@@ -37,8 +37,7 @@ public class ParkingDetails {
 	private Date addedAt;
 	
 	@Column(name="IS_ACTIVE")
-	private Boolean isActive;
-	
+	private Boolean isActive;	
 
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "parkingDetails")
 	@Cascade(CascadeType.ALL)
