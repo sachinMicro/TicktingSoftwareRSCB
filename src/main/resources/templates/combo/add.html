@@ -54,21 +54,20 @@
 			}
 		</style>
 		<script type="text/javascript">
-			/*
 			$(document).ready(function() {
-				$(this).find("#newTiasdackets tbody").find("tr").each(function() {
+				$(this).find("table").find("tbody").find("tr").each(function() {
 					$(this).find("input[type=checkbox]").on("click", function() {
 						if ($(this).prop("checked")) {
-							$(this).parent().parent().find("input[type=number]").prop("disabled", false);
+							$(this).parent().parent().find("input[type=number]").prop("required", true);
+							$(this).parent().parent().find("input[type=number]").prop("readonly", false);
 						}
 						else {
-							$(this).parent().parent().find("input[type=number]").prop("disabled", true);
+							$(this).parent().parent().find("input[type=number]").prop("required", false);
+							$(this).parent().parent().find("input[type=number]").prop("readonly", true);
 						}
 					});
-					$(this).find("input[type=number]").prop("disabled", true);
 				});
 			});
-			*/
 		</script>
 	</head>
 	<body>
@@ -124,10 +123,9 @@
                                     th:for="|tickets[${stat.index}].checked|"
                                     th:text="${ticket.checked?'Selected':'Select'}">
                                     </label>
-									
 								</td>
 								<td scope="col">
-									<input type="number" th:name="|tickets[${stat.index}].price|" th:value="${ticket.price}" class="form-control w-50" step="0.01" />
+									<input type="number" th:name="|tickets[${stat.index}].price|" th:value="${ticket.price}" class="form-control w-50" step="0.01" th:readonly="${!ticket.checked}" th:required="${ticket.checked}" />
 								</td>
 							</tr>
 						</tbody>

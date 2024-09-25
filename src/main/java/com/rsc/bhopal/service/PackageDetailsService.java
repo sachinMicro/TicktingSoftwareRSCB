@@ -41,6 +41,7 @@ public class PackageDetailsService {
 		// packageDetail.setBillDate(packageDetailsDTO.getBillDate());
 		// packageDetail.setAddedBy(packageDetailsDTO.getAddedBy());
 		// packageDetail.setBillDate(new Date());
+		packageDetail.setIsActive(true);
 		packageDetail.setAddedBy(rscUserDetailsService.getUserByUsername(user));
 		packageDetailsRepository.save(packageDetail);
 	}

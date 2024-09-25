@@ -75,11 +75,20 @@ td small {
 								</th:block>
 							</div>
 						</div>
-<div class="form-container">
+
+					<div class="form-container">
 							<h5>Select From Groups</h5>
+							<div th:each="count : ${#numbers.sequence(0, groups.size - 1, 8)}" class="btn-group mb-2" role="group" aria-label="Basic checkbox toggle button group">
+								<th:block th:each="index : ${#numbers.sequence(0, (groups.size - count * 8) < 8 ? (groups.size % 8) - 1 : 7 , 1)}">
+									<input type="radio" name="group" th:value="${groups[count + index].id}"
+										class="btn-check" th:id="${'group' + count + index}" th:data-minpersons="${groups[count + index].minMembers}" th:checked="${groups[count + index].isDefault}" autocomplete="off">
+									<label class="btn btn-outline-primary"
+										th:for="${'group' + count + index}" th:text="${groups[count + index].name}">NA</label>
+								</th:block>
+							</div>
+							<!--
 							<div class="btn-group" role="group"
 								aria-label="Basic checkbox toggle button group">
-
 								<th:block th:each="group,index : ${groups}">
 									<input type="radio" name="group" th:value="${group.id}"
 										class="btn-check" th:id="${'group'+index.index}" th:data-minpersons="${group.minMembers}" th:checked="${group.isDefault}" autocomplete="off">
@@ -87,7 +96,8 @@ td small {
 										th:for="${'group'+index.index}" th:text="${group.name}">NA</label>
 								</th:block>
 							</div>
-						</div>
+							-->
+					</div>
 
 						<div class="form-container">
 							<h5>Select Persons</h5>
@@ -100,14 +110,29 @@ td small {
 								<button class="btn btn-outline-success count plus" type="button">
 									<i class="fa-solid fa-angles-up"></i>
 								</button>
-
 							</div>
 						</div>
 						<div class="form-container">
 							<h5>Choose By Family Groups</h5>
+							<div th:each="count : ${#numbers.sequence(0, familyGroups.size - 1, 8)}" class="btn-group mb-2" role="group"
+								aria-label="Basic checkbox toggle button group">
+								<th:block th:each="index : ${#numbers.sequence(0, (familyGroups.size - count * 8) < 8 ? (familyGroups.size % 8) - 1 : 7 , 1)}">
+									<input type="radio" name="familyGroup"
+										th:value="${familyGroups[count + index].id}" class="btn-check"
+										th:id="${'familyGroup' + count + index}" autocomplete="off">
+									<label class="btn btn-outline-primary"
+										th:for="${'familyGroup' + count + index}" th:text="${familyGroups[count + index].name}">NA</label>
+									<th:block th:if="${familyGroups.size - 1 == count + index}">
+										<input type="radio" name="familyGroup" value="0"
+											class="btn-check" id="familyGroupNone" autocomplete="off" checked>
+										<label class="btn btn-outline-primary"
+											for="familyGroupNone">None</label>
+									</th:block>
+								</th:block>
+							</div>
+							<!--
 							<div class="btn-group" role="group"
 								aria-label="Basic checkbox toggle button group">
-
 								<th:block th:each="familyGroup,index : ${familyGroups}">
 									<input type="radio" name="familyGroup"
 										th:value="${familyGroup.id}" class="btn-check"
@@ -118,10 +143,11 @@ td small {
 
 								<input type="radio" name="familyGroup" value="0"
 									class="btn-check" id="familyGroupNone" autocomplete="off"
-									checked> <label class="btn btn-outline-primary"
+									checked>
+								<label class="btn btn-outline-primary"
 									for="familyGroupNone">None</label>
-
 							</div>
+							-->
 						</div>
 						<div class="form-container">
 
