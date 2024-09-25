@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.BillSummarize;
@@ -18,6 +19,7 @@ import com.rsc.bhopal.dtos.TicketSelectorDTO;
 import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.service.BillCalculatorService;
 import com.rsc.bhopal.service.TicketBillService;
+import com.rsc.bhopal.utills.CommonUtills;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,9 +66,18 @@ public class BillController {
 	}
 
 	@PostMapping("/print")	
-	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user) throws JsonProcessingException {
-		log.debug("Ticket Selector "+ticketSelector);		
-		ticketBillService.saveAndPrintTicket(ticketSelector, user);	
+	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user,RedirectAttributes redirectAttributes) throws JsonProcessingException {
+		ResponseMessage responseMessage = null;
+		log.debug("Ticket Selector "+ticketSelector);
+		try{
+			 ticketBillService.saveAndPrintTicket(ticketSelector, user);
+			 responseMessage=ResponseMessage.builder().status(true).message("Ticket Printed").build();
+		}catch(TicketRateNotMaintainedException ex) {
+	        log.error(ex.getMessage());
+	        ex.printStackTrace();
+	        responseMessage=ResponseMessage.builder().status(false).message(ex.getMessage()).build();	    	
+		}
+		redirectAttributes.addFlashAttribute("message",  CommonUtills.convertToJSON(responseMessage));		 
 		return "redirect:/home";
 	}
 }

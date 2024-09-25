@@ -26,10 +26,12 @@ import com.rsc.bhopal.entity.TicketBill;
 import com.rsc.bhopal.entity.TicketBillRow;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.entity.VisitorsType;
+import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 import com.rsc.bhopal.projections.TicketSummary;
 import com.rsc.bhopal.repos.TicketBillRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -67,6 +69,7 @@ public class TicketBillService {
 		return ticketDTOs;
 	}
 
+	@Transactional
 	public void saveAndPrintTicket(TicketSelectorDTO dto,Principal user) throws JsonProcessingException {
 
 		Optional<VisitorsType> comboGroup = null;
@@ -75,20 +78,27 @@ public class TicketBillService {
 		final boolean IS_COMBO_CASE=dto.getFamilyGroup() !=0 ? true : false;
 		TicketBill generatedTicket=new TicketBill();
 		generatedTicket.setGeneratedAt(new Date());
+		generatedTicket.setInstitution(dto.getInstitution());
+		generatedTicket.setRemark(dto.getRemark());
 		generatedTicket.setGeneratedBy(userDetailsService.getUserByUsername(user.getName()));
 		// Generated Ticket
 		List<TicketsRatesMaster> rates = null;
 		if (!IS_COMBO_CASE) {
-			rates=ticketsRatesService.getTicketRateByGroup(dto.getTickets(), dto.getGroup());
+			rates=ticketsRatesService.getTicketRateByGroup(dto.getTickets(), dto.getGroup());			
 			generatedTicket.setPersons(dto.getPersons());
 		}
 		else {
 			log.debug("=======COMOBO CASE===================");
 			comboGroup=visitorTypeService.getVisitorById(dto.getFamilyGroup());
 			rates=ticketsRatesService.getRatesOfCombo(dto.getFamilyGroup());
+			if(rates==null) {
+				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for Combo Group.");
+			}
 			generatedTicket.setPersons(comboGroup.get().getFixedMembers());
 			dto.setPersons(generatedTicket.getPersons());
 		}
+		
+		
 		generatedTicket=generatedTicketRepo.save(generatedTicket);
 
 		for(TicketsRatesMaster rate: rates) {
@@ -105,17 +115,20 @@ public class TicketBillService {
 			billRow.setGeneratedTicket(generatedTicket);
 			billRows.add(billRow);
 		}
-
-		for( ParkingCalDTO parking :  dto.getParkings()){
-			TicketBillRow billRow = new TicketBillRow();
-			final TicketsRatesMaster rate = ticketsRatesService.getActiveParkingRateFloat(parking.getId());
-			log.debug("Parking Rate: " + rate.getPrice());
-			billRow.setTotalSum(parking.getCount() * rate.getPrice());
-			totalPrice += billRow.getTotalSum();
-			billRow.setGeneratedTicket(generatedTicket);
-			billRow.setRate(rate);
-			billRows.add(billRow);
+		
+		if(dto.getParkings()!=null) {
+			for( ParkingCalDTO parking :  dto.getParkings()){
+				TicketBillRow billRow = new TicketBillRow();
+				final TicketsRatesMaster rate = ticketsRatesService.getActiveParkingRateFloat(parking.getId());
+				log.debug("Parking Rate: " + rate.getPrice());
+				billRow.setTotalSum(parking.getCount() * rate.getPrice());
+				totalPrice += billRow.getTotalSum();
+				billRow.setGeneratedTicket(generatedTicket);
+				billRow.setRate(rate);
+				billRows.add(billRow);
+			}
 		}
+
 		BillSummarize billSummarize = billCalculator.summarizeBill(dto);
 		generatedTicket.setTicketPayload(CommonUtills.convertToJSON(billSummarize));
 		generatedTicket.setTotalBill(totalPrice);

@@ -14,7 +14,7 @@
 			<div class="toast-body text-success" id="toastBody"></div>
 		</div>
 	</div>
-	<script type="text/javascript">
+	<script th:inline="javascript">
 	 function showToast(header,body,status){
 		  $('#toastHeader').text(header);
 		  $('#toastBody').text(body);
@@ -25,5 +25,14 @@
 			  $("#toastBody").attr('class', 'toast-body text-danger');  
 		 }		  
 	  }
+	 
+      $(document).ready(function(){
+		 console.log("toast page");		 
+		 /*<![CDATA[*/
+		    var message = JSON.parse(/*[[${message}]]*/) ;
+		    console.log(message);
+		 /*]]>*/
+		 showToast('Message',message.message,message.status);
+	 });
 	</script>
 </div>

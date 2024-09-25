@@ -39,10 +39,7 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
 	integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
 	crossorigin="anonymous"></script>
-
-
 <link th:href="@{/css/standard.css}" rel="stylesheet" />
-
 <style type="text/css">
 #billSummary {
 	width: 100%;
@@ -166,9 +163,7 @@ td small {
 						<tr th:each="visitor : ${visitors}">
 							<td scope="col" th:text="${visitor.name}"></td>
 							<td scope="col" th:text="${visitor.category}"></td>							
-							<td scope="col">
-							 <i class="fa-solid fa-cubes-stacked"></i>
-							</td>							
+							<td scope="col" th:text="${visitor.groupType}"></td>							
 							<td scope="col" th:text="${visitor.minMembers}"></td>
 							<td scope="col" th:text="${visitor.fixedMembers}"></td>
 							<td scope="col" th:text="${visitor.addedAt}"></td>

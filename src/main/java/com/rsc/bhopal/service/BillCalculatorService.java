@@ -1,22 +1,19 @@
 package com.rsc.bhopal.service;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.BillDescription;
 import com.rsc.bhopal.dtos.BillSummarize;
 import com.rsc.bhopal.dtos.ParkingBillDescription;
-import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.TicketSelectorDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
-import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.enums.GroupType;
+import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,10 +28,15 @@ public class BillCalculatorService {
 	private VisitorTypeService visitorTypeService;
 
 	@Autowired
+	private TicketDetailsService  ticketDetailsService;
+
+	
+	@Autowired
 	private ParkingService parkingService;
 
 	public BillSummarize summarizeBill(final TicketSelectorDTO ticketSelectorDTO) {
 		log.debug(ticketSelectorDTO.toString());
+		
 		BillSummarize billSummarize = new BillSummarize();
 		if (ticketSelectorDTO.getFamilyGroup() == 0) {
 			billSummarize.setBillDescription(summarizeTicketBill(ticketSelectorDTO));
@@ -42,7 +44,7 @@ public class BillCalculatorService {
 		}
 		else {
 			billSummarize.setComboCase(true);
-			billSummarize.setBillDescription(summarizeFamilyBill(ticketSelectorDTO.getFamilyGroup()));
+			billSummarize.setBillDescription(summarizeComboBill(ticketSelectorDTO.getFamilyGroup()));
 		}
 		// billSummarize.getParkingBillDescription();
 		// log.debug(""+ticketSelectorDTO);
@@ -61,6 +63,11 @@ public class BillCalculatorService {
 		for (final Long ticketId: ticketSelectorDTO.getTickets()) {
 			final TicketsRatesMasterDTO ticketRate = ticketsRatesService.getTicketRateByGroup(ticketId, ticketSelectorDTO.getGroup());
 
+			if(ticketRate==null) {
+				 String ticketName = ticketDetailsService.getTicketsById(ticketId).get().getName();
+				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for "+ticketName);
+			}
+			
 			BillDescription bill = new BillDescription();
 
 			bill.setTicket(ticketRate.getTicketType().getName());
@@ -73,16 +80,23 @@ public class BillCalculatorService {
 		return bills;
 	}
 
-	public List<BillDescription> summarizeFamilyBill(long familyGroupId){
+	public List<BillDescription> summarizeComboBill(long familyGroupId){
 
 		List<BillDescription> bills = new ArrayList<BillDescription>();
 
 		final VisitorsTypeDTO visitorDTO = visitorTypeService.getGeneralVisitorId(familyGroupId);
 		final List<Long> tickets = ticketsRatesService.getTicketsByGroup(familyGroupId);
+		
+		if(tickets==null || tickets.isEmpty()) {
+			 throw new TicketRateNotMaintainedException("Tickets not added in Combo Group.");
+		}
 
 		for (final Long ticketId: tickets) {
-			TicketsRatesMasterDTO ticketRate = ticketsRatesService.getTicketRateByGroup(ticketId, familyGroupId);
-
+			TicketsRatesMasterDTO ticketRate = ticketsRatesService.getTicketRateByGroup(ticketId, familyGroupId);	
+			
+			if(ticketRate==null) {
+				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for Combo Group.");
+			}
 			BillDescription bill = new BillDescription();
 
 			bill.setTicket(ticketRate.getTicketType().getName());

@@ -16,6 +16,10 @@ public class TicketSelectorDTO {
 
 	private int persons;
 
+	private String institution;
+	
+	private String remark;
+	
 	private List<ParkingCalDTO> parkings;
 
 	public TicketSelectorDTO(){
