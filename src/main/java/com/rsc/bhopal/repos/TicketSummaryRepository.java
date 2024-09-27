@@ -52,7 +52,7 @@ public interface TicketSummaryRepository extends JpaRepository<TicketSummary, Lo
 				"		GROUP BY\n" +
 				"			paid_bill_row.rate_master_id\n" +
 				"	) SELECT\n" +
-				"		filter_table.rate_master_count, filter_table.total, filter_table.rate_master_id, all_master.price, IFNULL(filter_table.total / all_master.price, 1) AS ticket_count, all_master.ticket_name, all_master.visitor_name\n" +
+				"		filter_table.rate_master_count, filter_table.total, filter_table.rate_master_id, all_master.price, IFNULL(filter_table.total / all_master.price, filter_table.rate_master_count) AS ticket_count, all_master.ticket_name, all_master.visitor_name\n" +
 				"	FROM\n" +
 				"		filter_table\n" +
 				"	LEFT JOIN\n" +
