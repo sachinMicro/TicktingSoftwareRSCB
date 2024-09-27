@@ -39,6 +39,9 @@ public class BillCalculatorService {
 		
 		BillSummarize billSummarize = new BillSummarize();
 		if (ticketSelectorDTO.getFamilyGroup() == 0) {
+			if (ticketSelectorDTO.getTickets().size() < 1) {
+				throw new TicketRateNotMaintainedException("No selected tickets received by server.");
+			}
 			billSummarize.setBillDescription(summarizeTicketBill(ticketSelectorDTO));
 			billSummarize.setComboCase(false);
 		}

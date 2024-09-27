@@ -78,7 +78,7 @@ td small {
 						</div>	
 						<div class="col-lg-2 col-md-2">
 							<div class="form-floating">
-								<input type="date" id="endDate" name="endDate" class="form-control"  th:value="${todayDate}" required>
+								<input type="date" id="endDate" name="endDate" class="form-control" th:value="${todayDate}" required>
 								 <label for="name">To Date</label>
 							</div>
 						</div>		
@@ -98,7 +98,7 @@ td small {
 							<th scope="col" style="text-align: left;">Serial no.</th>
 							<th scope="col">Ticket</th>						
 							<th scope="col">Visitor</th>
-							<th scope="col">Count</th>
+							<th scope="col">Tickets count</th>
 							<th scope="col" style="text-align: right;">Total</th>
 						</tr>
 					</thead>
@@ -116,8 +116,8 @@ td small {
 			</div>
 			<div class="col-12 mt-3 d-flex" style="justify-content: end;align-items: center;">
 				   <div>
-				    <h4 th:text="${'Ticket Count = '+grandCount}"></h4>
-				   <h4 th:text="${'Grand Total = '+grandTotal}"></h4>
+				    <h4 th:text="${'Tickets sold: ' + grandCount}" class="h4"></h4>
+				   <h4 th:text="${'Grand Total: ' + grandTotal}" class="h4"></h4>
 				   </div>
 			</div>
 		</div>

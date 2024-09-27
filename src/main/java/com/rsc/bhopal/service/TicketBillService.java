@@ -76,6 +76,10 @@ public class TicketBillService {
 		List<TicketBillRow> billRows = new ArrayList<TicketBillRow>();
 		Double totalPrice = 0d;
 		final boolean IS_COMBO_CASE=dto.getFamilyGroup() !=0 ? true : false;
+
+		if (!IS_COMBO_CASE && dto.getTickets().size() < 1) {
+			throw new TicketRateNotMaintainedException("No selected tickets received by server.");
+		}
 		TicketBill generatedTicket=new TicketBill();
 		generatedTicket.setGeneratedAt(new Date());
 		generatedTicket.setInstitution(dto.getInstitution());
@@ -92,7 +96,7 @@ public class TicketBillService {
 			comboGroup=visitorTypeService.getVisitorById(dto.getFamilyGroup());
 			rates=ticketsRatesService.getRatesOfCombo(dto.getFamilyGroup());
 			if(rates==null) {
-				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for Combo Group.");
+				throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for Combo Group.");
 			}
 			generatedTicket.setPersons(comboGroup.get().getFixedMembers());
 			dto.setPersons(generatedTicket.getPersons());

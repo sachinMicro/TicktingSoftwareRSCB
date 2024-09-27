@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-@RequestMapping("/home")
 public class HomeController {
 
 	@Autowired
@@ -54,7 +53,7 @@ public class HomeController {
 	@Autowired
 	private TicketSummaryService ticketSummaryService;
 
-	@GetMapping(path = {"","/{variable}"} )
+	@GetMapping(path = {"/","/home","/home/{variable}"} )
 	public String hello(Map<String, Object> attributes) {
 		List<TicketDetailsDTO> tickets = ticketDetails.getAllActiveTickets();
 		List<VisitorsTypeDTO> visitors = visitorDetails.getAllActiveVisitorTypes();
@@ -96,7 +95,7 @@ public class HomeController {
 		return redirectString;
 	}
 
-	@GetMapping(path = "/tickets-summary")
+	@GetMapping(path = "/home/tickets-summary")
 	public @ResponseBody List<TicketSummary> getTicketSummary(Map<String, Object> attributes) {
 		String currentDate = CommonUtills.convertDateToString(new Date(), RSCDateFormat.YYYY_MM_DD);
 		List<TicketSummary> summaries = ticketBillService.getTicketSummary("2024-09-22", "2024-09-23");
@@ -110,7 +109,7 @@ public class HomeController {
 		return summaries;
 	}
 
-	@GetMapping(path = "/summary")
+	@GetMapping(path = "/home/summary")
 	public String getAll(Map<String, Object> attributes) {
 		final String currentDate = CommonUtills.convertDateToString(new Date(), RSCDateFormat.YYYY_MM_DD);
 		attributes.put("todayDate", currentDate);
@@ -126,9 +125,9 @@ public class HomeController {
 			ticketBillSummaryDTO.setCount(billRow.getCOUNT());
 			ticketBillSummaryDTO.setTicketName(billRow.getTICKET());
 			ticketBillSummaryDTO.setGroupName(billRow.getGROUP_());
-			ticketBillSummaryDTO.setTotal(billRow.getTOTAL());
+			ticketBillSummaryDTO.setTotal(billRow.getTOTAL() * billRow.getCOUNT());
 			grandCount += billRow.getCOUNT();
-			grandTotal += billRow.getTOTAL();
+			grandTotal += billRow.getTOTAL() * billRow.getCOUNT();
 			ticketBillSummaryDTOs.add(ticketBillSummaryDTO);
 		}
 		attributes.put("billRows", ticketBillSummaryDTOs);
@@ -139,7 +138,7 @@ public class HomeController {
 		// return ticketBillSummaryDTOs;
 	}
 
-	@PostMapping(path = "/summary")
+	@PostMapping(path = "/home/summary")
 	public String getSpecificBillSummary(@ModelAttribute BillSummaryDateRange billSummaryDateRange, Map<String, Object> attributes) {
 		// log.debug("input range: " + billSummaryDateRange);
 		final String currentDate = CommonUtills.convertDateToString(new Date(), RSCDateFormat.YYYY_MM_DD);
@@ -153,9 +152,9 @@ public class HomeController {
 			ticketBillSummaryDTO.setCount(billRow.getCOUNT());
 			ticketBillSummaryDTO.setTicketName(billRow.getTICKET());
 			ticketBillSummaryDTO.setGroupName(billRow.getGROUP_());
-			ticketBillSummaryDTO.setTotal(billRow.getTOTAL());
+			ticketBillSummaryDTO.setTotal(billRow.getTOTAL() * billRow.getCOUNT());
 			grandCount += billRow.getCOUNT();
-			grandTotal += billRow.getTOTAL();
+			grandTotal += billRow.getTOTAL() * billRow.getCOUNT();
 			ticketBillSummaryDTOs.add(ticketBillSummaryDTO);
 		}
 		attributes.put("billRows", ticketBillSummaryDTOs);
