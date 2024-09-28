@@ -141,6 +141,7 @@ public class TicketBillService {
 		log.debug("generatedTicket "+CommonUtills.convertToJSON(generatedTicket));
 	}
 
+/*
 	public List<TicketSummary> getTicketSummary(String startDate, String endDate){
 		return generatedTicketRepo.getTicketSummary(startDate, endDate);
 	}
@@ -153,4 +154,5 @@ public class TicketBillService {
 		});
 		return ticketSummaryDTOs;
 	}
+*/
 }

@@ -21,43 +21,45 @@ import com.rsc.bhopal.utills.CommonUtills;
 
 @Service
 public class ActivityLogService {
-	
+
 	@Autowired
 	private ActivityLogRepo logRepo;
-	
-	@Autowired
-	private UserDetailsRepository userRepo; 
-	
-	public void log(ActivityLogDTO dto)  {		
-		 ActivityLog log = new ActivityLog();		 
-		 BeanUtils.copyProperties(dto, log); 
-		 log.setActionAt(new Date()); 
-		 log.setActionBy(userRepo.findByUsername(dto.getActionBy()).get());		 
-		 try {
-			log.setPayload(CommonUtills.convertToJSON(dto.getPayload()));
-		 }catch (JsonProcessingException e) {			
-			e.printStackTrace();
-		 }
-		 logRepo.save(log);
-	}
-	
-    public List<ActivityLogDTO> getAllLogs(Integer rows){
-    	List<ActivityLogDTO> logDTOs = new ArrayList<ActivityLogDTO>();
-    	List<ActivityLog>  logs = logRepo.recentLogs(PageRequest.of(0, rows, Sort.by(Direction.DESC, "id")));
-    	logs.forEach(log->{
-    		ActivityLogDTO dto=new ActivityLogDTO();
-    		BeanUtils.copyProperties(log, dto);
-    		if(log.getPayload()!=null) {
-    			dto.setPayload(CommonUtills.convertJSONToObject(log.getPayload(),LogPayload.class));
-    			try {
-					dto.setArgsPayload(CommonUtills.convertToJSON(dto.getPayload().getArgs()));
-				} catch (JsonProcessingException e) {e.printStackTrace();}
-    		}
-    		logDTOs.add(dto);
-    	});
-    	return logDTOs;
-    }
-	
-	
 
+	@Autowired
+	private UserDetailsRepository userRepo;
+
+	public void log(ActivityLogDTO dto) {
+		ActivityLog log = new ActivityLog();
+		BeanUtils.copyProperties(dto, log);
+		log.setActionAt(new Date());
+		log.setActionBy(userRepo.findByUsername(dto.getActionBy()).get());
+		try {
+			log.setPayload(CommonUtills.convertToJSON(dto.getPayload()));
+		}
+		catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		logRepo.save(log);
+	}
+
+	public List<ActivityLogDTO> getAllLogs(Integer rows){
+		List<ActivityLogDTO> logDTOs = new ArrayList<ActivityLogDTO>();
+		List<ActivityLog> logs = logRepo.recentLogs(PageRequest.of(0, rows, Sort.by(Direction.DESC, "id")));
+		logs.forEach(log -> {
+			ActivityLogDTO dto = new ActivityLogDTO();
+			BeanUtils.copyProperties(log, dto);
+			dto.setActionBy(log.getActionBy().getUsername());
+			if(log.getPayload() != null) {
+				dto.setPayload(CommonUtills.convertJSONToObject(log.getPayload(), LogPayload.class));
+				try {
+					dto.setArgsPayload(CommonUtills.convertToJSON(dto.getPayload().getArgs()));
+				}
+				catch(JsonProcessingException e) {
+					e.printStackTrace();
+				}
+			}
+			logDTOs.add(dto);
+		});
+		return logDTOs;
+	}
 }

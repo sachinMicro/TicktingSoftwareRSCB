@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.rsc.bhopal.aops.service.ActivityLogService;
-import com.rsc.bhopal.dtos.ActivityLogDTO;
-import com.rsc.bhopal.dtos.LogPayload;
 import com.rsc.bhopal.repos.ParkingDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
 import com.rsc.bhopal.repos.VisitorTypeRepository;
@@ -18,7 +16,6 @@ import com.rsc.bhopal.service.TicketsRatesService;
 import com.rsc.bhopal.service.VisitorTypeService;
 
 import lombok.extern.slf4j.Slf4j;
-
 
 @Slf4j
 @SpringBootApplication
@@ -52,8 +49,7 @@ public class TicktingSoftwareRscbApplication {
 
    @Bean
 	CommandLineRunner runner() {
-		return runner->{
-			// log.debug("Parking " + rateMaster.getActiveParkingRate(1L));
+		return runner -> {
 		};
 	}
 }

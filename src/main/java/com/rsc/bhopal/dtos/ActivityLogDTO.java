@@ -2,14 +2,12 @@ package com.rsc.bhopal.dtos;
 
 import java.util.Date;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ActivityLogDTO {	
-	
+public class ActivityLogDTO {
 	private Long id;
 
 	private Boolean status;
@@ -17,11 +15,10 @@ public class ActivityLogDTO {
 	private String message;
 
 	private Date actionAt;
-	
+
 	private String actionBy;
-	
+
 	private LogPayload payload;
-	
+
 	private String argsPayload;
-	
 }

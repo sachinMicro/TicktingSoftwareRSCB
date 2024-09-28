@@ -52,10 +52,36 @@ td small {
 max-width: 250px;
 }
 </style>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				const $checkboxes = $(document).find("input[type=checkbox][name=roles]");
+				$checkboxes.each(function(index_i) {
+					$(this).on("click", function() {
+						let checked_flag = false;
+						$checkboxes.each(function(index_j) {
+							if (index_i != index_j) {
+								if ($(this).prop("checked")) {
+									checked_flag = true;
+									return;
+								}
+								else {
+									checked_flag = false;
+								}
+							}
+						});
+						if (!checked_flag) {
+							$(this).prop("checked", true);
+							showToast("Insufficient user roles", "At least one role must be selected.", false);
+						}
+					});
+				});
+			});
+		</script>
 </head>
 <body>
 
-	<div th:replace="fragments/navbar::navbar"></div>
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
+	<div th:replace="~{fragments/toast :: toast}"></div>
 
 	<div class="container-fluid">
 		<div class="row">
@@ -63,28 +89,28 @@ max-width: 250px;
 				<form th:action="@{/manage/users/add}" method="post">
 					<div class="row g-2">
 						<div class="col-12">
-						  <h2 class="m-0">Add Users</h2>
+						<h2 class="m-0">Add Users</h2>
 						</div>
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating">
 								<input type="text" name="name" class="form-control"
-									id="name" placeholder="Name" value="" required> <label
-									for="name">Name</label>
+									id="name" placeholder="Name" value="" required>
+									<label for="name">Name</label>
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating">
 								<input type="text" name="username" class="form-control"
-									id="username" placeholder="Username" value="" required> <label
-									for="username">Username</label>
+									id="username" placeholder="Username" value="" required>
+									<label for="username">Username</label>
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-3">
 							<div class="form-floating d-flex">
 								<input type="text" name="password" class="form-control"
-									id="password" placeholder="Password" value="" required> <label
-									for="password">Password</label>
-								<button class="btn d-none btn-danger ms-2  w-23">Show</button>
+									id="password" placeholder="Password" value="" required>
+									<label for="password">Password</label>
+								<button class="btn d-none btn-danger ms-2 w-23">Show</button>
 							</div>
 						</div>
 						<div class="col-lg-3 col-lg-3 d-flex align-items-center">
@@ -98,14 +124,14 @@ max-width: 250px;
 								</th:block>
 							</div>
 						</div>
-						<div class="col-lg-1 col-md-1 d-flex  align-items-center">
+						<div class="col-lg-1 col-md-1 d-flex align-items-center">
 							<div class="btn-group">
 								<button type="submit" class="btn btn-success">Save User</button>
 							</div>
 						</div>
 					</div>
 				</form>
-             <!-- ROLES -->
+			 <!-- ROLES -->
 			</div>
 			<div class="col-12 mt-3">
 			</div>
@@ -118,7 +144,7 @@ max-width: 250px;
 							<th scope="col">Username</th>
 							<th scope="col">Password</th>
 							<th scope="col">Added At</th>
-						    <th scope="col">Roles</th>
+							<th scope="col">Roles</th>
 							<th scope="col">Status</th>
 							<th scope="col">Action</th>
 						</tr>
@@ -126,30 +152,31 @@ max-width: 250px;
 					<tbody>
 						<tr th:each="user : ${users}">
 							<td scope="col">
-							<span  th:text="${user.name}"></span><br>
-							  <span th:if="${user.rootUser}" class="text-danger small">Root User</span>
+								<span th:text="${user.name}"></span><br>
+								<span th:if="${user.rootUser}" class="text-danger small">Root User</span>
 							</td>
 							<td scope="col" th:text="${user.username}"></td>
-							<td class="w-auto" >
-							 <form  class="d-flex " th:action="@{/manage/users/password}" method="post">
-							     <input type="hidden" name="username" th:value="${user.username}">
-							     <input type="text"  name="password"  class="form-control mw-250" >
-							     <button class="btn btn-success ms-2">Change</button>
-							 </form>
+							<td class="w-auto">
+								<form class="d-flex" th:action="@{/manage/users/password}" method="post">
+									<input type="hidden" name="username" th:value="${user.username}">
+									<input type="text" name="password" class="form-control mw-250" placeholder="New password" required>
+									<button class="btn btn-success ms-2">Change</button>
+								</form>
 							</td>
 							<td scope="col" th:text="${user.addedAt}"></td>
-							
-							<td scope="col" >
-							    <th:block th:each="role : ${user.rolesDTO}" >
-							       <span th:text="${role.role}"></span>,&nbsp;
-							    </th:block>
-							</td>				
-							<td><span  style="font-weight:bold" th:class="${user.isActive?'text-success':'text-danger'}"  th:text="${user.isActive?'Active':'Inactive'}"></span> </td>
-							<td scope="col" >
-							<form th:action="@{/manage/users/status}" method="post">
-							    <input type="hidden" name="username" th:value="${user.username}">
-							    <button class="btn " th:classappend="${user.isActive?'btn-danger':'btn-success'}" th:text="${user.isActive?'Inactive':'Active'}"></button>							
-							</form>						  
+							<td scope="col">
+								<th:block th:each="role : ${user.rolesDTO}">
+									<span th:text="${role.role}"></span>,&nbsp;
+								</th:block>
+							</td>
+							<td>
+								<span style="font-weight:bold" th:class="${user.isActive ? 'text-success' : 'text-danger'}" th:text="${user.isActive ? 'Active' : 'Inactive'}"></span>
+							</td>
+							<td scope="col">
+								<form th:action="@{/manage/users/status}" method="post">
+									<input type="hidden" name="username" th:value="${user.username}">
+									<button class="btn" th:classappend="${user.isActive ? 'btn-danger' : 'btn-success'}" th:text="${user.isActive ? 'Inactive' : 'Active'}"></button>							
+								</form>
 							</td>
 						</tr> 
 					</tbody>
@@ -159,8 +186,8 @@ max-width: 250px;
 	</div>
 </body>
 <script>
- $(document).ready(function(){
-	 var tableConfig = {
+	$(document).ready(function() {
+	var tableConfig = {
 				info: true,
 				ordering: true,
 				paging: true,
@@ -168,8 +195,7 @@ max-width: 250px;
 				responsive: true,
 				destroy: true
 			};
-	 new DataTable('#users',tableConfig);
- });
-	
+		new DataTable('#users',tableConfig);
+	});
 </script>
 </html>

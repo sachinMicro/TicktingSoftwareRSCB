@@ -29,6 +29,7 @@
 
 		<script type="text/javascript">
 			function sendUpdate($field) {
+				const priceUpdate = $field.find("input[type=number][name=price]").val();
 				$.ajax({
 					url: $field.attr("action"),
 					method: $field.attr("method"),
@@ -37,10 +38,16 @@
 					contentType: "application/x-www-form-urlencoded",
 					dataType: "json",
 					success: function(response) {
-						showToast("Message",response.message, true);
+						if (response.status) {
+							showToast("Success message from Rate Master", response.message, true);
+							$field.find("input[type=hidden][name=actualPrice]").val(priceUpdate);
+						}
+						else {
+							showToast("Failure message from Rate Master", response.message, false);
+						}
 					},
 					error: function(xhr, status, error) {
-						showToast("Error","Some Internal Error Occurred!!", false);
+						showToast("Error", "Some Internal Error Occurred!!", false);
 					}
 				});
 			}
@@ -64,11 +71,11 @@
 
     	<div th:replace="fragments/toast::toast"></div>
 <div class="container-fluid">
-		<div class="row  g-2">
+		<div class="row g-2">
 			<div class="col-12 mt-3">
-						  <h2 class="m-0">Manage Rate Master</h2>
+				<h2 class="m-0">Manage Rate Master</h2>
 			</div>
-			<div class="col-12 ">
+			<div class="col-12">
 				<div style="overflow-x:scroll">
 				 <table class="table table-striped border w-100">
 					<thead class="bg-gray">
@@ -105,6 +112,9 @@
 					</tbody>
 				</table>
 				</div>
+			</div>
+			<div class="col-1 mt-3">
+				<button class="btn btn-primary" onclick="window.location.reload();">Refresh rates</button>
 			</div>
 		</div>
 		</div>	

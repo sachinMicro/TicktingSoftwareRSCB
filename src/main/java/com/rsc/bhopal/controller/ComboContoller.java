@@ -3,29 +3,21 @@ package com.rsc.bhopal.controller;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rsc.bhopal.dtos.TicketDetailsDTOWrapper;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
-import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
 import com.rsc.bhopal.service.VisitorTypeService;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,11 +37,11 @@ public class ComboContoller {
 	public String addComboGroup(Map<String, Object> attributes, @RequestParam(required = false, defaultValue = "0") Long groupId) {
 
 		List<VisitorsTypeDTO> comboVisitors = visitorTypeService.getComboVisitorTypes();
-		//groupCategory
+		// groupCategory
 		// log.debug(comboVisitors.toString());
 		attributes.put("comboVisitors", comboVisitors);
 		attributes.put("groupId", groupId);
-		
+
 		if (groupId != 0) {
 			attributes.put("tickets", ticketDetails.getAllTicketsByGroup(groupId));
 		}
@@ -57,12 +49,10 @@ public class ComboContoller {
 	}
 
 	@PostMapping(path = "/price/change")
-	public String addComboPrice(@ModelAttribute TicketDetailsDTOWrapper tickets, Principal user) {		
-		Long groupCategory = tickets
-				.getTickets()
-				.stream().mapToLong(ticket->ticket.getGroupId()).findFirst().getAsLong();		
-		tickets.getTickets().stream().forEach(System.out::println);		
-		ticketsRatesService.updateRateForComboTicket(tickets.getTickets(), user.getName());	
+	public String addComboPrice(@ModelAttribute TicketDetailsDTOWrapper tickets, Principal user) {
+		Long groupCategory = tickets.getTickets().stream().mapToLong(ticket -> ticket.getGroupId()).findFirst().getAsLong();
+		// tickets.getTickets().stream().forEach(System.out::println);
+		ticketsRatesService.updateRateForComboTicket(tickets.getTickets(), user.getName());
 		return "redirect:/manage/combo/add?groupId=" + groupCategory;
 	}
 }

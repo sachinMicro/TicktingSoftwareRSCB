@@ -2,7 +2,6 @@ package com.rsc.bhopal.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +61,11 @@ public class AdminController {
 
 	@GetMapping("/rates")
 	public String rates(Map<String, Object> attributes) {
-		
-		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();		
-		
+
+		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();
+
 		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getVisitorTypeByGroupType(GroupType.SINGLE);
-		
+
 		List<TicketDetailsDTO> tickets = ticketDetailsService.getAllActiveTickets();
 
 		for(TicketDetailsDTO ticket: tickets ){
@@ -75,7 +74,7 @@ public class AdminController {
 			rate.setTicketId(ticket.getId());
 			rate.setTicketName(ticket.getName());
 
-			vistoryList.forEach(visitor->{
+			vistoryList.forEach(visitor -> {
 				try{
 					TicketsRatesMasterDTO ticketRateMaster = ticketsRatesMasterService.getTicketRateByGroup(ticket.getId(), visitor.getId());
 					prices.put(visitor.getId(), ticketRateMaster.getPrice());
@@ -96,24 +95,25 @@ public class AdminController {
 	}
 
 	@PostMapping("/rates/update")
-	public @ResponseBody ResponseEntity<ResponseMessage> updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {		
+	public @ResponseBody ResponseEntity<ResponseMessage> updateNewRates(@ModelAttribute NewTicketRate newTicketRate, Principal user) {
 		try {
-			ticketsRatesService.updateOrAddNewPrice(newTicketRate,user.getName());			
+			ticketsRatesService.updateOrAddNewPrice(newTicketRate, user.getName());
 			return new ResponseEntity<ResponseMessage>(ResponseMessage.builder()
-					                                                  .status(true)
-					                                                  .message("Rate Updated Successfully").build(), HttpStatus.OK);
-		}catch(Exception ex) {
+					.status(true)
+					.message("Rate updated to " + newTicketRate.price + ".").build(), HttpStatus.OK);
+		}
+		catch(Exception ex) {
 			ex.printStackTrace();
 			return new ResponseEntity<ResponseMessage>(ResponseMessage.builder()
-                    .status(false)
-                    .message("Some Error occurred!!").build(), HttpStatus.BAD_REQUEST);
+					.status(false)
+					.message("Some Error occurred!!\r\nFailed to change price" + newTicketRate.price + ".").build(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@GetMapping("/users")
 	public String showUsers(Map<String, Object> attributes) {
-		List<UserRoleDTO> roles = userDetailsService.getAllRoles();		
-		List<RSCUserDTO> users = userDetailsService.getAllUser();		
+		List<UserRoleDTO> roles = userDetailsService.getAllRoles();
+		List<RSCUserDTO> users = userDetailsService.getAllUser();
 		attributes.put("users", users);
 		attributes.put("roles", roles);
 		return "admin/users";
@@ -134,17 +134,17 @@ public class AdminController {
 
 	@PostMapping("/users/password")
 	public String changePassword(@RequestParam("username") String username,@RequestParam("password") String password) {
-		userDetailsService.changeUserPassword(username,password);
+		userDetailsService.changeUserPassword(username, password);
 		return "redirect:/manage/users";
 	}
-	
+
 	@GetMapping(path = "/users/test")
 	public String test(@RequestParam Map<String,String> allRequestParams) {
 		//userDetailsService.changeUserStatus(username);
 		log.debug(""+allRequestParams.toString());
 		return "redirect:/manage/users";
 	}
-	
+
 	@GetMapping(path = "/users/test2")
 	public String test2(@ModelAttribute TestContainer TestContainer) {
 		//userDetailsService.changeUserStatus(username);
@@ -152,10 +152,11 @@ public class AdminController {
 		return "redirect:/manage/users";
 	}
 }
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class Test{
+class Test {
 	private Integer id;
 	private String name;
 	private Boolean checked;
@@ -164,6 +165,6 @@ class Test{
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class TestContainer{
+class TestContainer {
 	private ArrayList<Test> tests;
 }

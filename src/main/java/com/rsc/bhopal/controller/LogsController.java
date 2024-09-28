@@ -25,19 +25,18 @@ public class LogsController {
 	private TicketsRatesService ratesService;
 
 	@GetMapping(path = {"/{rows}","/"})
-	public String showLogTable(@PathVariable(name =  "rows",required = false) Integer rows,Map<String, Object> attributes) {
-		rows=rows==null?10:rows;
+	public String showLogTable(@PathVariable(name = "rows", required = false) Integer rows, Map<String, Object> attributes) {
+		rows = rows == null ? 10 : rows;
 		List<ActivityLogDTO> LogDTOs = logService.getAllLogs(rows);
 		attributes.put("logs", LogDTOs);
 		return "history/activitylog/logs";
 	}
 
 	@GetMapping(path = {"/rates/{rows}"})
-	public String showRevisedRates(@PathVariable(name =  "rows",required = false) Integer rows,Map<String, Object> attributes) {
-		rows=rows==null?10:rows;
-		List<TicketRevisedSummary>  logSummary = ratesService.getRevisedRates();
+	public String showRevisedRates(@PathVariable(name = "rows", required = false) Integer rows, Map<String, Object> attributes) {
+		rows = rows == null ? 10 : rows;
+		List<TicketRevisedSummary> logSummary = ratesService.getRevisedRates();
 		attributes.put("rates", logSummary);
 		return "history/revisedRates";
 	}
-
 }

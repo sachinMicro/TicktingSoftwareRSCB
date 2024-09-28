@@ -13,12 +13,12 @@ import com.rsc.bhopal.projections.TicketSummary;
 
 @Repository
 public interface TicketBillRepository extends JpaRepository<TicketBill, Long>,PagingAndSortingRepository<TicketBill, Long> {
-	
-    //repository.findWithPageable(new PageRequest(0, 10, Direction.DESC, "id"));
+
+    // repository.findWithPageable(new PageRequest(0, 10, Direction.DESC, "id"));
 	@Query(value="from TicketBill")
 	List<TicketBill> recentRecords(Pageable pageable);
-	
 
+/*
 	@Query(value="SELECT \n" + 
 				"    (COUNT(rows_.id)) COUNT,\n" + 
 				"    ticket_name TICKET,\n" + 
@@ -43,7 +43,5 @@ public interface TicketBillRepository extends JpaRepository<TicketBill, Long>,Pa
 				"ORDER BY \n" + 
 				"  ticket_name ,visitor_name", nativeQuery = true)
 	List<TicketSummary> getTicketSummary(String startDate,String endDate); 
-
-
-
+*/
 }

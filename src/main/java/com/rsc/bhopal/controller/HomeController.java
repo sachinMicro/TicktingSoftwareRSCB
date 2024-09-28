@@ -95,6 +95,7 @@ public class HomeController {
 		return redirectString;
 	}
 
+/*
 	@GetMapping(path = "/home/tickets-summary")
 	public @ResponseBody List<TicketSummary> getTicketSummary(Map<String, Object> attributes) {
 		String currentDate = CommonUtills.convertDateToString(new Date(), RSCDateFormat.YYYY_MM_DD);
@@ -108,11 +109,13 @@ public class HomeController {
 		// return ticketSummaryDTOs;
 		return summaries;
 	}
+*/
 
 	@GetMapping(path = "/home/summary")
 	public String getAll(Map<String, Object> attributes) {
 		final String currentDate = CommonUtills.convertDateToString(new Date(), RSCDateFormat.YYYY_MM_DD);
-		attributes.put("todayDate", currentDate);
+		attributes.put("startDate", "");
+		attributes.put("endDate", currentDate);
 		// return ticketSummaryService.getTicketSummaryCountByTicketsAndGroups("2024-09-22", "2024-09-23");
 		// log.debug("Ticket: " + ticketSummaryService.getAllTicketSummary());
 		// attributes.put("summaries", ticketSummaryService.getTicketSummaryCountByTicketsAndGroups("2024-09-22", "2024-09-23"));
@@ -141,8 +144,8 @@ public class HomeController {
 	@PostMapping(path = "/home/summary")
 	public String getSpecificBillSummary(@ModelAttribute BillSummaryDateRange billSummaryDateRange, Map<String, Object> attributes) {
 		// log.debug("input range: " + billSummaryDateRange);
-		final String currentDate = CommonUtills.convertDateToString(new Date(), RSCDateFormat.YYYY_MM_DD);
-		attributes.put("todayDate", currentDate);
+		attributes.put("startDate", billSummaryDateRange.startDate);
+		attributes.put("endDate", billSummaryDateRange.endDate);
 		List<TicketBillSummaryDTO> ticketBillSummaryDTOs = new java.util.ArrayList<TicketBillSummaryDTO>();
 		long grandCount = 0;
 		double grandTotal = 0;

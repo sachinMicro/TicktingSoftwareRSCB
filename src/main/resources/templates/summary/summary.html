@@ -72,13 +72,13 @@ td small {
 						</div>
 						<div class="col-lg-2 col-md-2">
 							<div class="form-floating">
-								 <input type="date"id="startDate" name="startDate"  class="form-control" value="" required autofocus>
+								 <input type="date"id="startDate" name="startDate"  class="form-control" th:value="${startDate}" required autofocus>
 								 <label for="startDate">From Date</label>
 							</div>
 						</div>	
 						<div class="col-lg-2 col-md-2">
 							<div class="form-floating">
-								<input type="date" id="endDate" name="endDate" class="form-control" th:value="${todayDate}" required>
+								<input type="date" id="endDate" name="endDate" class="form-control" th:value="${endDate}" required>
 								 <label for="name">To Date</label>
 							</div>
 						</div>		
