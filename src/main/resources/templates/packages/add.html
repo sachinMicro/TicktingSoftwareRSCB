@@ -54,10 +54,24 @@
 			}
 		</style>
 		<script type="text/javascript">
+			$(document).ready(function() {
+				const $checkboxes = $(document).find("input[type=checkbox]");
+				$checkboxes.each(function() {
+					$(this).on("click", function() {
+						if (!$(this).prop("checked")) {
+							if ($checkboxes.filter(":checked").length < 1) {
+								$(this).prop("checked", true);
+								showToast("Insufficient groups", "At least one group must be selected.", false);
+							}
+						}
+					});
+				});
+			});
 		</script>
 	</head>
 	<body>
 		<div th:replace="~{fragments/navbar :: navbar}"></div>
+		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12 mt-3">
@@ -91,6 +105,14 @@
 								</div>
 							</div>
 						</div>
+						<div class="col-12">
+							<div class="btn-group mb-2" role="group" aria-label="Basic checkbox toggle button group" autocomplete="off">
+								<th:block th:each="group,stat : ${groups}">
+									<input type="checkbox" class="btn-check" th:name="|visitorsType[${stat.index}].id|" th:id="${'group' + group.id}" th:value="${group.id}" autocomplete="off" checked />
+									<label class="btn btn-outline-primary" th:for="${'group' + group.id}" th:text="${group.name}"></label>
+								</th:block>
+							</div>
+						</div>
 						<div class="col-lg-12 col-md-12 d-flex">
 							<div class="btn-group">
 								<button type="submit" class="btn btn-success">Submit</button>
@@ -105,18 +127,20 @@
 							<tr>
 								<th scope="col" style="text-align: left;">Receipt no.</th>
 								<th scope="col">Package name</th>
+								<th scope="col">Price</th>
 								<th scope="col">Bill date</th>
 								<th scope="col" style="text-align: right;">Added By</th>
-								<th scope="col">Action</th>
+								<th scope="col" style="text-align: right;">Action</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="package : ${packages}">
 								<td scope="col" th:text="${package.receiptNo}" style="text-align: left;"></td>
 								<td scope="col" th:text="${package.name}"></td>
+								<td scope="col" th:text="${package.price}"></td>
 								<td scope="col" th:text="${package.billDate}"></td>
 								<td scope="col" th:text="${package.addedBy}" style="text-align: right;"></td>
-								<td scope="col">
+								<td scope="col" style="text-align: right;">
 									<form th:action="@{/manage/package/toggle}" method="POST" enctype="application/x-www-form-urlencoded">
 										<input type="hidden" name="packageId" th:value="${package.id}" />
 										<input th:if="${package.isActive}" type="submit" class="btn btn-danger" value="Inactive" />

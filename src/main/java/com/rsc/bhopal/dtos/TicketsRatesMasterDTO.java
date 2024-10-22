@@ -29,4 +29,6 @@ public class TicketsRatesMasterDTO {
 	private BillType billType;
 
 	private RSCUser user;
+
+	private TicketsRatesMasterDTO oldRateMaster;
 }

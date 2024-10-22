@@ -79,6 +79,16 @@ public class VisitorTypeService {
 		return visitorsType;
 	}
 
+	/*
+	public VisitorsTypeDTO getVisitorsTypeDTOById(Long visitorid) {
+		VisitorsType visitorsType = visitorTypeRepo.findById(visitorid)
+			.orElseThrow(() -> new RuntimeException("No visitor found related to id"));;
+		VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
+		BeanUtils.copyProperties(visitorsType, visitorsTypeDTO);
+		return visitorsTypeDTO;
+	}
+	*/
+
 	public VisitorsTypeDTO getGeneralVisitorId(long visitorid) {
 		VisitorsTypeDTO visitorDTO = new VisitorsTypeDTO();
 		Optional<VisitorsType> visitorsType = visitorTypeRepo.findById(visitorid);

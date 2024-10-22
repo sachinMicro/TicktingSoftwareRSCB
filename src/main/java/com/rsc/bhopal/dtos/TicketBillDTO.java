@@ -1,26 +1,32 @@
 package com.rsc.bhopal.dtos;
 
 import java.util.Date;
+import java.math.BigInteger;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
 public class TicketBillDTO {
-	
-	private Long id;	
-	
+
+	private Long id;
+
 	private Date generatedAt;
-	
+
+	private int persons;
+
 	private Double totalBill;
-	
-    private String generatedBy;
-    
+
+	private String ticketPayload;
+
+	private BigInteger ticketSerial;
+
+	private String generatedBy;
+
 	private String institution;
-		
+
 	private String remark;
-	
-    private BillSummarize billSummarize;
-   // List<BillSummary> billSummary;
-	
+
+	private BillSummarize billSummarize;
+	// List<BillSummary> billSummary;
+
 }

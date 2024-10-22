@@ -42,18 +42,17 @@ public class RSCUserDetailsService {
 	public List<UserRoleDTO> getAllRoles(){
 		List<UserRoleDTO> roleDTOs = new ArrayList<>();
 		List<UserRole> roles = roleRepo.findAll();
-		roles.forEach(role->{
+		roles.forEach(role -> {
 			UserRoleDTO dto = new UserRoleDTO();
 			BeanUtils.copyProperties(role,dto);
 			roleDTOs.add(dto);
 		});
 		return roleDTOs;
 	}
-
 	
 	public void addUser(RSCUserDTO dto) {
 		RSCUser user = new RSCUser();
-		BeanUtils.copyProperties(dto,user);
+		BeanUtils.copyProperties(dto, user);
 		user.setPassword(encoder.encode(dto.getPassword()));
 		user.setAddedAt(new Date());
 		user.setIsActive(true);
@@ -61,18 +60,18 @@ public class RSCUserDetailsService {
 		List<UserRole> roles = roleRepo.findAllById(dto.getRoles());
 		log.debug(user.toString());
 		user.setRoles(roles.stream().collect(Collectors.toSet()));
-		user=userRepo.save(user);
+		user = userRepo.save(user);
 	}
 
 	public List<RSCUserDTO> getAllUser(){
-		 List<RSCUser> users =  userRepo.findAll();
+		 List<RSCUser> users = userRepo.findAll();
 		 List<RSCUserDTO> dtos = new ArrayList<RSCUserDTO>();
-		 users.forEach(user->{
+		 users.forEach(user -> {
 			RSCUserDTO dto = new RSCUserDTO();
 			BeanUtils.copyProperties(user, dto);
-			Set<UserRoleDTO> rolesDTOs=new HashSet<>();
+			Set<UserRoleDTO> rolesDTOs = new HashSet<>();
 			if(user.getRoles()!=null) {
-			   user.getRoles().forEach(role->{
+			   user.getRoles().forEach(role -> {
 					UserRoleDTO roleDTO = new UserRoleDTO();
 					BeanUtils.copyProperties(role, roleDTO);
 					rolesDTOs.add(roleDTO);
@@ -93,7 +92,7 @@ public class RSCUserDetailsService {
 	}
 
 	public void changeUserStatus(String username) {
-		Optional<RSCUser> user =  userRepo.findByUsername(username);
+		Optional<RSCUser> user = userRepo.findByUsername(username);
 		if(user.isPresent()) {
 			if(!user.get().getRootUser()) {
 				user.get().setIsActive(!user.get().getIsActive());

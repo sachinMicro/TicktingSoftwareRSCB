@@ -45,7 +45,7 @@ public class ParkingController {
 	public String addNewParkingDetails(@ModelAttribute ParkingPriceDTO parkingPriceDTO, Principal user, Map<String, Object> attributes) {
 		// parkingService.addNewParking(parkingPriceDTO);
 		parkingService.addNewParkingRate(parkingPriceDTO, user);
-		log.debug(parkingPriceDTO.toString());
+		// log.debug(parkingPriceDTO.toString());
 		attributes.put("parkings", parkingService.getParkingDetails());
 		return "redirect:/manage/parking/add";
 	}
@@ -61,8 +61,7 @@ public class ParkingController {
 		parkingService.changeParkingStatus(parkingId);
 		return "redirect:/manage/parking/add";
 	}
-	
-	
+
 	@GetMapping(path = "/parking/details")
 	@ResponseBody
 	public List<ParkingDetailsDTO> getDetails() {

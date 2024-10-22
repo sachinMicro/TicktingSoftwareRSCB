@@ -31,33 +31,35 @@ public class BillController {
 	@Autowired
 	private BillCalculatorService billCalculator;
 
-	@Autowired	
+	@Autowired
 	private TicketBillService ticketBillService;
 
-	@PostMapping("/calculate")	
-	public @ResponseBody ResponseEntity<?>  calculateBill(TicketSelectorDTO ticketSelector) {
-		log.debug("Ticket Selector "+ticketSelector);		
+	@PostMapping("/calculate")
+	public @ResponseBody ResponseEntity<?> calculateBill(TicketSelectorDTO ticketSelector) {
+		log.debug("Ticket Selector " + ticketSelector);
 		try {
-			BillSummarize billSummarize = billCalculator.summarizeBill(ticketSelector);		
+			BillSummarize billSummarize = billCalculator.summarizeBill(ticketSelector);
 			return new ResponseEntity<>(ResponseMessage.builder()
-                    .status(true)
-                    .data(billSummarize)
-                    .message("Bill Calculated")
-                    .build(),HttpStatus.OK);
-		}catch(TicketRateNotMaintainedException ex) {	
+					.status(true)
+					.data(billSummarize)
+					.message("Bill Calculated")
+					.build(), HttpStatus.OK);
+		}
+		catch(TicketRateNotMaintainedException ex) {
 			ex.printStackTrace();
 			return new ResponseEntity<>(ResponseMessage.builder()
-                    .status(false)
-                    .data(null)
-                    .message(ex.getMessage())
-                    .build(),HttpStatus.BAD_REQUEST);
-		}catch(Exception ex) {	
-			ex.printStackTrace();                                                                          
+					.status(false)
+					.data(null)
+					.message(ex.getMessage())
+					.build(), HttpStatus.BAD_REQUEST);
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
 			return new ResponseEntity<>(ResponseMessage.builder()
-                    .status(false)
-                    .data(null)
-                    .message("Some Internal Error occurred")
-                    .build(),HttpStatus.BAD_REQUEST);
+					.status(false)
+					.data(null)
+					.message("Some Internal Error occurred")
+					.build(), HttpStatus.BAD_REQUEST);
 		}
 
 		//user 9679,conf- 8051,approver 8044
@@ -65,19 +67,20 @@ public class BillController {
 
 	}
 
-	@PostMapping("/print")	
+	@PostMapping("/print")
 	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user,RedirectAttributes redirectAttributes) throws JsonProcessingException {
 		ResponseMessage responseMessage = null;
-		log.debug("Ticket Selector "+ticketSelector);
-		try{
-			 ticketBillService.saveAndPrintTicket(ticketSelector, user);
-			 responseMessage=ResponseMessage.builder().status(true).message("Ticket Printed").build();
-		}catch(TicketRateNotMaintainedException ex) {
-	        log.error(ex.getMessage());
-	        ex.printStackTrace();
-	        responseMessage=ResponseMessage.builder().status(false).message(ex.getMessage()).build();	    	
+		log.debug("Ticket Selector " + ticketSelector);
+		try {
+			ticketBillService.saveAndPrintTicket(ticketSelector, user);
+			responseMessage = ResponseMessage.builder().status(true).message("Ticket Printed").build();
 		}
-		redirectAttributes.addFlashAttribute("message",  CommonUtills.convertToJSON(responseMessage));		 
+		catch(TicketRateNotMaintainedException ex) {
+			log.error(ex.getMessage());
+			ex.printStackTrace();
+			responseMessage = ResponseMessage.builder().status(false).message(ex.getMessage()).build();
+		}
+		redirectAttributes.addFlashAttribute("message", CommonUtills.convertToJSON(responseMessage));
 		return "redirect:/home";
 	}
 }

@@ -33,49 +33,46 @@ public class VisitorsType {
 	@Column(name = "ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id; 
-	
+
 	@Column(name = "VISITOR_NAME")
 	private String name; 
 	
 	@Column(name = "CATEGORY")
 	@Enumerated(EnumType.STRING)
 	private VisitorsCategoryEnum category; 
-	
+
 	@Column(name = "GROUP_TYPE")
 	@Enumerated(EnumType.STRING)
 	private GroupType groupType; 
-	
-	
-	
+
 	@Column(name = "MIN_MEMBERS")
 	private Integer minMembers; 
-	
+
 	@Column(name = "FIXED_MEMBERS")
     private Integer fixedMembers;
-    
+
 	@Column(name = "ADDED_AT")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date addedAt;
-	
+
 	@Column(name = "IS_ACTIVE")
     private Boolean isActive;
-	
+
 	@Column(name = "IS_DEFAULT")
     private Boolean isDefault;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "ADDED_BY",referencedColumnName = "ID")
+	@JoinColumn(name = "ADDED_BY", referencedColumnName = "ID")
     private RSCUser addedBy;
 
-	
 	@OneToMany(mappedBy = "visitorsType")
 	@Transient
 	private List<TicketsRatesMaster> rate;
 
 	public VisitorsType(String name,VisitorsCategoryEnum category,int minMembers,int fixedMembers ){
-		 this.name=name;
-		 this.category=category;
-		 this.minMembers=minMembers;
-		 this.fixedMembers=fixedMembers;	 
+		this.name=name;
+		this.category=category;
+		this.minMembers=minMembers;
+		this.fixedMembers=fixedMembers;	 
 	}
 }

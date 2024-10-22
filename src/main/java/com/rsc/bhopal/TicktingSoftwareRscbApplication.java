@@ -7,13 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.rsc.bhopal.aops.service.ActivityLogService;
-import com.rsc.bhopal.repos.ParkingDetailsRepository;
-import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
-import com.rsc.bhopal.repos.VisitorTypeRepository;
-import com.rsc.bhopal.service.TicketDetailsService;
-import com.rsc.bhopal.service.TicketsRatesService;
-import com.rsc.bhopal.service.VisitorTypeService;
+import com.rsc.bhopal.service.ApplicationConstantService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,33 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 public class TicktingSoftwareRscbApplication {
 
 	@Autowired
-	private TicketDetailsService ticketDetails;
-
-	@Autowired
-	private VisitorTypeService visitorDetails;
-
-	@Autowired
-	private TicketsRatesService ticketsRatesService;
-
-	@Autowired
-	private ParkingDetailsRepository parkingRepo;
-
-	@Autowired
-	private VisitorTypeRepository visitorRepo;
-
-	@Autowired
-	private ActivityLogService logService;
-
-	@Autowired
-	private TicketsRatesMasterRepository rateMaster;
+	private ApplicationConstantService applicationConstantService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TicktingSoftwareRscbApplication.class, args);
 	}
 
-   @Bean
+	@Bean
 	CommandLineRunner runner() {
 		return runner -> {
+			log.debug("Ticket serial: " + applicationConstantService.getTicketSerial());
+			// log.debug("Print ticket fields coordinates: " + applicationConstantService.getAllCurrentPrintCoordinate());
 		};
 	}
 }

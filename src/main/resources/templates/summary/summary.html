@@ -57,32 +57,32 @@ td small {
 	max-width: 250px;
 }
 </style>
-<script type="text/javascript">
-		</script>
+	<script th:inline="javascript" type="text/javascript">
+	</script>
 </head>
 <body>
 	<div th:replace="~{fragments/navbar :: navbar}"></div>
-	<div class="container-fluid">	
+	<div class="container-fluid">
 	<div class="row">
 		<div class="col-12 mt-3">
-				<form  th:action="@{/home/summary}" method="POST" enctype="application/x-www-form-urlencoded">
+				<form th:action="@{/home/summary}" method="POST" enctype="application/x-www-form-urlencoded">
 					<div class="row g-2">
 						<div class="col-12">
 							<h2 class="m-0">Ticket Summary</h2>
 						</div>
 						<div class="col-lg-2 col-md-2">
 							<div class="form-floating">
-								 <input type="date"id="startDate" name="startDate"  class="form-control" th:value="${startDate}" required autofocus>
-								 <label for="startDate">From Date</label>
+								<input type="date"id="startDate" name="startDate" class="form-control" th:value="${startDate}" required autofocus>
+								<label for="startDate">From Date</label>
 							</div>
-						</div>	
+						</div>
 						<div class="col-lg-2 col-md-2">
 							<div class="form-floating">
 								<input type="date" id="endDate" name="endDate" class="form-control" th:value="${endDate}" required>
-								 <label for="name">To Date</label>
+								<label for="name">To Date</label>
 							</div>
-						</div>		
-						<div class="col-lg-auto col-md-auto d-flex  align-items-center">
+						</div>
+						<div class="col-lg-auto col-md-auto d-flex align-items-center">
 							<div class="btn-group">
 								<button type="submit" class="btn btn-success">Search</button>
 							</div>
@@ -95,12 +95,11 @@ td small {
 				<!-- <h5 class="h5" th:text="${'Total ' + billRows.size}"></h5> -->
 				<table class="table table-striped border w-100" id="tickets">
 					<thead class="bg-gray">
-							<th scope="col" style="text-align: left;">Serial no.</th>
-							<th scope="col">Ticket</th>						
-							<th scope="col">Visitor</th>
-							<th scope="col">Tickets count</th>
-							<th scope="col" style="text-align: right;">Total</th>
-						</tr>
+						<th scope="col" style="text-align: left;">Serial no.</th>
+						<th scope="col">Ticket</th>
+						<th scope="col">Visitor</th>
+						<th scope="col">Tickets count</th>
+						<th scope="col" style="text-align: right;">Total</th>
 					</thead>
 					<tbody>
 						<!-- //Interim check report -->
@@ -110,15 +109,15 @@ td small {
 							<td scope="col" th:text="${billRow.groupName}"></td>
 							<td scope="col" th:text="${billRow.count}"></td>
 							<td scope="col" th:text="${billRow.total}"></td>
-						</tr>										
+						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div class="col-12 mt-3 d-flex" style="justify-content: end;align-items: center;">
-				   <div>
-				    <h4 th:text="${'Tickets sold: ' + grandCount}" class="h4"></h4>
-				   <h4 th:text="${'Grand Total: ' + grandTotal}" class="h4"></h4>
-				   </div>
+				<div>
+					<h4 th:text="${'Tickets sold: ' + grandCount}" class="h4"></h4>
+					<h4 th:text="${'Grand Total: ' + grandTotal}" class="h4"></h4>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -116,7 +116,7 @@ public class ParkingService {
 
 				parkingDetailsDTOs.add(parkingDetailsDTO);
 
-				log.debug("PARKING DETAILS " + parkingDetailsDTOs);
+				// log.debug("PARKING DETAILS " + parkingDetailsDTOs);
 			}
 			catch(Exception ex) {
 				ex.printStackTrace();

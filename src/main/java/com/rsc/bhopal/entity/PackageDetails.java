@@ -1,15 +1,25 @@
 package com.rsc.bhopal.entity;
+
 import java.util.Date;
+import java.util.Set;
+
+import org.hibernate.annotations.Cascade;
+
+import org.hibernate.annotations.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
 import lombok.Data;
 
 @Data
@@ -39,7 +49,13 @@ public class PackageDetails {
 	private Boolean isActive;
 
 	@ManyToOne
-	@JoinColumn(name = "ADDED_BY",referencedColumnName = "ID")
-    private RSCUser addedBy;
+	@JoinColumn(name = "ADDED_BY", referencedColumnName = "ID")
+	private RSCUser addedBy;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@Cascade(CascadeType.ALL)
+	@JoinTable(name = "RSC_TS_PACKAGE_GROUPS",
+		joinColumns = {@JoinColumn(name = "package_id")},
+		inverseJoinColumns = {@JoinColumn(name = "visitor_id")})
+	private Set<VisitorsType> visitorsTypes;
 }

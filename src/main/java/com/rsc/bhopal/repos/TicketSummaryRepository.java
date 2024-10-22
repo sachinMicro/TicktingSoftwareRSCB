@@ -70,7 +70,7 @@ public interface TicketSummaryRepository extends JpaRepository<TicketSummary, Lo
 				"	final_table.ticket_count AS COUNT, final_table.ticket_name AS TICKET, final_table.visitor_name AS GROUP_, final_table.price AS TOTAL\n" +
 				"FROM\n" +
 				"	final_table;", nativeQuery = true)
-	public List<com.rsc.bhopal.projections.TicketSummary> getTicketSummaryCountByTicketsAndGroups(String startDate,String endDate);
+	public List<com.rsc.bhopal.projections.TicketSummary> getTicketSummaryCountByTicketsAndGroups(String startDate, String endDate);
 
 /*
 	@Query(name = "GET_BILL_SUMMARY_COUNT",

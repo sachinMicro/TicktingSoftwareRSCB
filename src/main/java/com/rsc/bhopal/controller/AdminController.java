@@ -1,5 +1,6 @@
 package com.rsc.bhopal.controller;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.RSCUserDTO;
 import com.rsc.bhopal.dtos.ResponseMessage;
@@ -33,6 +37,7 @@ import com.rsc.bhopal.service.RSCUserDetailsService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
 import com.rsc.bhopal.service.VisitorTypeService;
+import com.rsc.bhopal.utills.CommonUtills;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -120,9 +125,15 @@ public class AdminController {
 	}
 
 	@PostMapping("/users/add")
-	public String addUsers(@ModelAttribute RSCUserDTO user) {
+	public String addUsers(@ModelAttribute RSCUserDTO user, final RedirectAttributes redirectAttributes) {
 		log.debug(user.toString());
-		userDetailsService.addUser(user);
+		try {
+			userDetailsService.addUser(user);
+		}
+		catch(InvalidDataAccessApiUsageException ex) {
+			log.debug(ex.getMessage());
+			addToastMessageOnRedirect(redirectAttributes, "message", "Error adding this user: " + ex.getMessage() + ".", false);
+		}
 		return "redirect:/manage/users";
 	}
 
@@ -133,7 +144,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/users/password")
-	public String changePassword(@RequestParam("username") String username,@RequestParam("password") String password) {
+	public String changePassword(@RequestParam("username") String username, @RequestParam("password") String password) {
 		userDetailsService.changeUserPassword(username, password);
 		return "redirect:/manage/users";
 	}
@@ -150,6 +161,15 @@ public class AdminController {
 		//userDetailsService.changeUserStatus(username);
 		log.debug(""+TestContainer.toString());
 		return "redirect:/manage/users";
+	}
+
+	private void addToastMessageOnRedirect(final RedirectAttributes redirectAttributes, final String attributeName, final String message, final boolean status) {
+		try {
+			redirectAttributes.addFlashAttribute(attributeName, CommonUtills.convertToJSON(ResponseMessage.builder().status(status).message(message).build()));
+		}
+		catch(JsonProcessingException ex_) {
+			log.debug("Error: " + ex_.getMessage());
+		}
 	}
 }
 

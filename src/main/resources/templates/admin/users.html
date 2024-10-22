@@ -55,27 +55,18 @@ max-width: 250px;
 		<script type="text/javascript">
 			$(document).ready(function() {
 				const $checkboxes = $(document).find("input[type=checkbox][name=roles]");
-				$checkboxes.each(function(index_i) {
+				$checkboxes.each(function() {
 					$(this).on("click", function() {
-						let checked_flag = false;
-						$checkboxes.each(function(index_j) {
-							if (index_i != index_j) {
-								if ($(this).prop("checked")) {
-									checked_flag = true;
-									return;
-								}
-								else {
-									checked_flag = false;
-								}
+						if (!$(this).prop("checked")) {
+							if ($checkboxes.filter(":checked").length < 1) {
+								$(this).prop("checked", true);
+								showToast("Insufficient groups", "At least one group must be selected.", false);
 							}
-						});
-						if (!checked_flag) {
-							$(this).prop("checked", true);
-							showToast("Insufficient user roles", "At least one role must be selected.", false);
 						}
 					});
 				});
 			});
+		</script>
 		</script>
 </head>
 <body>
@@ -165,8 +156,14 @@ max-width: 250px;
 							</td>
 							<td scope="col" th:text="${user.addedAt}"></td>
 							<td scope="col">
+								<!--
 								<th:block th:each="role : ${user.rolesDTO}">
 									<span th:text="${role.role}"></span>,&nbsp;
+								</th:block>
+								-->
+								<th:block th:each="role,stat : ${user.rolesDTO}">
+									[[${role.role}]]
+									<th:block th:if="${stat.index + 1 != user.rolesDTO.size}">,&nbsp;</th:block>
 								</th:block>
 							</td>
 							<td>
