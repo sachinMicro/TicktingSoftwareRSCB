@@ -53,6 +53,9 @@ public class TicketBill {
 	@Column(name = "TICKET_SERIAL")
 	private BigInteger ticketSerial;
 
+	@Column(name = "CANCELLED_STATUS")
+	private Boolean cancelledStatus;
+
 	@ManyToOne
 	@JoinColumn(name = "GENERATED_BY", referencedColumnName = "ID")
 	private RSCUser generatedBy;

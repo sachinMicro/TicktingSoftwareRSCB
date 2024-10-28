@@ -94,6 +94,8 @@ public class TicketBillService {
 			TicketBillDTO ticketBillDTO = new TicketBillDTO();
 			ticketBillDTO.setBillSummarize(CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class));
 			ticketBillDTO.getBillSummarize().setCancelledStatus(true);
+			ticketBillDTO.setCancelledStatus(true);
+			ticketBill.setCancelledStatus(true);
 			ticketBill.setTicketPayload(CommonUtills.convertToJSON(ticketBillDTO.getBillSummarize()));
 			generatedTicketRepo.save(ticketBill);
 		}
@@ -133,7 +135,9 @@ public class TicketBillService {
 		generatedTicket.setRemark(dto.getRemark());
 		generatedTicket.setGeneratedBy(userDetailsService.getUserByUsername(user.getName()));
 
+		// New column that were already present in JSON
 		generatedTicket.setTicketSerial(new BigInteger(applicationConstantService.getTicketSerial().getData()));
+		generatedTicket.setCancelledStatus(false);
 
 		// Generated Ticket
 		List<TicketsRatesMaster> rates = null;

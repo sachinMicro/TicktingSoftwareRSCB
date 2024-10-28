@@ -20,6 +20,8 @@ public class TicketBillDTO {
 
 	private BigInteger ticketSerial;
 
+	private Boolean cancelledStatus;
+
 	private String generatedBy;
 
 	private String institution;

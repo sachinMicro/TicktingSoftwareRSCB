@@ -73,8 +73,8 @@ td small {
 							<th scope="col">Ticket</th>
 							<th scope="col">Group</th>
 							<th scope="col">Parking</th>
-							<th scope="col">Old<i
-								class="fa-solid text-secondary fa-arrow-right-long mx-2"></i>
+							<th scope="col">Old
+								<i class="fa-solid text-secondary fa-arrow-right-long mx-2"></i>
 								New Price
 							</th>
 							<th scope="col">Status</th>
@@ -89,15 +89,19 @@ td small {
 							<td scope="col" th:text="${rate.ticketType}"></td>
 							<td scope="col" th:text="${rate.visitorsType}"></td>
 							<td scope="col" th:text="${rate.parkingDetails}"></td>
-							<td scope="col"><span th:text="${rate.oldPrice}"></span> <i
-								class="fa-solid text-secondary fa-arrow-right-long mx-2"></i> <span
-								th:text="${rate.price}"></span> <i class="fa-solid "
-								th:classappend="${rate.isPriceIncreased?'fa-arrow-up-long text-success':'fa-arrow-down-long text-danger'}"></i>
+							<td scope="col">
+								<span th:text="${rate.oldPrice}"></span>
+								<i class="fa-solid text-secondary fa-arrow-right-long mx-2"></i>
+								<span th:text="${rate.price}"></span>
+								<i class="fa-solid"
+									th:classappend="${rate.isPriceIncreased?'fa-arrow-up-long text-success':'fa-arrow-down-long text-danger'}"></i>
 							</td>
-							
-							<td scope="col"><span class="badge"
-								th:classappend="${rate.isActive?'bg-success':'bg-danger'}"
-								th:text="${rate.isActive?'Active':'InActive'}"> </span></td>
+
+							<td scope="col">
+								<span class="badge"
+									th:classappend="${rate.isActive?'bg-success':'bg-danger'}"
+									th:text="${rate.isActive?'Active':'InActive'}"></span>
+							</td>
 							<td scope="col" th:text="${rate.revisedAt}"></td>
 							<td scope="col" th:text="${rate.user}"></td>
 
