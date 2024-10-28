@@ -92,6 +92,42 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 				"SELECT id AS Id, serial_no AS SerialNo, ticket_id AS TicketId, ticket_name AS TicketName, visitor_id AS VisitorId, visitor_name AS VisitorName, total_sum AS TotalSum, persons AS Persons, price AS Price, ticket_serial AS TicketSerial, cancelled_status AS CancelledStatus FROM report_table", nativeQuery = true)
 	public List<TicketReportTable> getTicketsReportTable();
 
+	@Query(value = "WITH report_table AS (\n" +
+				"	SELECT\n" +
+				"		rsc_ts.rsc_ts_ticket_bill_rows.id, ROW_NUMBER() OVER (PARTITION BY rsc_ts.rsc_ts_ticket_master.ticket_name) AS serial_no,\n" +
+				"		rsc_ts.rsc_ts_ticket_bill_rows.total_sum, rsc_ts.rsc_ts_ticket_bill.persons,\n" +
+				"		rsc_ts.rsc_ts_ticket_bill_rows.bill_id, rsc_ts.rsc_ts_ticket_bill_rows.rate_master_id,\n" +
+				"		rsc_ts.rsc_ts_ticket_bill.ticket_serial, rsc_ts.rsc_ts_ticket_bill.cancelled_status,\n" +
+				"		rsc_ts.rsc_ts_ticket_rate_master.price, rsc_ts.rsc_ts_ticket_rate_master.ticket_id, rsc_ts.rsc_ts_ticket_rate_master.visitor_id,\n" +
+				"		rsc_ts.rsc_ts_ticket_master.ticket_name, rsc_ts.rsc_ts_visitor_type_master.visitor_name\n" +
+				"	FROM\n" +
+				"		rsc_ts.rsc_ts_ticket_bill_rows\n" +
+				"	LEFT JOIN\n" +
+				"		rsc_ts.rsc_ts_ticket_bill\n" +
+				"	ON\n" +
+				"		rsc_ts.rsc_ts_ticket_bill_rows.bill_id = rsc_ts.rsc_ts_ticket_bill.id\n" +
+				"	LEFT JOIN\n" +
+				"		rsc_ts.rsc_ts_ticket_rate_master\n" +
+				"	ON\n" +
+				"		rsc_ts.rsc_ts_ticket_bill_rows.rate_master_id = rsc_ts.rsc_ts_ticket_rate_master.id\n" +
+				"	LEFT JOIN\n" +
+				"		rsc_ts.rsc_ts_ticket_master\n" +
+				"	ON\n" +
+				"		rsc_ts.rsc_ts_ticket_rate_master.ticket_id = rsc_ts.rsc_ts_ticket_master.id\n" +
+				"	LEFT JOIN\n" +
+				"		rsc_ts.rsc_ts_visitor_type_master\n" +
+				"	ON\n" +
+				"		rsc_ts.rsc_ts_ticket_rate_master.visitor_id = rsc_ts.rsc_ts_visitor_type_master.id\n" +
+				"	WHERE\n" +
+				"		rsc_ts.rsc_ts_ticket_rate_master.bill_type = 'TICKET'\n" +
+				"		AND\n" +
+				"		rsc_ts.rsc_ts_ticket_bill.generated_at BETWEEN :startDateTime AND :endDateTime \n" +
+				"	ORDER BY\n" +
+				"		serial_no ASC, rsc_ts.rsc_ts_ticket_bill.ticket_serial DESC\n" +
+				"	)\n" +
+				"SELECT id AS Id, serial_no AS SerialNo, ticket_id AS TicketId, ticket_name AS TicketName, visitor_id AS VisitorId, visitor_name AS VisitorName, total_sum AS TotalSum, persons AS Persons, price AS Price, ticket_serial AS TicketSerial, cancelled_status AS CancelledStatus FROM report_table", nativeQuery = true)
+	public List<TicketReportTable> getTicketsReportTableAtDateTime(Timestamp startDateTime, Timestamp endDateTime);
+
 	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\'", nativeQuery = false)
 	public List<TicketBillRow> getTicketBillRows();
 

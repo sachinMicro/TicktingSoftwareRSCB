@@ -53,6 +53,9 @@ public class ReportController {
 		attributes.put("startDateTime", "");
 		attributes.put("endDateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
+		attributes.put("StartDate", "");
+		attributes.put("EndDate", new SimpleDateFormat("dd MMM yy").format(new Date()));
+
 		grandTotal = 0;
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
@@ -71,6 +74,15 @@ public class ReportController {
 
 		attributes.put("startDateTime", startDateTime);
 		attributes.put("endDateTime", endDateTime);
+
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			attributes.put("StartDate", new SimpleDateFormat("dd MMM yy").format(simpleDateFormat.parse(startDateTime)));
+			attributes.put("EndDate", new SimpleDateFormat("dd MMM yy").format(simpleDateFormat.parse(endDateTime)));
+		}
+		catch(ParseException ex) {
+			log.debug("Exception in parsing Date Time");
+		}
 
 		/*
 		Date formattedStarDateTime = null;
@@ -142,11 +154,14 @@ public class ReportController {
 		attributes.put("startDateTime", "");
 		attributes.put("endDateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
+		attributes.put("StartDate", "");
+		attributes.put("EndDate", new SimpleDateFormat("dd MMM yy").format(new Date()));
+
 		grandTotal = 0;
 
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> totalReportTickets = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
-		LinkedHashMap<Long, Ticket[]> reportTables = arrangeTable(visitorsId);
+		LinkedHashMap<Long, Ticket[]> reportTables = arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTable());
 		attributes.put("reportTables", reportTables);
 
 		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDesc());
@@ -163,6 +178,15 @@ public class ReportController {
 		attributes.put("startDateTime", startDateTime);
 		attributes.put("endDateTime", endDateTime);
 
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			attributes.put("StartDate", new SimpleDateFormat("dd MMM yy").format(simpleDateFormat.parse(startDateTime)));
+			attributes.put("EndDate", new SimpleDateFormat("dd MMM yy").format(simpleDateFormat.parse(endDateTime)));
+		}
+		catch(ParseException ex) {
+			log.debug("Exception in parsing Date Time");
+		}
+
 		Date formattedStartDateTime = null;
 		Date formattedEndDateTime = null;
 		try {
@@ -177,7 +201,7 @@ public class ReportController {
 
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> totalReportTickets = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
-		LinkedHashMap<Long, Ticket[]> reportTables = arrangeTable(visitorsId);
+		LinkedHashMap<Long, Ticket[]> reportTables = arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTableAtDateTime(formattedStartDateTime, formattedEndDateTime));
 		attributes.put("reportTables", reportTables);
 
 		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialAtDateTimeDesc(formattedStartDateTime, formattedEndDateTime));
@@ -266,25 +290,22 @@ public class ReportController {
 		return tickets;
 	}
 
-	private LinkedHashMap<Long, Ticket[]> arrangeTable(List<Long> visitorIds) {
+	private LinkedHashMap<Long, Ticket[]> arrangeTable(List<Long> visitorIds, List<TicketReportTableDTO> ticketReportTableDTOs) {
 		HashMap<Long, Integer> visitorIdToIndex = new HashMap<Long, Integer>();
 		for (int index = 0; index < visitorIds.size(); ++index) {
 			visitorIdToIndex.put(visitorIds.get(index), index);
 		}
 
-		final short TOTAL_TICKET = 0;
+		// final short TOTAL_TICKET = 0;
+		// final short ISSUED_TICKET = 1;
+		// final short CANCELLED_TICKET = 2;
+		final short CANCELLED_TICKET = 0;
 		final short ISSUED_TICKET = 1;
-		final short CANCELLED_TICKET = 2;
+		final short TOTAL_TICKET = 2;
 
-		// Ticket[] tickets = {new Ticket(), new Ticket(), new Ticket()};
-		// List<Ticket[]> table = new ArrayList<Ticket[]>();
 		LinkedHashMap<Long, Ticket[]> row = new LinkedHashMap<Long, Ticket[]>();
 
-		// ticketBillRowService.getTicketsReportTable().forEach(reportTable -> {});
-		for (TicketReportTableDTO ticketReportTableDTO: ticketBillRowService.getTicketsReportTable()) {
-			// Ticket[] tickets = {new Ticket(), new Ticket(), new Ticket()};
-			// Ticket[] tickets = {null, null, null};
-			// row.put(ticketReportTableDTO.getTicketId(), tickets);
+		for (TicketReportTableDTO ticketReportTableDTO: ticketReportTableDTOs) {
 
 			Ticket[] tickets = row.get(ticketReportTableDTO.getTicketId());
 			if (tickets == null) {
@@ -389,22 +410,34 @@ public class ReportController {
 				}
 			}
 		}
+
 		// Make object with zero values that were not present
 		for (HashMap.Entry<Long, Ticket[]> element: row.entrySet()) {
-			for (Ticket ticket: element.getValue()) {
+			for (short index = 0; index < element.getValue().length; ++index) {
 				for (HashMap.Entry<Long, Integer> mappedIndex: visitorIdToIndex.entrySet()) {
-					if (ticket.getGroup().get(Long.valueOf(mappedIndex.getValue())) == null) {
+					if (element.getValue()[index] == null) {
+						Ticket ticket = new Ticket();
+						ticket.setTicketId(0L);
+						ticket.setTicketName("");
+						ticket.setSubTotal(0);
+						ticket.setGroup(new HashMap<Long, Group>());
+						element.getValue()[index] = ticket;
+					}
+					if (element.getValue()[index].getGroup().get(Long.valueOf(mappedIndex.getValue())) == null) {
 						Group group = new Group();
 						group.setGroupName("");
 						group.setCount(0);
 						try {
-							group.setPrice(ticketsRatesService.getTicketRateByGroup(ticket.getTicketId(), mappedIndex.getKey()).getPrice());
+							group.setPrice(ticketsRatesService.getTicketRateByGroup(element.getValue()[index].getTicketId(), mappedIndex.getKey()).getPrice());
 						}
 						catch(TicketRateNotMaintainedException ex) {
 							group.setPrice(0f);
-						}	
+						}
+						catch(java.util.NoSuchElementException ex) {
+							group.setPrice(0f);
+						}
 						group.setPersonCount(0);
-						ticket.getGroup().put(Long.valueOf(mappedIndex.getValue()), group);
+						element.getValue()[index].getGroup().put(Long.valueOf(mappedIndex.getValue()), group);
 					}
 				}
 			}

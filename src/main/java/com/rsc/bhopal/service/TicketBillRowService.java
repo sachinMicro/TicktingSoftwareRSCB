@@ -243,4 +243,17 @@ public class TicketBillRowService {
 		});
 		return ticketReportTableDTOs;
 	}
+
+	public List<TicketReportTableDTO> getTicketsReportTableAtDateTime(Date startDateTime, Date endDateTime) {
+		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
+		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
+
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		ticketBillRowRepository.getTicketsReportTableAtDateTime(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
 }
