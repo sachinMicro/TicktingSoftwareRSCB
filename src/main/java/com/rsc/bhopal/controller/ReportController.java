@@ -131,13 +131,6 @@ public class ReportController {
 	*/
 
 	/*
-	@GetMapping(path = "/bill")
-	public @ResponseBody List<TicketBillDTO> getAllTicketsBill() {
-		return ticketBillService.getAllTicketsBill();
-	}
-	*/
-
-	/*
 	@GetMapping(path = "/report")
 	public @ResponseBody LinkedHashMap<Long, Ticket[]> getTicketsReportTable() {
 		// return ticketBillRowService.getTicketsReportTable();
@@ -331,26 +324,60 @@ public class ReportController {
 				grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
 
 				if (ticketReportTableDTO.getCancelledStatus()) {
-					tickets[CANCELLED_TICKET] = tickets[TOTAL_TICKET];
+					// tickets[CANCELLED_TICKET] = tickets[TOTAL_TICKET];
+					tickets[CANCELLED_TICKET] = new Ticket();
+					tickets[CANCELLED_TICKET].setTicketId(ticketReportTableDTO.getTicketId());
+					tickets[CANCELLED_TICKET].setTicketName(ticketReportTableDTO.getTicketName());
+					tickets[CANCELLED_TICKET].setGroup(new HashMap<Long, Group>());
+
+					Group cancelledTicketGroup = new Group();
+					cancelledTicketGroup.setGroupId(ticketReportTableDTO.getVisitorId());
+					cancelledTicketGroup.setGroupName(ticketReportTableDTO.getVisitorName());
+					cancelledTicketGroup.setCount(ticketReportTableDTO.getPersons());
+					cancelledTicketGroup.setPrice(ticketReportTableDTO.getPrice());
+					cancelledTicketGroup.setPersonCount(ticketReportTableDTO.getPersons());
+					cancelledTicketGroup.setTicketSerial(ticketReportTableDTO.getTicketSerial());
+
+					tickets[CANCELLED_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), cancelledTicketGroup);
+
+					tickets[CANCELLED_TICKET].setSubTotal(ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice());
+
 					tickets[ISSUED_TICKET] = null;
 				}
 				else {
-					tickets[ISSUED_TICKET] = tickets[TOTAL_TICKET];
+					// tickets[ISSUED_TICKET] = tickets[TOTAL_TICKET];
+					tickets[ISSUED_TICKET] = new Ticket();
+					tickets[ISSUED_TICKET].setTicketId(ticketReportTableDTO.getTicketId());
+					tickets[ISSUED_TICKET].setTicketName(ticketReportTableDTO.getTicketName());
+					tickets[ISSUED_TICKET].setGroup(new HashMap<Long, Group>());
+
+					Group issuedTicketGroup = new Group();
+					issuedTicketGroup.setGroupId(ticketReportTableDTO.getVisitorId());
+					issuedTicketGroup.setGroupName(ticketReportTableDTO.getVisitorName());
+					issuedTicketGroup.setCount(ticketReportTableDTO.getPersons());
+					issuedTicketGroup.setPrice(ticketReportTableDTO.getPrice());
+					issuedTicketGroup.setPersonCount(ticketReportTableDTO.getPersons());
+					issuedTicketGroup.setTicketSerial(ticketReportTableDTO.getTicketSerial());
+
+					tickets[ISSUED_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), issuedTicketGroup);
+
+					tickets[ISSUED_TICKET].setSubTotal(ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice());
+
 					tickets[CANCELLED_TICKET] = null;
 				}
 			}
 			else {
 				Group groups = tickets[TOTAL_TICKET].getGroup().get(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())));
 				if (groups == null) {
-					Group group = new Group();
-					group.setGroupId(ticketReportTableDTO.getTicketId());
-					group.setGroupName(ticketReportTableDTO.getVisitorName());
-					group.setCount(ticketReportTableDTO.getPersons());
-					group.setPrice(ticketReportTableDTO.getPrice());
-					group.setPersonCount(ticketReportTableDTO.getPersons());
-					group.setTicketSerial(ticketReportTableDTO.getTicketSerial());
+					groups = new Group();
+					groups.setGroupId(ticketReportTableDTO.getTicketId());
+					groups.setGroupName(ticketReportTableDTO.getVisitorName());
+					groups.setCount(ticketReportTableDTO.getPersons());
+					groups.setPrice(ticketReportTableDTO.getPrice());
+					groups.setPersonCount(ticketReportTableDTO.getPersons());
+					groups.setTicketSerial(ticketReportTableDTO.getTicketSerial());
 
-					tickets[TOTAL_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), group);
+					tickets[TOTAL_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), groups);
 					tickets[TOTAL_TICKET].setSubTotal(tickets[TOTAL_TICKET].getSubTotal() + (ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice()));
 
 					grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
@@ -384,6 +411,24 @@ public class ReportController {
 
 						// grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
 					}
+					else {
+						Group cancelledTicketGroup = tickets[CANCELLED_TICKET].getGroup().get(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())));
+						if (cancelledTicketGroup == null) {
+							cancelledTicketGroup = new Group();
+							cancelledTicketGroup.setGroupId(ticketReportTableDTO.getTicketId());
+							cancelledTicketGroup.setGroupName(ticketReportTableDTO.getVisitorName());
+							cancelledTicketGroup.setCount(ticketReportTableDTO.getPersons());
+							cancelledTicketGroup.setPrice(ticketReportTableDTO.getPrice());
+							cancelledTicketGroup.setPersonCount(ticketReportTableDTO.getPersons());
+							cancelledTicketGroup.setTicketSerial(ticketReportTableDTO.getTicketSerial());
+		
+							tickets[CANCELLED_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), cancelledTicketGroup);
+						}
+						else {
+							cancelledTicketGroup.setCount(cancelledTicketGroup.getCount() + ticketReportTableDTO.getPersons());
+							tickets[CANCELLED_TICKET].setSubTotal(tickets[CANCELLED_TICKET].getSubTotal() + (ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice()));
+						}
+					}
 				}
 				else {
 					if (tickets[ISSUED_TICKET] == null) {
@@ -406,6 +451,24 @@ public class ReportController {
 						// row.put(ticketReportTableDTO.getTicketId(), tickets);
 
 						// grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
+					}
+					else {
+						Group issuededTicketGroup = tickets[ISSUED_TICKET].getGroup().get(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())));
+						if (issuededTicketGroup == null) {
+							issuededTicketGroup = new Group();
+							issuededTicketGroup.setGroupId(ticketReportTableDTO.getTicketId());
+							issuededTicketGroup.setGroupName(ticketReportTableDTO.getVisitorName());
+							issuededTicketGroup.setCount(ticketReportTableDTO.getPersons());
+							issuededTicketGroup.setPrice(ticketReportTableDTO.getPrice());
+							issuededTicketGroup.setPersonCount(ticketReportTableDTO.getPersons());
+							issuededTicketGroup.setTicketSerial(ticketReportTableDTO.getTicketSerial());
+		
+							tickets[ISSUED_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), issuededTicketGroup);
+						}
+						else {
+							issuededTicketGroup.setCount(issuededTicketGroup.getCount() + ticketReportTableDTO.getPersons());
+							tickets[ISSUED_TICKET].setSubTotal(tickets[ISSUED_TICKET].getSubTotal() + (ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice()));
+						}
 					}
 				}
 			}

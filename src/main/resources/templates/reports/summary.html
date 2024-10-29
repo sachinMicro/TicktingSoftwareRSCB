@@ -42,21 +42,48 @@
 
 		<style type="text/css">
 			#billSummary {
-			width: 100%;
-			max-height: 62vh;
-			display: block;
-			overflow-y: auto;
-		}
+				width: 100%;
+				max-height: 62vh;
+				display: block;
+				overflow-y: auto;
+			}
 
-		td small {
-			font-size: 10px
-		}
+			td small {
+				font-size: 10px
+			}
 
-		.mw-250 {
-			max-width: 250px;
-		}
+			.mw-250 {
+				max-width: 250px;
+			}
+
+			.dataTable {
+				font-size: 12px;
+			}
+			.dataTable .dt-column-title {
+				font-weight: bolder;
+			}
+			.dataTable thead tr th {
+				text-align: center;
+			}
 		</style>
 		<script th:inline="javascript" type="text/javascript">
+			$(document).ready(function() {
+				setTimeout(function() {
+					const $table = $('#tickets');
+					// const $container = $('#tickets_wrapper');
+					const $container = $("#tickets").parent();
+
+					if ($table.outerWidth() > $container.outerWidth()) {
+						console.log('Table not fits with container, scrollbar present.');
+						$table.find(".dt-column-title").css("font-size", "10px");
+						$table.find("th").css("padding", "0");
+						// $table.find("td").css("font-size", "10px");
+					}
+					else {
+						console.log('Table fits within the container, no scrollbar present.');
+					}
+				}, 1000);
+			});
 		</script>
 	</head>
 	<body>
@@ -64,17 +91,17 @@
 		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-12 mt-1 d-flex align-items-start justify-content-between">
+				<div class="col-12 mt-1 d-flex justify-content-between">
 					<div class="d-flex flex-column">
 						<h4 class="h4">REGIONAL SCIENCE CENTRE, BHOPAL</h4>
 						<h4 class="h4">TICKET REPORT</h4>
 					</div>
-					<div class="align-items-center mx-5">
+					<div class="align-items-center mt-auto">
 						<h5 th:if="${#strings.isEmpty(StartDate)}" class="h5">[[${EndDate}]]</h5>
 						<h5 th:if="${!#strings.isEmpty(StartDate)}" class="h5">[[${StartDate}]] - [[${EndDate}]]</h5>
 					</div>
 					<div class="text-center mx-auto">
-						<img style="justify-content: center;" th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
+						<img th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
 					</div>
 					<div class="text-end d-flex flex-column">
 						<h4 th:if="${!#lists.isEmpty(ticketSerials)}" class="h4 m-0">Ticket Serial start: [[${ticketSerials.get(ticketSerials.size() - 1)}]]</h4>
@@ -115,19 +142,17 @@
 					</form>
 				</div>
 				<div class="col-12 mt-3">
-					<table class="table border w-100" id="tickets">
-						<thead class="bg-gray">
+					<table class="table border w-100 table-bordered" id="tickets">
+						<thead>
 							<tr>
-								<th></th>
-								<th></th>
+								<th rowspan="2"><!-- Serial No. --></th>
+								<th rowspan="2">Ticket</th>
 								<th th:colspan="${visitorsName.size}" style="text-align: center;">Tickets Issued</th>
 								<th th:colspan="${visitorsName.size}" style="text-align: center;">Tickets Cancelled</th>
 								<th th:colspan="${visitorsName.size}" style="text-align: center;">Total Tickets</th>
-								<th></th>
+								<th rowspan="2">Total Amount</th>
 							</tr>
 							<tr>
-								<th>Serial No.</th>
-								<th>Ticket</th>
 								<th:block th:each="count : ${#numbers.sequence(0, 2, 1)}">
 									<!-- <th:block th:each="reportTable : ${reportTables}"> -->
 										<th:block th:each="visitorName : ${visitorsName}">
@@ -135,7 +160,6 @@
 										</th:block>
 									<!-- </th:block> -->
 								</th:block>
-								<th>Total Amount</th>
 							</tr>
 							<!--
 							<tr>
@@ -185,7 +209,7 @@
 											</th:block>
 										</th:block>
 									</th:block>
-									<td>₹[[${reportTable.value[reportTable.value.length - 1].subTotal}]]</td>
+									<td style="text-align: right;">₹[[${reportTable.value[reportTable.value.length - 1].subTotal}]]</td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -215,6 +239,21 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			function adjustTable() {
+				const $table = $('#tickets');
+				// const $container = $('#tickets_wrapper');
+				const $container = $("#tickets").parent();
+
+				if ($table.outerWidth() > $container.outerWidth()) {
+					console.log('Table not fits with container, scrollbar present.');
+					$table.find(".dt-column-title").css("font-size", "10px");
+					$table.find("th").css("padding", "0");
+					// $table.find("td").css("font-size", "10px");
+				}
+				else {
+					console.log('Table fits within the container, no scrollbar present.');
+				}
+			}
 			$(document).ready(function() {
 				var tableConfig = {
 					"aaSorting" : [], // Default sorting false
@@ -233,6 +272,7 @@
 					footer: true
 				};
 				new DataTable('#tickets', tableConfig);
+				adjustTable();
 			});
 		</script>
 		<script type="text/javascript">

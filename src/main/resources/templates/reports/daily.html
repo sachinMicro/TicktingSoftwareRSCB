@@ -42,19 +42,29 @@
 
 		<style type="text/css">
 			#billSummary {
-			width: 100%;
-			max-height: 62vh;
-			display: block;
-			overflow-y: auto;
-		}
+				width: 100%;
+				max-height: 62vh;
+				display: block;
+				overflow-y: auto;
+			}
 
-		td small {
-			font-size: 10px
-		}
+			td small {
+				font-size: 10px
+			}
 
-		.mw-250 {
-			max-width: 250px;
-		}
+			.mw-250 {
+				max-width: 250px;
+			}
+
+			.dataTable {
+				font-size: 12px;
+			}
+			.dataTable .dt-column-title {
+				font-weight: bolder;
+			}
+			.dataTable thead tr th {
+				text-align: center;
+			}
 		</style>
 		<script th:inline="javascript" type="text/javascript">
 		</script>
@@ -64,17 +74,17 @@
 		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-12 mt-1 d-flex align-items-start justify-content-between">
+				<div class="col-12 mt-1 d-flex justify-content-between">
 					<div class="d-flex flex-column">
 						<h4 class="h4">REGIONAL SCIENCE CENTRE, BHOPAL</h4>
 						<h4 class="h4">TICKET REPORT</h4>
 					</div>
-					<div class="text-center mx-5">
+					<div class="text-center mt-auto">
 						<h5 th:if="${#strings.isEmpty(StartDate)}" class="h5">[[${EndDate}]]</h5>
 						<h5 th:if="${!#strings.isEmpty(StartDate)}" class="h5">[[${StartDate}]] - [[${EndDate}]]</h5>
 					</div>
 					<div class="text-center mx-auto">
-						<img style="justify-content: center;" th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
+						<img th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
 					</div>
 					<div class="text-end d-flex flex-column">
 						<h4 th:if="${!#lists.isEmpty(ticketSerials)}" class="h4 m-0">Ticket Serial start: [[${ticketSerials.get(ticketSerials.size() - 1)}]] <!-- [[${reportTable.get(0).group[0].ticketSerial}]] --></h4>
@@ -116,24 +126,21 @@
 					</div>
 					<div class="col-12 mt-3">
 						<h4 class="h4">COMPUTER TICKET REPORT</h4>
-						<table class="table border w-100" id="tickets">
-							<thead class="bg-gray">
+						<table class="table border table-bordered w-100" id="tickets">
+							<thead>
 								<tr>
-									<th>Serial No.</th>
-									<th>Ticket</th>
+									<th rowspan="2">Serial No.</th>
+									<th rowspan="2">Ticket</th>
 									<th:block th:each="visitorName : ${visitorsName}">
 										<th th:text="${visitorName}" colspan="2" style="text-align: center;"></th>
 									</th:block>
-									<th>Total Amount</th>
+									<th rowspan="2">Total Amount</th>
 								</tr>
 								<tr>
-									<th></th>
-									<th></th>
 									<th:block th:each="visitorName : ${visitorsName}">
 										<th style="text-align: right;">Count</th>
 										<th style="text-align: left;">Rate</th>
 									</th:block>
-									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -146,7 +153,7 @@
 											<td th:text="${group.value.count}" style="text-align: right;"></td>
 											<td style="text-align: left;">₹[[${group.value.price}]]</td>
 										</th:block>
-										<td>₹[[${ticket.subTotal}]]</td>
+										<td style="text-align: right;">₹[[${ticket.subTotal}]]</td>
 									</tr>
 								</th:block>
 							</tbody>
