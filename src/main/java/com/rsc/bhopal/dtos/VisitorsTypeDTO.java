@@ -1,20 +1,33 @@
 package com.rsc.bhopal.dtos;
 
-import com.rsc.bhopal.enums.VisitorsTypeEnum;
+import java.util.Date;
+
+import com.rsc.bhopal.enums.GroupType;
+import com.rsc.bhopal.enums.VisitorsCategoryEnum;
 
 import lombok.Data;
 
 @Data
 public class VisitorsTypeDTO {
 
-	private long id; 
+	private Long id; 
 	
 	private String name; 
 	
-	private VisitorsTypeEnum type; 
+	private VisitorsCategoryEnum category; 
 
-	private int minMembers; 
-
-    private int fixedMembers;
+	private GroupType  groupType; 
+	
+	private Integer minMembers; 
+	
+    private Integer fixedMembers;
    
+    private Date addedAt;
+    
+    private String addedBy;
+    
+    private Boolean isActive;
+    
+    private Boolean isDefault;
+	
 }

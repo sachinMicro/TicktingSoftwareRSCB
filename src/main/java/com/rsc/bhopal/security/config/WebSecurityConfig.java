@@ -18,8 +18,9 @@ public class WebSecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { 
       return http.csrf(csrf -> csrf.disable())
               .authorizeHttpRequests(requests -> requests
-                      .requestMatchers("/").permitAll()
                       .requestMatchers("/js/**", "/css/**","/images/**").permitAll()
+                      .requestMatchers("/manage/**")
+                      .hasRole("ADMIN")
                )              
               .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
               .formLogin(form->{
@@ -45,5 +46,4 @@ public class WebSecurityConfig {
   public PasswordEncoder passwordEncoder() { 
       return new BCryptPasswordEncoder(); 
   } 
-
 } 
