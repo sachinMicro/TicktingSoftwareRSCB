@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.rsc.bhopal.dtos.TicketReportTableDTO;
 import com.rsc.bhopal.entity.TicketBillRow;
+import com.rsc.bhopal.projections.TicketDailyReport;
 import com.rsc.bhopal.projections.TicketReportTable;
 
 import java.math.BigInteger;
@@ -128,6 +129,28 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 				"SELECT id AS Id, serial_no AS SerialNo, ticket_id AS TicketId, ticket_name AS TicketName, visitor_id AS VisitorId, visitor_name AS VisitorName, total_sum AS TotalSum, persons AS Persons, price AS Price, ticket_serial AS TicketSerial, cancelled_status AS CancelledStatus FROM report_table", nativeQuery = true)
 	public List<TicketReportTable> getTicketsReportTableAtDateTime(Timestamp startDateTime, Timestamp endDateTime);
 
+	// Ticket Daily Report
+	@Query(value = "WITH report AS (\n"
+			+ "	WITH rate AS (\n"
+			+ "		SELECT\n"
+			+ "			rate.id AS rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, rate.ticket_id, ticket.ticket_name, rate.visitor_id, visitor.visitor_name, visitor.group_type\n"
+			+ "		FROM\n"
+			+ "			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_ticket_master ticket, rsc_ts.rsc_ts_visitor_type_master visitor\n"
+			+ "		WHERE\n"
+			+ "			rate.ticket_id = ticket.id AND rate.visitor_id = visitor.id\n"
+			+ "	)\n"
+			+ "	SELECT\n"
+			+ "		DENSE_RANK() OVER (ORDER BY DATE(receipt.generated_at)) AS date_serial, DATE(receipt.generated_at) AS bill_date,\n"
+			+ "		bill.id, bill.total_sum, bill.bill_id,\n"
+			+ "		receipt.persons, receipt.cancelled_status, receipt.ticket_serial, receipt.total_bill, receipt.generated_by,\n"
+			+ "		rate.*\n"
+			+ "	FROM rsc_ts.rsc_ts_ticket_bill_rows bill\r\n"
+			+ "	INNER JOIN rsc_ts.rsc_ts_ticket_bill receipt ON bill.bill_id = receipt.id\n"
+			+ "	LEFT JOIN rate ON bill.rate_master_id = rate.rate_master_id\n"
+			+ ")\n"
+			+ "SELECT report.* FROM report WHERE YEAR(report.bill_date) = :yearSearch", nativeQuery = true)
+	public List<TicketDailyReport> getDailyReportDetails(Integer yearSearch);
+	
 	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\'", nativeQuery = false)
 	public List<TicketBillRow> getTicketBillRows();
 
