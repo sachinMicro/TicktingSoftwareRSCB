@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
@@ -33,7 +32,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -99,24 +97,10 @@ public class TicketDailyReportController {
 		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
 		final Map<Long, String> ticketsMap = ticketDetailsService.getAllTickets().stream().collect(Collectors.toMap(TicketDetailsDTO::getId, TicketDetailsDTO::getName));
 		final Map<Long, String> visitorsMap = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
-		double []grandTotal = new double[1];
 		final DailyReportExcel dailyReportExcel = new DailyReportExcel(ticketDailyReports, ticketsMap, visitorsMap, httpServletResponse);
 	}
 
 	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsMap, double[] grandTotal) {
-		// final List<Long> ticketIds = ticketDetailsService.getAllTickets().stream().map(TicketDetailsDTO::getId).collect(Collectors.toList());
-		// final List<Long> groupIds = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getId).collect(Collectors.toList());
-/*
-		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
-		for (int index = 0; index < ticketIds.size(); ++index) {
-			ticketIdToIndex.put(ticketIds.get(index), index);
-		}
-
-		LinkedHashMap<Long, Integer> groupIdToIndex = new LinkedHashMap<Long, Integer>();
-		for (int index = 0; index < groupIds.size(); ++index) {
-			groupIdToIndex.put(groupIds.get(index), index);
-		}
-*/
 		int ticketCount = 0;
 		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
 		for (Map.Entry<Long, String> ticketMap: ticketsMap.entrySet()) {
