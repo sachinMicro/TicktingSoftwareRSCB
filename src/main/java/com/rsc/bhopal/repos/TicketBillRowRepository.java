@@ -149,7 +149,7 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 			+ "	LEFT JOIN rate ON bill.rate_master_id = rate.rate_master_id\n"
 			+ ")\n"
 			+ "SELECT report.* FROM report WHERE YEAR(report.bill_date) = :yearSearch", nativeQuery = true)
-	public List<TicketDailyReport> getDailyReportDetails(Integer yearSearch);
+	public List<TicketDailyReport> getDailyReportDetails(Short yearSearch);
 	
 	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\'", nativeQuery = false)
 	public List<TicketBillRow> getTicketBillRows();

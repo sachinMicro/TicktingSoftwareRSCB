@@ -92,6 +92,24 @@
 			<artifactId>bcpkix-jdk18on</artifactId>
 			<version>1.76</version>
 		</dependency>
+		<!-- Apache POI for working with Excel files -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.3</version> <!-- Use the latest stable version -->
+		</dependency>
+		<!-- Optional: For better performance when handling large Excel files -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<!-- Optional: For working with Excel files that are encrypted or password protected -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.2.3</version> <!-- Use the latest stable version -->
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -158,6 +158,14 @@
 							<tfoot></tfoot>
 						</table>
 					</div>
+					<div class="col-12 mt-3">
+						<div class="btn btn-success">
+							<form th:action="${'/report/year-wise/' + #dates.format(#dates.createNow(), 'yyyy')}" method="post" enctype="application/x-www-form-urlencoded">
+								<label for="xlsx">Generate</label>
+								<input id="xlsx" type="submit" class="btn btn-success" value="XLXS" />
+							</form>
+						</div>
+					</div>
 					<div class="col-12 mt-3 d-flex" style="align-items: center;">
 						<div>
 							<h4 class="h4" style="font-weight: bold;">Grand Total: ₹[[${grandTotal}]]</h4>

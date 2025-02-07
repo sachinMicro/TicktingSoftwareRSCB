@@ -1,8 +1,8 @@
-package com.rsc.bhopal.controller;
+package com.rsc.bhopal.utills;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,113 +10,104 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.rsc.bhopal.dtos.TicketDetailsDTO;
-import com.rsc.bhopal.dtos.VisitorsTypeDTO;
-import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.projections.TicketDailyReport;
-import com.rsc.bhopal.repos.TicketBillRowRepository;
-import com.rsc.bhopal.service.TicketDetailsService;
-import com.rsc.bhopal.service.VisitorTypeService;
-import com.rsc.bhopal.utills.DailyReportExcel;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.slf4j.Slf4j;
 
-@Controller
-@Slf4j
-@RequestMapping("/report")
-public class TicketDailyReportController {
-	@Autowired
-	private TicketBillRowRepository ticketBillRowRepository;
-
-	@Autowired
-	private TicketDetailsService ticketDetailsService;
-
-	@Autowired
-	private VisitorTypeService visitorTypeService;
-
-/*
-	@GetMapping(path = "/year-wise/{year}")
-	public List<TicketDailyReport> TicketDailyReportController(@PathVariable("year") Integer year) {
-		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
-		arrange(ticketDailyReports);
-		return ticketDailyReports;
-	}
-*/
-/*
-	@GetMapping(path = "/year-wise/{year}")
-	public LinkedHashMap<Date, BillDate> TicketDailyReportController(@PathVariable("year") Integer year) {
-		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
-		ticketDetailsService.getAllTickets().stream().map(TicketDetailsDTO::getName).collect(Collectors.toList()).forEach(ticketDetailDTO -> {
-			log.debug(ticketDetailDTO.toString());
-		});
-		visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getName).collect(Collectors.toList()).forEach(visitorTypeDTO -> {
-			log.debug(visitorTypeDTO.toString());
-		});
-
-		return arrange(ticketDailyReports);
-	}
-*/
-
-	@GetMapping(path = "/year-wise/{year}")
-	public String TicketDailyReportController(@PathVariable("year") Short year, Map<String, Object> attributes) {
-		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
-		attributes.put("startDateTime", "");
-		attributes.put("endDateTime", "");
-		// attributes.put("ticketsName", ticketDetailsService.getAllTickets().stream().map(TicketDetailsDTO::getName).collect(Collectors.toList()));
-		// attributes.put("visitorsName", visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getName).collect(Collectors.toList()));
-		final Map<Long, String> ticketsMap = ticketDetailsService.getAllTickets().stream().collect(Collectors.toMap(TicketDetailsDTO::getId, TicketDetailsDTO::getName));
-		final Map<Long, String> visitorsMap = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
-		attributes.put("ticketsName", ticketsMap.values().stream().collect(Collectors.toList()));
-		attributes.put("visitorsName", visitorsMap.values().stream().collect(Collectors.toList()));
+public class DailyReportExcel {
+	public DailyReportExcel(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> groupsMap, HttpServletResponse httpServletResponse) throws IOException {
 		double []grandTotal = new double[1];
-		attributes.put("bills", arrange(ticketDailyReports, ticketsMap, visitorsMap, grandTotal));
-		attributes.put("ticketSerials", new int[2]);
-		attributes.put("grandTotal", grandTotal[0]);
-		return "reports/date";
-	}
+		LinkedHashMap<Date, BillDate> billDates = arrange(ticketDailyReports, ticketsMap, groupsMap, grandTotal);
+		List<String> ticketsName = ticketsMap.values().stream().collect(Collectors.toList());
+		List<String> groupsName = groupsMap.values().stream().collect(Collectors.toList());
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Daily Report");
+		CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
+		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		// Header
+		int columnCount = 0;
+		Row row0 = sheet.createRow(0);
+		Cell cell0 = row0.createCell(columnCount++);
+		cell0.setCellValue("Serial");
+		cell0.setCellStyle(cellStyle);
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, columnCount - 1, columnCount - 1));
+		Cell cell1 = row0.createCell(columnCount++);
+		cell1.setCellValue("Date");
+		cell1.setCellStyle(cellStyle);
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, columnCount - 1, columnCount - 1));
+		for (String ticketName: ticketsName) {
+			// for (String groupName: groupsName) {
+				Cell cell = row0.createCell(columnCount);
+				cell.setCellValue(ticketName);
+				cell.setCellStyle(cellStyle);
+			// }
+			// sheet.addMergedRegion(new CellRangeAddress(0, 0, columnCount - groupsName.size() - 1, columnCount - 1));
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, columnCount, columnCount - 1 + groupsName.size()));
+			columnCount += groupsName.size();
+		}
+		Cell cell_0 = row0.createCell(columnCount++);
+		cell_0.setCellValue("Amount");
+		cell_0.setCellStyle(cellStyle);
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, columnCount - 1, columnCount - 1));
+		columnCount = 1;
+		Row row1 = sheet.createRow(1);
+		for (String ticketName: ticketsName) {
+			for (String groupName: groupsName) {
+				Cell cell = row1.createCell(++columnCount);
+				cell.setCellValue(groupName);
+				cell.setCellStyle(cellStyle);
+			}
+		}
+		// Data
+		int rowCount = 2;
+		for (HashMap.Entry<Date, BillDate> billDate: billDates.entrySet()) {
+			columnCount = 0;
+			Row row = sheet.createRow(rowCount);
+			Cell cell00 = row.createCell(columnCount++);
+			cell00.setCellValue(rowCount - 1);
+			Cell cell01 = row.createCell(columnCount++);
+			cell01.setCellValue(billDate.getKey().toString());
+			for (HashMap.Entry<Long, Ticket> ticket: billDate.getValue().getTickets().entrySet()) {
+				for (HashMap.Entry<Long, Group> group: ticket.getValue().getGroups().entrySet()) {
+					Cell cell = row.createCell(columnCount++);
+					cell.setCellValue(group.getValue().getAmount());
+				}
+			}
+			Cell cell_00 = row.createCell(columnCount++);
+			cell_00.setCellValue(billDate.getValue().getTotalAmount());
+			++rowCount;
+		}
+		Row row_1 = sheet.createRow(rowCount);
+		Cell cell_1 = row_1.createCell(0);
+		cell_1.setCellValue(grandTotal[0]);
+		sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0, 2 + (ticketsName.size()) * groupsName.size()));
+		CellStyle cellStyle_ = workbook.createCellStyle();
+		cellStyle_.setAlignment(HorizontalAlignment.RIGHT);
+		cell_1.setCellStyle(cellStyle_);
 
-	@PostMapping(value = "/year-wise/{year}", produces = MediaType.APPLICATION_PDF_VALUE)
-	public void generateSheet(@PathVariable("year") Short year, HttpServletResponse httpServletResponse) throws IOException {
-		// httpServletResponse.setContentType("application/xlsx");
-		httpServletResponse.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		// httpServletResponse.setHeader("Content-Disposition", "inline; filename=daily_report.xlxs");
-		httpServletResponse.setHeader("Content-Disposition", "attachment; filename=daily_report.xlsx");
-		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
-		final Map<Long, String> ticketsMap = ticketDetailsService.getAllTickets().stream().collect(Collectors.toMap(TicketDetailsDTO::getId, TicketDetailsDTO::getName));
-		final Map<Long, String> visitorsMap = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
-		double []grandTotal = new double[1];
-		final DailyReportExcel dailyReportExcel = new DailyReportExcel(ticketDailyReports, ticketsMap, visitorsMap, httpServletResponse);
+		try (OutputStream outputStream = httpServletResponse.getOutputStream()) {
+			workbook.write(outputStream);
+		}
+		workbook.close();
 	}
 
 	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsMap, double[] grandTotal) {
-		// final List<Long> ticketIds = ticketDetailsService.getAllTickets().stream().map(TicketDetailsDTO::getId).collect(Collectors.toList());
-		// final List<Long> groupIds = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).map(VisitorsTypeDTO::getId).collect(Collectors.toList());
-/*
-		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
-		for (int index = 0; index < ticketIds.size(); ++index) {
-			ticketIdToIndex.put(ticketIds.get(index), index);
-		}
-
-		LinkedHashMap<Long, Integer> groupIdToIndex = new LinkedHashMap<Long, Integer>();
-		for (int index = 0; index < groupIds.size(); ++index) {
-			groupIdToIndex.put(groupIds.get(index), index);
-		}
-*/
 		int ticketCount = 0;
 		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
 		for (Map.Entry<Long, String> ticketMap: ticketsMap.entrySet()) {

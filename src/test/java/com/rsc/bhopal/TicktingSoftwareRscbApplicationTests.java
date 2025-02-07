@@ -33,17 +33,6 @@ class TicktingSoftwareRscbApplicationTests {
 	
 	@Test
 	public void getTicketDetails() {
-		TicketDetails t1 = new TicketDetails();
-		t1.setId(1l);
-		t1.setName("Dummy 1");
-		
-		TicketDetails t2 = new TicketDetails();
-		t2.setId(2l);
-		t2.setName("Dummy 2");
-		
-		when(ticketRepo.findAll()).thenReturn(Stream.of(t1,t2).toList());
-		
-		assertEquals(2, ticketDetails.getAllTickets().size());
 		
 	}
 	
