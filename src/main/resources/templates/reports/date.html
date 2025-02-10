@@ -128,15 +128,19 @@
 									<th rowspan="2">Serial No.</th>
 									<th rowspan="2">Date</th>
 									<th:block th:each="ticketName : ${ticketsName}">
-										<th th:text="${ticketName}" th:colspan="${visitorsName.size}" style="text-align: center;"></th>
+										<th th:text="${ticketName}" th:colspan="${visitorsSingleName.size}" style="text-align: center;"></th>
 									</th:block>
+									<th th:colspan="${visitorsComboName.size}">Combo Tickets</th>
 									<th rowspan="2">Amount</th>
 								</tr>
 								<tr>
 									<th:block th:each="ticketName : ${ticketsName}">
-										<th:block th:each="visitorName : ${visitorsName}">
+										<th:block th:each="visitorName : ${visitorsSingleName}">
 											<th th:text="${visitorName}"></th>
 										</th:block>
+									</th:block>
+									<th:block th:each="groupComboName : ${visitorsComboName}">
+										<th th:text="${groupComboName}"></th>
 									</th:block>
 								</tr>
 							</thead>
@@ -151,6 +155,9 @@
 												<td>₹[[${group.value.amount}]]</td>
 											</th:block>
 										</th:bock>
+										<th:block th:each="group : ${bill.value.groups}">
+											<td>₹[[${group.value.amount}]]</td>
+										</th:block>
 										<td>₹[[${bill.value.totalAmount}]]</td>
 									</tr>
 								</th:block>
