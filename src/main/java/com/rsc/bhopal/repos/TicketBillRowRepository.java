@@ -133,11 +133,18 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 	@Query(value = "WITH report AS (\n"
 			+ "	WITH rate AS (\n"
 			+ "		SELECT\n"
-			+ "			rate.id AS rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, rate.ticket_id, ticket.ticket_name, rate.visitor_id, visitor.visitor_name, visitor.group_type\n"
+			+ "			rate.id AS rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, NULL AS parking_det_name, rate.ticket_id, ticket.ticket_name, rate.visitor_id, visitor.visitor_name, visitor.group_type\n"
 			+ "		FROM\n"
 			+ "			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_ticket_master ticket, rsc_ts.rsc_ts_visitor_type_master visitor\n"
 			+ "		WHERE\n"
-			+ "			rate.ticket_id = ticket.id AND rate.visitor_id = visitor.id\n"
+			+ "			rate.bill_type = 'TICKET' AND rate.ticket_id = ticket.id AND rate.visitor_id = visitor.id\n"
+			+ "		UNION\n"
+			+ "		SELECT"
+			+ "			rate.id As rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, parking.name AS parking_det_name, rate.ticket_id, NULL, rate.visitor_id, NULL, NULL\n"
+			+ "		FROM\n"
+			+ "			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_parking_details parking\n"
+			+ "		WHERE\n"
+			+ "			rate.bill_type = 'PARKING'\n AND rate.parking_det_id = parking.id"
 			+ "	)\n"
 			+ "	SELECT\n"
 			+ "		DENSE_RANK() OVER (ORDER BY DATE(receipt.generated_at)) AS date_serial, DATE(receipt.generated_at) AS bill_date,\n"
@@ -147,10 +154,10 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 			+ "	FROM rsc_ts.rsc_ts_ticket_bill_rows bill\r\n"
 			+ "	INNER JOIN rsc_ts.rsc_ts_ticket_bill receipt ON bill.bill_id = receipt.id\n"
 			+ "	LEFT JOIN rate ON bill.rate_master_id = rate.rate_master_id\n"
-			+ ")\n"
-			+ "SELECT report.* FROM report WHERE YEAR(report.bill_date) = :yearSearch", nativeQuery = true)
+			+ "	)\n"
+			+ "	SELECT report.* FROM report WHERE YEAR(report.bill_date) = :yearSearch", nativeQuery = true)
 	public List<TicketDailyReport> getDailyReportDetails(Short yearSearch);
-	
+
 	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\'", nativeQuery = false)
 	public List<TicketBillRow> getTicketBillRows();
 

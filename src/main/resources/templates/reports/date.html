@@ -131,6 +131,7 @@
 										<th th:text="${ticketName}" th:colspan="${visitorsSingleName.size}" style="text-align: center;"></th>
 									</th:block>
 									<th th:colspan="${visitorsComboName.size}">Combo Tickets</th>
+									<th th:colspan="${parkingsName.size}" style="text-align: center;">Parking</th>
 									<th rowspan="2">Amount</th>
 								</tr>
 								<tr>
@@ -142,6 +143,7 @@
 									<th:block th:each="groupComboName : ${visitorsComboName}">
 										<th th:text="${groupComboName}"></th>
 									</th:block>
+									<th th:each="parkingName : ${parkingsName}" th:text="${parkingName}"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -151,13 +153,10 @@
 										<td></td>
 										<td th:text="${bill.value.date}"></td>
 										<th:bock th:each="ticket : ${bill.value.tickets}">
-											<th:block th:each="group : ${ticket.value.groups}">
-												<td>₹[[${group.value.amount}]]</td>
-											</th:block>
+											<td th:each="group : ${ticket.value.groups}">₹[[${group.value.amount}]]</td>
 										</th:bock>
-										<th:block th:each="group : ${bill.value.groups}">
-											<td>₹[[${group.value.amount}]]</td>
-										</th:block>
+										<td th:each="group : ${bill.value.groups}">₹[[${group.value.amount}]]</td>
+										<td th:each="parking : ${bill.value.parkings}">₹[[${parking.value.totalRate}]]</td>
 										<td>₹[[${bill.value.totalAmount}]]</td>
 									</tr>
 								</th:block>
@@ -167,7 +166,7 @@
 					</div>
 					<div class="col-12 mt-3">
 						<div class="btn btn-success">
-							<form th:action="${'/report/year-wise/' + #dates.format(#dates.createNow(), 'yyyy')}" method="post" enctype="application/x-www-form-urlencoded">
+							<form th:action="${'/report/year-wise/' + #dates.format(#dates.createNow(), 'yyyy')}" method="post" enctype="application/x-www-form-urlencoded" target="_blank">
 								<label for="xlsx">Generate</label>
 								<input id="xlsx" type="submit" class="btn btn-success" value="XLXS" />
 							</form>

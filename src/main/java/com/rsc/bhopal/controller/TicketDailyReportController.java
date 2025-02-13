@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.enums.BillType;
 import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.projections.TicketDailyReport;
 import com.rsc.bhopal.repos.TicketBillRowRepository;
+import com.rsc.bhopal.service.ParkingService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.VisitorTypeService;
 import com.rsc.bhopal.utills.DailyReportExcel;
@@ -47,15 +50,10 @@ public class TicketDailyReportController {
 	@Autowired
 	private VisitorTypeService visitorTypeService;
 
-/*
-	@GetMapping(path = "/year-wise/{year}")
-	public List<TicketDailyReport> TicketDailyReportController(@PathVariable("year") Integer year) {
-		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
-		arrange(ticketDailyReports);
-		return ticketDailyReports;
-	}
-*/
-/*
+	@Autowired
+	private ParkingService parkingService;
+
+	/*
 	@GetMapping(path = "/year-wise/{year}")
 	public LinkedHashMap<Date, BillDate> TicketDailyReportController(@PathVariable("year") Short year) {
 		List<TicketDailyReport> ticketDailyReports = ticketBillRowRepository.getDailyReportDetails(year);
@@ -68,11 +66,12 @@ public class TicketDailyReportController {
 		final Map<Long, String> ticketsMap = ticketDetailsService.getAllTickets().stream().collect(Collectors.toMap(TicketDetailsDTO::getId, TicketDetailsDTO::getName));
 		final Map<Long, String> visitorsSingleMap = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
 		final Map<Long, String> visitorsComboMap = visitorTypeService.getAllVisitorTypes().stream().filter(visitorsTypeDTO -> GroupType.COMBO.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
+		final Map<Long, String> parkingsMap = parkingService.getParkingDetails().stream().collect(Collectors.toMap(ParkingDetailsDTO::getId, ParkingDetailsDTO::getName));
 
 		double []grandTotal = new double[1];
-		return arrange(ticketDailyReports, ticketsMap, visitorsSingleMap, visitorsComboMap, grandTotal);
+		return arrange(ticketDailyReports, ticketsMap, visitorsSingleMap, visitorsComboMap, parkingsMap, grandTotal);
 	}
-*/
+	*/
 
 	@GetMapping(path = "/year-wise/{year}")
 	public String TicketDailyReportController(@PathVariable("year") Short year, Map<String, Object> attributes) {
@@ -83,12 +82,14 @@ public class TicketDailyReportController {
 		final List<VisitorsTypeDTO> vistitorsList = visitorTypeService.getAllActiveVisitorTypes();
 		final Map<Long, String> visitorsSingleMap = vistitorsList.stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
 		final Map<Long, String> visitorsComboMap = vistitorsList.stream().filter(visitorsTypeDTO -> GroupType.COMBO.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
+		final Map<Long, String> parkingsMap = parkingService.getParkingDetails().stream().collect(Collectors.toMap(ParkingDetailsDTO::getId, ParkingDetailsDTO::getName));
 		// final Map<Long, String> visitorsMap = visitorTypeService.getAllVisitorTypes().stream().collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
 		attributes.put("ticketsName", ticketsMap.values().stream().collect(Collectors.toList()));
 		attributes.put("visitorsSingleName", visitorsSingleMap.values().stream().collect(Collectors.toList()));
 		attributes.put("visitorsComboName", visitorsComboMap.values().stream().collect(Collectors.toList()));
+		attributes.put("parkingsName", parkingsMap.values().stream().collect(Collectors.toList()));
 		double []grandTotal = new double[1];
-		attributes.put("bills", arrange(ticketDailyReports, ticketsMap, visitorsSingleMap, visitorsComboMap, grandTotal));
+		attributes.put("bills", arrange(ticketDailyReports, ticketsMap, visitorsSingleMap, visitorsComboMap, parkingsMap, grandTotal));
 		attributes.put("ticketSerials", new int[2]);
 		attributes.put("grandTotal", grandTotal[0]);
 		return "reports/date";
@@ -105,10 +106,11 @@ public class TicketDailyReportController {
 		final List<VisitorsTypeDTO> visitorsList = visitorTypeService.getAllVisitorTypes();
 		final Map<Long, String> visitorsSingleMap = visitorsList.stream().filter(visitorsTypeDTO -> GroupType.SINGLE.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
 		final Map<Long, String> visitorsComboMap = visitorsList.stream().filter(visitorsTypeDTO -> GroupType.COMBO.equals(visitorsTypeDTO.getGroupType())).collect(Collectors.toMap(VisitorsTypeDTO::getId, VisitorsTypeDTO::getName));
-		final DailyReportExcel dailyReportExcel = new DailyReportExcel(ticketDailyReports, ticketsMap, visitorsSingleMap, visitorsComboMap, httpServletResponse);
+		final Map<Long, String> parkingsMap = parkingService.getParkingDetails().stream().collect(Collectors.toMap(ParkingDetailsDTO::getId, ParkingDetailsDTO::getName));
+		final DailyReportExcel dailyReportExcel = new DailyReportExcel(ticketDailyReports, ticketsMap, visitorsSingleMap, visitorsComboMap, parkingsMap, httpServletResponse);
 	}
 
-	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsSingleMap, Map<Long, String> visitorsComboMap, double[] grandTotal) {
+	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsSingleMap, Map<Long, String> visitorsComboMap, Map<Long, String> parkingsMap, double[] grandTotal) {
 		int ticketCount = 0;
 		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
 		for (Map.Entry<Long, String> ticketMap: ticketsMap.entrySet()) {
@@ -124,6 +126,11 @@ public class TicketDailyReportController {
 		for (Map.Entry<Long, String> visitorComboMap: visitorsComboMap.entrySet()) {
 			groupComboIdToIndex.put(visitorComboMap.getKey(), visitorComboCount++);
 		}
+		int parkingCount = 0;
+		LinkedHashMap<Long, Integer> parkingIdToIndex = new LinkedHashMap<Long, Integer>();
+		for (Map.Entry<Long, String> parkingMap: parkingsMap.entrySet()) {
+			parkingIdToIndex.put(parkingMap.getKey(), parkingCount++);
+		}
 
 		LinkedHashMap<Date, BillDate> billDates = new LinkedHashMap<Date, BillDate>();
 		for (TicketDailyReport ticketDailyReport: ticketDailyReports) {
@@ -131,12 +138,26 @@ public class TicketDailyReportController {
 			if (billDate == null) {
 				billDate = new BillDate();
 				billDate.setDate(ticketDailyReport.getBillDate());
+				billDate.setParkings(new HashMap<Long, Parking>());
 				billDate.setGroups(new HashMap<Long, Group>());
 				billDate.setTickets(new HashMap<Long, Ticket>());
+				billDate.setTotalTickets(0);
+				billDate.setTotalAmount(0d);
 
-				if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
-					billDate.setTotalTickets(1);
-					billDate.setTotalAmount(Double.valueOf(ticketDailyReport.getPrice()));
+				if (ticketDailyReport.getBillType() == BillType.PARKING) {
+					// billDate.setTotalTickets(0);	// Assuming parking is not a ticket
+					// billDate.setTotalTickets((int) Math.ceil(ticketDailyReport.getTotalSum() / ticketDailyReport.getPrice()));	// Assuming parking is a ticket
+					// billDate.setTotalAmount(ticketDailyReport.getTotalSum());
+
+					Parking parking = new Parking();
+					parking.setTotalRate(ticketDailyReport.getTotalSum());
+					parking.setTotalCount((int) Math.ceil(ticketDailyReport.getTotalSum() / ticketDailyReport.getPrice()));
+					billDate.getParkings().put(Long.valueOf(parkingIdToIndex.get(ticketDailyReport.getParkingDetId())), parking);
+				}
+				else if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
+					// billDate.setTotalTickets(1);
+					// billDate.setTotalAmount(Double.valueOf(ticketDailyReport.getPrice()));
+					// billDate.setTotalTickets(1);	// If Combo is just 1 ticket
 
 					Group group = new Group();
 					group.setGroupId(ticketDailyReport.getVisitorId());
@@ -147,8 +168,8 @@ public class TicketDailyReportController {
 					billDate.getGroups().put(Long.valueOf(groupComboIdToIndex.get(ticketDailyReport.getVisitorId())), group);
 				}
 				else {
-					billDate.setTotalTickets(ticketDailyReport.getPersons());
-					billDate.setTotalAmount(Double.valueOf(ticketDailyReport.getPrice() * ticketDailyReport.getPersons()));
+					// billDate.setTotalTickets(ticketDailyReport.getPersons());
+					// billDate.setTotalAmount(Double.valueOf(ticketDailyReport.getPrice() * ticketDailyReport.getPersons()));
 
 					Ticket ticket = new Ticket();
 					ticket.setTicketId(ticketDailyReport.getTicketId());
@@ -171,7 +192,22 @@ public class TicketDailyReportController {
 				billDates.put(ticketDailyReport.getBillDate(), billDate);
 			}
 			else {
-				if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
+				if (ticketDailyReport.getBillType() == BillType.PARKING) {
+					Parking parking = billDate.getParkings().get(Long.valueOf(parkingIdToIndex.get(ticketDailyReport.getParkingDetId())));
+					if (parking == null) {
+						parking = new Parking();
+						parking.setParkingId(ticketDailyReport.getParkingDetId());
+						parking.setParkingName(ticketDailyReport.getParkingDetName());
+						parking.setTotalCount((int) Math.ceil(ticketDailyReport.getTotalSum() / ticketDailyReport.getPrice()));
+						parking.setTotalRate(ticketDailyReport.getTotalSum());
+						billDate.getParkings().put(Long.valueOf(parkingIdToIndex.get(ticketDailyReport.getParkingDetId())), parking);
+					}
+					else {
+						parking.setTotalCount(parking.getTotalCount() + (int) Math.ceil(ticketDailyReport.getTotalSum() / ticketDailyReport.getPrice()));
+						parking.setTotalRate(parking.getTotalRate() + ticketDailyReport.getTotalSum());
+					}
+				}
+				else if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
 					Group group = billDate.getGroups().get(Long.valueOf(groupComboIdToIndex.get(ticketDailyReport.getVisitorId())));
 					if (group == null) {
 						group = new Group();
@@ -183,7 +219,7 @@ public class TicketDailyReportController {
 						billDate.getGroups().put(Long.valueOf(groupComboIdToIndex.get(ticketDailyReport.getVisitorId())), group);
 					}
 					else {
-						group.setQuantity(group.getQuantity() + ticketDailyReport.getPersons());
+						group.setQuantity(group.getQuantity() + 1);	// Assuming Each Combo is an individual ticket
 						group.setAmount(group.getAmount() + ticketDailyReport.getPrice());
 					}
 				}
@@ -224,19 +260,23 @@ public class TicketDailyReportController {
 						ticket.setTotalAmount(ticket.getTotalAmount() + (ticketDailyReport.getPrice() * ticketDailyReport.getPersons()));
 					}
 				}
-				if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
-					billDate.setTotalTickets(billDate.getTotalTickets() + 1);
-					billDate.setTotalAmount(billDate.getTotalAmount() + ticketDailyReport.getPrice());
-				}
-				else {
-					billDate.setTotalTickets(billDate.getTotalTickets() + ticketDailyReport.getPersons());
-					billDate.setTotalAmount(billDate.getTotalAmount() + (ticketDailyReport.getPrice() * ticketDailyReport.getPersons()));
-				}
 			}
-			if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
+			if (ticketDailyReport.getBillType() == BillType.PARKING) {
+				// billDate.setTotalTickets(billDate.getTotalTickets() + (int) Math.ceil(ticketDailyReport.getTotalSum() / ticketDailyReport.getPrice()));	// Assuming Parking is not a ticket
+				billDate.setTotalAmount(billDate.getTotalAmount() + ticketDailyReport.getTotalSum());
+
+				grandTotal[0] += ticketDailyReport.getTotalSum();
+			}
+			else if (ticketDailyReport.getGroupType() == GroupType.COMBO) {
+				billDate.setTotalTickets(billDate.getTotalTickets() + 1);	// Assuming Each Combo is an individual ticket
+				billDate.setTotalAmount(billDate.getTotalAmount() + ticketDailyReport.getPrice());
+
 				grandTotal[0] += ticketDailyReport.getPrice();
 			}
 			else {
+				billDate.setTotalTickets(billDate.getTotalTickets() + ticketDailyReport.getPersons());
+				billDate.setTotalAmount(billDate.getTotalAmount() + (ticketDailyReport.getPrice() * ticketDailyReport.getPersons()));
+
 				grandTotal[0] += ticketDailyReport.getPrice() * ticketDailyReport.getPersons();
 			}
 		}
@@ -252,6 +292,15 @@ public class TicketDailyReportController {
 					billDate.getValue().getGroups().put(Long.valueOf(groupComboMappedIndex.getValue()), group);
 				}
 			}
+			for (HashMap.Entry<Long, Integer> parkingMappedIndex: parkingIdToIndex.entrySet()) {
+				if (billDate.getValue().getParkings().get(Long.valueOf(parkingMappedIndex.getValue())) == null) {
+					Parking parking = new Parking();
+					parking.setParkingName("");
+					parking.setTotalCount(0);
+					parking.setTotalRate(0d);
+					billDate.getValue().getParkings().put(Long.valueOf(parkingMappedIndex.getValue()), parking);
+				}
+			}
 			for (HashMap.Entry<Long, Integer> ticketMappedIndex: ticketIdToIndex.entrySet()) {
 				if (billDate.getValue().getTickets().get(Long.valueOf(ticketMappedIndex.getValue())) == null) {
 					Ticket ticket = new Ticket();
@@ -260,7 +309,7 @@ public class TicketDailyReportController {
 					ticket.setTotalAmount(0d);
 					ticket.setGroups(new LinkedHashMap<Long, Group>());
 					for (HashMap.Entry<Long, Integer> groupSingleMappedIndex: groupSingleIdToIndex.entrySet()) {
-						Group  group = new Group();
+						Group group = new Group();
 						group.setGroupName("");
 						group.setQuantity(0);
 						group.setAmount(0f);
@@ -408,10 +457,18 @@ public class TicketDailyReportController {
 	@Data
 	private class BillDate {
 		private Date date;
+		private HashMap<Long, Parking> parkings;
 		private HashMap<Long, Ticket> tickets;
 		private Integer totalTickets;
-		private Double  totalAmount;
+		private Double totalAmount;
 		private HashMap<Long, Group> groups;
+	}
+	@Data
+	private class Parking {
+		private Long parkingId;
+		private String parkingName;
+		private int totalCount;
+		private Double totalRate;
 	}
 	@Data
 	private class Ticket {
