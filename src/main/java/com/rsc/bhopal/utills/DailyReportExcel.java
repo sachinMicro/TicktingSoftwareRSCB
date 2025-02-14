@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -127,7 +128,6 @@ public class DailyReportExcel {
 			for (HashMap.Entry<Long, Group> group: billDate.getValue().getGroups().entrySet()) {
 				Cell cell = row.createCell(columnCount++);
 				cell.setCellValue(group.getValue().getQuantity());
-				cell.setCellStyle(cellStyle);
 			}
 			for (HashMap.Entry<Long, Parking> parking: billDate.getValue().getParkings().entrySet()) {
 				Cell cell = row.createCell(columnCount++);
@@ -140,7 +140,51 @@ public class DailyReportExcel {
 		}
 
 		// Footer
+		columnCount = 1;
 		Row footerRow = sheet.createRow(++rowCount);
+		for (String ticketName: ticketsName) {
+			for (String groupsName: groupsSingleName) {
+				Cell cell = footerRow.createCell(++columnCount);
+				cell.setCellFormula("SUM(" + getColumnLetterFromIndex(columnCount) + "3:" + getColumnLetterFromIndex(columnCount) + rowCount + ")");
+			}
+		}
+		for (String groupName: groupsComboName) {
+			Cell cell = footerRow.createCell(++columnCount);
+			// System.out.println("SUM(" + getColumnLetterFromIndex(columnCount) + "3:" + getColumnLetterFromIndex(columnCount) + rowCount + ")");
+			cell.setCellFormula("SUM(" + getColumnLetterFromIndex(columnCount) + "3:" + getColumnLetterFromIndex(columnCount) + rowCount + ")");
+		}
+		for (String parkingName: parkingsName) {
+			Cell cell = footerRow.createCell(++columnCount);
+			// System.out.println("SUM(" + getColumnLetterFromIndex(columnCount) + "3:" + getColumnLetterFromIndex(columnCount) + rowCount + ")");
+			cell.setCellFormula("SUM(" + getColumnLetterFromIndex(columnCount) + "3:" + getColumnLetterFromIndex(columnCount) + rowCount + ")");
+		}
+		for (String ticketName: ticketsName) {
+			Cell cell = footerRow.createCell(++columnCount);
+			cell.setCellFormula("SUM(" + getColumnLetterFromIndex(columnCount) + "3:" + getColumnLetterFromIndex(columnCount) + rowCount + ")");
+		}
+
+		// Footer border
+		columnCount = 1;
+		CellStyle footerCellStyleLeft = workbook.createCellStyle();
+		footerCellStyleLeft.setBorderTop(BorderStyle.THICK);
+		footerCellStyleLeft.setBorderBottom(BorderStyle.THICK);
+		footerCellStyleLeft.setBorderLeft(BorderStyle.THICK);
+		// footerCellStyleLeft.setBorderRight(BorderStyle.THIN);
+		footerRow.getCell(++columnCount).setCellStyle(footerCellStyleLeft);
+		CellStyle footerCellStyleMiddle = workbook.createCellStyle();
+		footerCellStyleMiddle.setBorderTop(BorderStyle.THICK);
+		footerCellStyleMiddle.setBorderBottom(BorderStyle.THICK);
+		// footerCellStyleMiddle.setBorderLeft(BorderStyle.THIN);
+		// footerCellStyleMiddle.setBorderRight(BorderStyle.THIN);
+		for (int index = 0; index < (ticketsName.size() * groupsSingleName.size()) + groupsComboName.size() + parkingsName.size() + ticketsName.size() - 2; ++index) {
+			footerRow.getCell(++columnCount).setCellStyle(footerCellStyleMiddle);
+		}
+		CellStyle footerCellStyleRight = workbook.createCellStyle();
+		footerCellStyleRight.setBorderTop(BorderStyle.THICK);
+		footerCellStyleRight.setBorderBottom(BorderStyle.THICK);
+		// footerCellStyleRight.setBorderLeft(BorderStyle.THIN);
+		footerCellStyleRight.setBorderRight(BorderStyle.THICK);
+		footerRow.getCell(++columnCount).setCellStyle(footerCellStyleRight);
 
 		try (OutputStream outputStream = httpServletResponse.getOutputStream()) {
 			workbook.write(outputStream);
@@ -761,6 +805,15 @@ public class DailyReportExcel {
 		return billDates;
 	}
 	*/
+
+	public String getColumnLetterFromIndex(int columnIndex) {
+		StringBuilder columnName = new StringBuilder();
+		while (columnIndex >= 0) {
+            columnName.insert(0, (char) ('A' + (columnIndex % 26)));
+            columnIndex = (columnIndex / 26) - 1;
+        }
+		return columnName.toString();
+	}
 
 	@NoArgsConstructor
 	@AllArgsConstructor
