@@ -9,22 +9,21 @@ import lombok.Data;
 public class TicketSelectorDTO {
 
 	private List<Long> tickets;
-	
+
 	private long group;
-	
+
 	private long familyGroup;
-	
-	
+
 	private int persons;
+
+	private String institution;
 	
-	private int bikes;
+	private String remark;
 	
-	private int threeFourWheeler;
-		
-	
+	private List<ParkingCalDTO> parkings;
+
 	public TicketSelectorDTO(){
-		this.tickets=new ArrayList<>();
+		this.tickets = new ArrayList<>();
 	}
-	
-	
+
 }

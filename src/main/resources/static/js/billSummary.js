@@ -11,12 +11,16 @@ var tableConfig = {
 
 $(document).ready(function() {
 
-	$('#form').on("submit", function() {
-		getFormFields($(this));
+	$('#CALCULATE').on("click", function() {
+		getFormFields($(this).closest("form"));
 		return false;
 	});
-
-	billSummaryTable =
+	
+	$('#PRINT').on("click", function() {
+		getFormFields($(this).closest("form"));
+		return true;
+	});
+		billSummaryTable =
 		new DataTable('#billSummary', tableConfig);
 });
 
@@ -30,26 +34,26 @@ function getFormFields($form) {
 		type: "POST",
 		data: data.join("&"),
 		contentType: "application/x-www-form-urlencoded",
-	}).done(function(data) {
+	}).done(function(data,status) {
 		let grandTotal = 0;
 		billSummaryTable.clear().destroy();
-		tableConfig.data = [];
-
-		data.billDescription.forEach(function(obj) {
+		tableConfig.data = [];		
+        console.log(JSON.stringify(data));     
+          
+		data.data.billDescription.forEach(function(obj) {			
 			var row = [
 				obj.ticket+"<span class='ms-1 badge text-dark bg-info'>" + obj.groupName.toUpperCase() + "</span>",
-				"<small>" + obj.person+ " x " + obj.perPersonPrice + "</small>",
+				"<small>"  +(data.data.comboCase?obj.perPersonPrice: obj.person+ " x " + obj.perPersonPrice)+"</small>",
 				obj.totalSum
 			];
 			grandTotal += obj.totalSum;
 			tableConfig.data.push(row);
 		});
 
-
-		if(data.parkingBillDescription != null) {
-			data.parkingBillDescription.forEach(function(obj) {
+		if(data.data.parkingBillDescription != null) {
+			data.data.parkingBillDescription.forEach(function(obj) {
 				var row = [
-					obj.desc+"<span class='ms-1 badge text-dark bg-warning'>" + obj.groupName.toUpperCase() + "</span>",
+					obj.desc+"<span class='ms-1 badge text-dark bg-warning'>PARKING</span>",
 					"<small>" + obj.count+ " x " + obj.perCharge + "</small>",
 					obj.sum
 				];
@@ -57,11 +61,14 @@ function getFormFields($form) {
 				tableConfig.data.push(row);
 			});
 		}
-
 		billSummaryTable =
 			new DataTable('#billSummary', tableConfig);
 		$('#grandTotal').text(grandTotal);
-	});
+		showToast('Message',data.message,data.status);
+	}).fail(function(data){
+		showToast('Message',data.responseJSON.message,data.responseJSON.status);	
+	});	
+	;
 }
 
 /*

@@ -1,6 +1,7 @@
 package com.rsc.bhopal.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -11,13 +12,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RCS_TS_PARKING_DETAILS")
+@Table(name = "RSC_TS_PARKING_DETAILS")
 public class ParkingDetails {
 
 	@Id
@@ -35,10 +37,9 @@ public class ParkingDetails {
 	private Date addedAt;
 	
 	@Column(name="IS_ACTIVE")
-	private Boolean isActive;
-	
+	private Boolean isActive;	
 
-	@OneToOne(fetch = FetchType.EAGER,mappedBy = "parkingDetails")
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "parkingDetails")
 	@Cascade(CascadeType.ALL)
-	private TicketsRatesMaster rateMaster;
+	private List<TicketsRatesMaster> rateMaster;
 }

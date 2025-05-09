@@ -25,9 +25,9 @@ body,*{
   padding: 10px;
  /*  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
-.table,th,td{
-    vertical-align: middle;
-    font-size: 12px  !important; 
+.table,th,td,span{
+    vertical-align: middle; 
+    font-weight: 600 !important; 
 }
 .bg-gray {
     background-color: #ededed !important;
@@ -114,4 +114,12 @@ thead{
   .badge{
   letter-spacing:0.025cm;
   }
+  .form-control,.form-select{
+  font-weight: 600;
+  }
+  
+  .dropdown-item:focus, .dropdown-item:hover {
+    color: var(--bs-dropdown-link-hover-color);
+    background-color: #838383;
+}
   

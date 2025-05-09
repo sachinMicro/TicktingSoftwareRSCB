@@ -23,8 +23,10 @@ public class UpdateBillController {
 
 	@Autowired
 	private TicketDetailsService ticketDetails;
+
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
+
 	@Autowired
 	private VisitorTypeService visitorDetails;
 
@@ -36,12 +38,7 @@ public class UpdateBillController {
 	public String updateBill(@RequestBody final String ticketSchema) {
 		return "{success: true, Got: " + ticketSchema + "}";
 	}
-/*
-	@GettMapping("update")
-	public String updateBill(@RequestParam final String ticketSchema) {
-		return "{success: true, Got: " + ticketSchema + "}";
-	}
-*/
+
 	@GetMapping("/")
 	public String getMethodName() {
 		// ticketDetails.getAllTickets().forEach(System.out::println);
